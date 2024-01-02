@@ -79,7 +79,7 @@ public class FileUtils
         {
             String name = file.getName();
 
-            if (!path.isEmpty())
+            if (path.isEmpty() == false)
             {
                 path = name + separator + path;
             }

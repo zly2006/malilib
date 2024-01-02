@@ -457,7 +457,7 @@ public class RenderUtils
 
             Collection<StatusEffectInstance> effects = player.getStatusEffects();
 
-            if (!effects.isEmpty())
+            if (effects.isEmpty() == false)
             {
                 int y1 = 0;
                 int y2 = 0;
