@@ -5,41 +5,42 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Set;
-
 import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableSet;
 
-import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
-//import net.minecraft.nbt.NbtTagSizeTracker;
-import net.minecraft.nbt.NbtSizeTracker;
+import net.minecraft.nbt.NbtTagSizeTracker;
 
-public class FileUtils {
-    private static final Set<Character> ILLEGAL_CHARACTERS = ImmutableSet.of('/', '\n', '\r', '\t', '\0', '\f', '`',
-            '?', '*', '\\', '<', '>', '|', '\"', ':');
+import fi.dy.masa.malilib.MaLiLib;
 
-    public static File getConfigDirectory() {
+public class FileUtils
+{
+    private static final Set<Character> ILLEGAL_CHARACTERS = ImmutableSet.of( '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' );
+
+    public static File getConfigDirectory()
+    {
         return new File(MinecraftClient.getInstance().runDirectory, "config");
     }
 
-    public static File getMinecraftDirectory() {
+    public static File getMinecraftDirectory()
+    {
         return MinecraftClient.getInstance().runDirectory;
     }
 
     /**
      * Checks that the target directory exists, and the file either doesn't exist,
      * or the canOverwrite argument is true and the file is writable
-     * 
      * @param dir
      * @param fileName
      * @param canOverwrite
      * @return
      */
-    public static boolean canWriteToFile(File dir, String fileName, boolean canOverwrite) {
-        if (dir.exists() && dir.isDirectory()) {
+    public static boolean canWriteToFile(File dir, String fileName, boolean canOverwrite)
+    {
+        if (dir.exists() && dir.isDirectory())
+        {
             File file = new File(dir, fileName);
             return file.exists() == false || (canOverwrite && file.isFile() && file.canWrite());
         }
@@ -47,44 +48,56 @@ public class FileUtils {
         return false;
     }
 
-    public static File getCanonicalFileIfPossible(File file) {
-        try {
+    public static File getCanonicalFileIfPossible(File file)
+    {
+        try
+        {
             File fileCan = file.getCanonicalFile();
 
-            if (fileCan != null) {
+            if (fileCan != null)
+            {
                 file = fileCan;
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
         }
 
         return file;
     }
 
-    public static String getJoinedTrailingPathElements(File file, File rootPath, int maxStringLength,
-            String separator) {
+    public static String getJoinedTrailingPathElements(File file, File rootPath, int maxStringLength, String separator)
+    {
         String path = "";
 
-        if (maxStringLength <= 0) {
+        if (maxStringLength <= 0)
+        {
             return "...";
         }
 
-        while (file != null) {
+        while (file != null)
+        {
             String name = file.getName();
 
-            if (path.isEmpty() == false) {
+            if (path.isEmpty() == false)
+            {
                 path = name + separator + path;
-            } else {
+            }
+            else
+            {
                 path = name;
             }
 
             int len = path.length();
 
-            if (len > maxStringLength) {
+            if (len > maxStringLength)
+            {
                 path = "... " + path.substring(len - maxStringLength, len);
                 break;
             }
 
-            if (file.equals(rootPath)) {
+            if (file.equals(rootPath))
+            {
                 break;
             }
 
@@ -94,22 +107,27 @@ public class FileUtils {
         return path;
     }
 
-    public static String getNameWithoutExtension(String name) {
+    public static String getNameWithoutExtension(String name)
+    {
         int i = name.lastIndexOf(".");
         return i != -1 ? name.substring(0, i) : name;
     }
 
-    public static String generateSimpleSafeFileName(String name) {
+    public static String generateSimpleSafeFileName(String name)
+    {
         return name.toLowerCase(Locale.US).replaceAll("\\W", "_");
     }
 
-    public static String generateSafeFileName(String name) {
+    public static String generateSafeFileName(String name)
+    {
         StringBuilder sb = new StringBuilder(name.length());
 
-        for (int i = 0; i < name.length(); ++i) {
+        for (int i = 0; i < name.length(); ++i)
+        {
             char c = name.charAt(i);
 
-            if (ILLEGAL_CHARACTERS.contains(c) == false) {
+            if (ILLEGAL_CHARACTERS.contains(c) == false)
+            {
                 sb.append(c);
             }
         }
@@ -119,14 +137,19 @@ public class FileUtils {
     }
 
     @Nullable
-    public static NbtCompound readNBTFile(File file) {
-        if (file.exists() && file.isFile() && file.canRead()) {
-            try {
+    public static NbtCompound readNBTFile(File file)
+    {
+        if (file.exists() && file.isFile() && file.canRead())
+        {
+            try
+            {
                 FileInputStream is = new FileInputStream(file);
-                NbtCompound nbt = NbtIo.readCompressed(is, NbtSizeTracker.ofUnlimitedBytes());
+                NbtCompound nbt = NbtIo.readCompressed(is, NbtTagSizeTracker.ofUnlimitedBytes());
                 is.close();
                 return nbt;
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 MaLiLib.logger.warn("Failed to read NBT data from file '{}'", file.getAbsolutePath());
             }
         }
