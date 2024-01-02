@@ -70,17 +70,4 @@ public class WorldUtils
 
         return mc.world != null ? mc.world.getChunk(chunkX, chunkZ) : null;
     }
-
-    /**
-     * Replaces getHighestNonEmptySectionYOffset() marked for removal from API --
-     * Returns Maximum Y Offset Value of a Chunk.
-     */
-    public static int getHighestSectionYOffset(Chunk chunk)
-    {
-        int yMax = chunk.getHighestNonEmptySection();
-
-        yMax = yMax == -1 ? chunk.getBottomY() : ChunkSectionPos.getBlockCoord(chunk.sectionIndexToCoord(yMax));
-
-        return yMax;
-    }
 }
