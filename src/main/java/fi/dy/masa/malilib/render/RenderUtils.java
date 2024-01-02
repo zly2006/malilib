@@ -457,14 +457,14 @@ public class RenderUtils
 
             Collection<StatusEffectInstance> effects = player.getStatusEffects();
 
-            if (effects.isEmpty() == false)
+            if (!effects.isEmpty())
             {
                 int y1 = 0;
                 int y2 = 0;
 
                 for (StatusEffectInstance effectInstance : effects)
                 {
-                    StatusEffect effect = effectInstance.getEffectType();
+                    StatusEffect effect = effectInstance.getEffectType().value();
 
                     if (effectInstance.shouldShowParticles() && effectInstance.shouldShowIcon())
                     {
