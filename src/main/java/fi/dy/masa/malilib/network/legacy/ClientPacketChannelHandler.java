@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.network;
+package fi.dy.masa.malilib.network.legacy;
 
 import com.google.common.collect.ArrayListMultimap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;

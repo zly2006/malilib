@@ -14,4 +14,11 @@ public class MaLiLib implements ModInitializer
     {
         InitializationHandler.getInstance().registerInitializationHandler(new MaLiLibInitHandler());
     }
+    public static void printDebug(String key, Object... args)
+    {
+        if (MaLiLibConfigs.Debug.NETWORK_DEBUG.getBooleanValue())
+        {
+            logger.info(key, args);
+        }
+    }
 }
