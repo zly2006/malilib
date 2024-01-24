@@ -18,14 +18,14 @@ public class ClientNetworkPlayRegister
         if (MaLiLibReference.isClient())
         {
             MaLiLib.printDebug("ClientHandlerManager#registerDefaultReceivers(): isClient() true.");
+            if (MaLiLibReference.isSinglePlayer())
+                MaLiLib.printDebug("ClientHandlerManager#registerDefaultReceivers(): Game is running in Single Player Mode.");
             MaLiLib.printDebug("ClientHandlerManager#registerDefaultReceivers(): registerStringHandler()");
 
             ClientPlayNetworking.registerGlobalReceiver(S2CStringPayload.TYPE, S2CStringHandler);
 
             MaLiLib.printDebug("PayloadTypes#registerDefaultReceivers(): registerDataHandler()");
             ClientPlayNetworking.registerGlobalReceiver(S2CDataPayload.TYPE, S2CDataHandler);
-
-            MaLiLib.printDebug("PayloadTypes#registerDefaultReceivers(): END.");
         }
     }
 
@@ -41,8 +41,6 @@ public class ClientNetworkPlayRegister
 
             MaLiLib.printDebug("ClientHandlerManager#unregisterDefaultReceivers(): unregisterDataHandler()");
             ClientPlayNetworking.unregisterGlobalReceiver(S2CDataPayload.TYPE.id());
-
-            MaLiLib.printDebug("ClientHandlerManager#unregisterDefaultReceivers(): END.");
         }
     }
     static

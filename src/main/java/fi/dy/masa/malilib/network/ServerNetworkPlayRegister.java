@@ -14,7 +14,7 @@ public class ServerNetworkPlayRegister
     
     public static void registerDefaultReceivers()
     {
-        // Do when server starts
+        // Do when the server starts, not before
         if (MaLiLibReference.isServer())
         {
             MaLiLib.printDebug("ServerHandlerManager#registerDefaultReceivers(): isServer() true.");
@@ -24,8 +24,6 @@ public class ServerNetworkPlayRegister
 
             MaLiLib.printDebug("ServerHandlerManager#registerDefaultReceivers(): registerDataHandler()");
             ServerPlayNetworking.registerGlobalReceiver(C2SDataPayload.TYPE, C2SDataHandler);
-
-            MaLiLib.printDebug("ServerHandlerManager#registerDefaultReceivers(): END.");
         }
     }
 
@@ -41,8 +39,6 @@ public class ServerNetworkPlayRegister
 
             MaLiLib.printDebug("ServerHandlerManager#unregisterDefaultReceivers(): registerDataHandler()");
             ServerPlayNetworking.unregisterGlobalReceiver(C2SDataPayload.TYPE.id());
-
-            MaLiLib.printDebug("ServerHandlerManager#unregisterDefaultReceivers(): END.");
         }
     }
     static

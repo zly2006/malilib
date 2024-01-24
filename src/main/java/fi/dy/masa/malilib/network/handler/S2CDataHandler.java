@@ -9,7 +9,7 @@ import net.minecraft.text.Text;
 
 public class S2CDataHandler
 {
-    public void send(S2CDataPayload payload, ServerPlayerEntity player) {
+    public static void send(S2CDataPayload payload, ServerPlayerEntity player) {
         // Client-bound packet sent from the Server
         if (ServerPlayNetworking.canSend(player, payload.getId()))
         {

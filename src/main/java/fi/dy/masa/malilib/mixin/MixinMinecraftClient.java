@@ -24,6 +24,8 @@ public abstract class MixinMinecraftClient
     @Shadow
     public ClientWorld world;
 
+    @Shadow public abstract boolean isInSingleplayer();
+
     private ClientWorld worldBefore;
 
     @Inject(method = "<init>(Lnet/minecraft/client/RunArgs;)V", at = @At("RETURN"))
@@ -63,7 +65,7 @@ public abstract class MixinMinecraftClient
         // NETWORK TEST SUITE
         if (MaLiLibConfigs.Debug.NETWORK_DEBUG.getBooleanValue())
         {
-            ClientEvents.joinWorld();
+            ClientEvents.joinWorld(this.isInSingleplayer());
         }
     }
 

@@ -8,7 +8,7 @@ import net.minecraft.text.Text;
 
 public class C2SDataHandler
 {
-    public void send(C2SDataPayload payload) {
+    public static void send(C2SDataPayload payload) {
         // Server-bound packet sent from the Client
         if (ClientPlayNetworking.canSend(payload.getId())) {
             ClientPlayNetworking.send(payload);
