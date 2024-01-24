@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.hotkeys.IHotkeyCallback;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
+import fi.dy.masa.malilib.network.test.TestSuite;
 
 public class MaLiLibInitHandler implements IInitializationHandler
 {
@@ -17,6 +18,10 @@ public class MaLiLibInitHandler implements IInitializationHandler
         InputEventHandler.getKeybindManager().registerKeybindProvider(MaLiLibInputHandler.getInstance());
 
         MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeybind().setCallback(new CallbackOpenConfigGui());
+
+        // RUN NETWORK TEST SUITE
+        if (MaLiLibConfigs.Debug.NETWORK_DEBUG.getBooleanValue())
+            TestSuite.initTestSuite();
     }
 
     private static class CallbackOpenConfigGui implements IHotkeyCallback

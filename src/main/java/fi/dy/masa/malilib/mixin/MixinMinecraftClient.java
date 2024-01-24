@@ -1,6 +1,9 @@
 package fi.dy.masa.malilib.mixin;
 
 import javax.annotation.Nullable;
+
+import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.network.test.ClientEvents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -57,6 +60,11 @@ public abstract class MixinMinecraftClient
             ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, worldClientIn, (MinecraftClient)(Object) this);
             this.worldBefore = null;
         }
+        // NETWORK TEST SUITE
+        if (MaLiLibConfigs.Debug.NETWORK_DEBUG.getBooleanValue())
+        {
+            ClientEvents.joinWorld();
+        }
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("HEAD"))
@@ -71,5 +79,11 @@ public abstract class MixinMinecraftClient
     {
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, null, (MinecraftClient)(Object) this);
         this.worldBefore = null;
+
+        // NETWORK TEST SUITE
+        if (MaLiLibConfigs.Debug.NETWORK_DEBUG.getBooleanValue())
+        {
+            ClientEvents.leaveWorld();
+        }
     }
 }

@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class ClientDebugSuite {
     public static void checkGlobalChannels() {
-        MaLiLib.printDebug("DebugSuite#checkGlobalChannels(): Start.");
+        MaLiLib.printDebug("ClientDebugSuite#checkGlobalChannels(): Start.");
         Set<Identifier> channels = ClientPlayNetworking.getGlobalReceivers();
         Iterator<Identifier> iterator = channels.iterator();
         int i = 0;
@@ -17,8 +17,8 @@ public class ClientDebugSuite {
         {
             Identifier id = iterator.next();
             i++;
-            MaLiLib.printDebug("DebugSuite#checkGlobalChannels(): id("+i+") hash: "+id.hashCode()+" //name: "+id.getNamespace()+" path: "+id.getPath());
+            MaLiLib.printDebug("ClientDebugSuite#checkGlobalChannels(): id("+i+") hash: "+id.hashCode()+" //name: "+id.getNamespace()+" path: "+id.getPath());
         }
-        MaLiLib.printDebug("DebugSuite#checkGlobalChannels(): END. Total Channels: "+i);
+        MaLiLib.printDebug("ClientDebugSuite#checkGlobalChannels(): END. Total Channels: "+i);
     }
 }

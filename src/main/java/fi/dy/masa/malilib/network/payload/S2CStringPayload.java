@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.network.payload;
 
+import fi.dy.masa.malilib.network.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.PayloadTypes;
-
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
@@ -15,7 +15,7 @@ public record S2CStringPayload(String data) implements CustomPayload
     public Id<S2CStringPayload> getId() { return TYPE; }
     static
     {
-        TYPE = new Id<>(PayloadTypes.getPayloadId(PayloadTypes.getNamespace(), "s2c-string"));
+        TYPE = new Id<>(PayloadTypeRegister.getIdentifier(PayloadTypes.PayloadType.S2C_STRING));
         CODEC = PacketCodecs.STRING.xmap(S2CStringPayload::new, S2CStringPayload::data).cast();
     }
 }

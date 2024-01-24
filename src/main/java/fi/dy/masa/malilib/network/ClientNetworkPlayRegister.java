@@ -2,13 +2,12 @@ package fi.dy.masa.malilib.network;
 
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.network.handler.S2CHandler;
 import fi.dy.masa.malilib.network.payload.S2CDataPayload;
 import fi.dy.masa.malilib.network.payload.S2CStringPayload;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
-public class ClientHandlerManager
+public class ClientNetworkPlayRegister
 {
     static ClientPlayNetworking.PlayPayloadHandler<S2CStringPayload> S2CStringHandler;
     static ClientPlayNetworking.PlayPayloadHandler<S2CDataPayload> S2CDataHandler;
@@ -36,11 +35,11 @@ public class ClientHandlerManager
         if (MaLiLibReference.isClient())
         {
             MaLiLib.printDebug("ClientHandlerManager#unregisterDefaultReceivers(): isClient() true.");
-            MaLiLib.printDebug("ClientHandlerManager#unregisterDefaultReceivers(): registerStringHandler()");
+            MaLiLib.printDebug("ClientHandlerManager#unregisterDefaultReceivers(): unregisterStringHandler()");
 
             ClientPlayNetworking.unregisterGlobalReceiver(S2CStringPayload.TYPE.id());
 
-            MaLiLib.printDebug("ClientHandlerManager#unregisterDefaultReceivers(): registerDataHandler()");
+            MaLiLib.printDebug("ClientHandlerManager#unregisterDefaultReceivers(): unregisterDataHandler()");
             ClientPlayNetworking.unregisterGlobalReceiver(S2CDataPayload.TYPE.id());
 
             MaLiLib.printDebug("ClientHandlerManager#unregisterDefaultReceivers(): END.");
@@ -48,7 +47,7 @@ public class ClientHandlerManager
     }
     static
     {
-        S2CStringHandler = S2CHandler::receive;
-        S2CDataHandler = S2CHandler::receive;
+        S2CStringHandler = fi.dy.masa.malilib.network.handler.S2CStringHandler::receive;
+        S2CDataHandler = fi.dy.masa.malilib.network.handler.S2CDataHandler::receive;
     }
 }

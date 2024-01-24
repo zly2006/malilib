@@ -18,7 +18,7 @@ dependencies {
 	implementation "com.google.code.findbugs:jsr305:3.0.2"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	//modImplementation "net.fabricmc.fabric-api:fabric-api:" + project.fabric_version
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	include(modApi(fabricApi.module("fabric-api-base", project.fabric_api_version)))
 	include(modApi(fabricApi.module("fabric-networking-api-v1", project.fabric_api_version)))

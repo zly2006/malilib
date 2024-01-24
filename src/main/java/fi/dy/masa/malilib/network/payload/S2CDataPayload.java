@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.network.payload;
 
+import fi.dy.masa.malilib.network.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.PayloadTypes;
-
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -14,7 +14,7 @@ public record S2CDataPayload(Identifier id, PacketByteBuf data) implements Custo
 
     private S2CDataPayload(PacketByteBuf buf)
     {
-        this(buf.readIdentifier(), (PacketByteBuf) buf.readNullable((bufx) -> bufx.readBytes(PayloadTypes.MAX_TOTAL_PER_PACKET_S2C)));
+        this(buf.readIdentifier(), (PacketByteBuf) buf.readNullable((bufx) -> bufx.readBytes(PayloadTypeRegister.MAX_TOTAL_PER_PACKET_S2C)));
     }
 
     public S2CDataPayload(Identifier id, PacketByteBuf data)
@@ -33,7 +33,7 @@ public record S2CDataPayload(Identifier id, PacketByteBuf data) implements Custo
     public Id<? extends CustomPayload> getId() { return TYPE; }
     static
     {
-        TYPE = new Id<>(PayloadTypes.getPayloadId(PayloadTypes.getNamespace(), "s2c-data"));
+        TYPE = new Id<>(PayloadTypeRegister.getIdentifier(PayloadTypes.PayloadType.S2C_DATA));
         CODEC = CustomPayload.codecOf(S2CDataPayload::write, S2CDataPayload::new);
     }
 }
