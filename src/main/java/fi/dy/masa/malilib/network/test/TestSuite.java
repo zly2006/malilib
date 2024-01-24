@@ -3,10 +3,8 @@ package fi.dy.masa.malilib.network.test;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.PayloadTypeRegister;
-import fi.dy.masa.malilib.network.handler.C2SDataHandler;
-import fi.dy.masa.malilib.network.handler.C2SStringHandler;
-import fi.dy.masa.malilib.network.handler.S2CDataHandler;
-import fi.dy.masa.malilib.network.handler.S2CStringHandler;
+import fi.dy.masa.malilib.network.handler.ClientNetworkPlayHandler;
+import fi.dy.masa.malilib.network.handler.ServerNetworkPlayHandler;
 import fi.dy.masa.malilib.network.payload.C2SDataPayload;
 import fi.dy.masa.malilib.network.payload.C2SStringPayload;
 import fi.dy.masa.malilib.network.payload.S2CDataPayload;
@@ -26,7 +24,7 @@ public class TestSuite {
             // String test
             MaLiLib.printDebug("TestSuite#testS2C() executing S2CString test packet.");
             S2CStringPayload S2CTest1 = new S2CStringPayload(msg);
-            S2CStringHandler.send(S2CTest1, player);
+            ServerNetworkPlayHandler.send(S2CTest1, player);
 
             // DATA Test
             MaLiLib.printDebug("TestSuite#testS2C() executing S2CData (String encapsulated) test packet.");
@@ -35,7 +33,7 @@ public class TestSuite {
             buf.writeIdentifier(id);
             buf.writeString(msg);
             S2CDataPayload S2CTest2 = new S2CDataPayload(id, buf);
-            S2CDataHandler.send(S2CTest2, player);
+            ServerNetworkPlayHandler.send(S2CTest2, player);
         }
         else
             MaLiLib.printDebug("TestSuite#testS2C() called from a Client Environment.");
@@ -49,7 +47,7 @@ public class TestSuite {
                 // String test
                 MaLiLib.printDebug("TestSuite#testC2S() executing C2SString test packet.");
                 C2SStringPayload C2STest1 = new C2SStringPayload(msg);
-                C2SStringHandler.send(C2STest1);
+                ClientNetworkPlayHandler.send(C2STest1);
 
                 // DATA Test
                 MaLiLib.printDebug("TestSuite#testC2S() executing C2SData (String encapsulated) test packet.");
@@ -58,7 +56,7 @@ public class TestSuite {
                 buf.writeIdentifier(id);
                 buf.writeString(msg);
                 C2SDataPayload S2CTest2 = new C2SDataPayload(id, buf);
-                C2SDataHandler.send(S2CTest2);
+                ClientNetworkPlayHandler.send(S2CTest2);
             }
             else
                 MaLiLib.printDebug("TestSuite#testC2S() called from Single Player Mode. (No Server to send packets to).");

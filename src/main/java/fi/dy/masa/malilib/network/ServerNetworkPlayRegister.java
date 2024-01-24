@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.network;
 
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.network.handler.ServerNetworkPlayHandler;
 import fi.dy.masa.malilib.network.payload.C2SDataPayload;
 import fi.dy.masa.malilib.network.payload.C2SStringPayload;
 
@@ -43,7 +44,7 @@ public class ServerNetworkPlayRegister
     }
     static
     {
-        C2SStringHandler = fi.dy.masa.malilib.network.handler.C2SStringHandler::receive;
-        C2SDataHandler = fi.dy.masa.malilib.network.handler.C2SDataHandler::receive;
+        C2SStringHandler = ServerNetworkPlayHandler::receive;
+        C2SDataHandler = ServerNetworkPlayHandler::receive;
     }
 }
