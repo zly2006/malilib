@@ -9,13 +9,8 @@ import net.minecraft.network.packet.CustomPayload;
 
 public record S2CStringPayload(String data) implements CustomPayload
 {
-    public final static Id<S2CStringPayload> TYPE;
-    public final static PacketCodec<PacketByteBuf, S2CStringPayload> CODEC;
+    public final static Id<S2CStringPayload> TYPE = new Id<>(PayloadTypeRegister.getIdentifier(PayloadTypes.PayloadType.S2C_STRING));
+    public final static PacketCodec<PacketByteBuf, S2CStringPayload> CODEC = PacketCodecs.STRING.xmap(S2CStringPayload::new, S2CStringPayload::data).cast();
     @Override
     public Id<S2CStringPayload> getId() { return TYPE; }
-    static
-    {
-        TYPE = new Id<>(PayloadTypeRegister.getIdentifier(PayloadTypes.PayloadType.S2C_STRING));
-        CODEC = PacketCodecs.STRING.xmap(S2CStringPayload::new, S2CStringPayload::data).cast();
-    }
 }

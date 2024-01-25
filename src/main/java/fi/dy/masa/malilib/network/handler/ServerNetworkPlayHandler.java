@@ -1,15 +1,12 @@
 package fi.dy.masa.malilib.network.handler;
 
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.network.payload.C2SDataPayload;
-import fi.dy.masa.malilib.network.payload.C2SStringPayload;
-import fi.dy.masa.malilib.network.payload.S2CDataPayload;
-import fi.dy.masa.malilib.network.payload.S2CStringPayload;
+import fi.dy.masa.malilib.network.payload.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-public class ServerNetworkPlayHandler
+public abstract class ServerNetworkPlayHandler
 {
     // String Payloads
     public static void send(S2CStringPayload payload, ServerPlayerEntity player)
@@ -50,5 +47,4 @@ public class ServerNetworkPlayHandler
         ctx.player().sendMessage(Text.of("Your message has been received by the server:"));
         ctx.player().sendMessage(Text.of("You sent (DATA) to me: "+response));
     }
-
 }

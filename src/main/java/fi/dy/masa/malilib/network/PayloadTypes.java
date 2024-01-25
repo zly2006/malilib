@@ -4,39 +4,26 @@ import net.minecraft.util.Identifier;
 
 import java.util.Objects;
 
-public class PayloadTypes implements IPlayloadType
+public class PayloadTypes implements IPayloadType
 {
+    public enum PayloadType {
+        C2S_STRING,
+        S2C_STRING,
+        C2S_DATA,
+        S2C_DATA,
+        CARPET_HELLO
+    }
     private final PayloadType type;
-    private final String path;
-    private final String namespace;
+    private String path;
+    private final String name;
     private final Identifier id;
 
     public PayloadTypes(PayloadType type, String namespace)
     {
         this.type = type;
-        this.namespace = namespace;
-        switch (type) {
-            case C2S_DATA -> this.path = "c2s-data";
-            case S2C_DATA -> this.path = "s2c-data";
-            case C2S_STRING -> this.path = "c2s-string";
-            case S2C_STRING -> this.path = "s2c-string";
-            default -> this.path = "invalid";
-        }
-        this.id = new Identifier(this.namespace, this.path);
-    }
-
-    public PayloadType getPayloadType()
-    {
-        if (checkValidType())
-            return this.type;
-        else return null;
-    }
-    public String getNamespace() { return this.namespace; }
-    public String getPath()
-    {
-        if (checkValidType())
-            return this.path;
-        else return null;
+        this.name = namespace;
+        this.setType();
+        this.id = new Identifier(this.name, this.path);
     }
     public Identifier getIdentifier()
     {
@@ -44,15 +31,19 @@ public class PayloadTypes implements IPlayloadType
             return this.id;
         else return null;
     }
-
+    private void setType()
+    {
+        switch (this.type) {
+            case C2S_DATA -> this.path = "c2s-data";
+            case S2C_DATA -> this.path = "s2c-data";
+            case C2S_STRING -> this.path = "c2s-string";
+            case S2C_STRING -> this.path = "s2c-string";
+            case CARPET_HELLO -> this.path = "hello";
+            default -> this.path = "invalid";
+        }
+    }
     private boolean checkValidType()
     {
         return !Objects.equals(this.path, "invalid");
-    }
-    public enum PayloadType {
-        C2S_STRING,
-        S2C_STRING,
-        C2S_DATA,
-        S2C_DATA;
     }
 }

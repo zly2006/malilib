@@ -9,8 +9,8 @@ import net.minecraft.util.Identifier;
 
 public record C2SDataPayload(Identifier id, PacketByteBuf data) implements CustomPayload
 {
-    public static final Id<C2SDataPayload> TYPE;
-    public static final PacketCodec<PacketByteBuf, C2SDataPayload> CODEC;
+    public static final Id<C2SDataPayload> TYPE = new Id<>(PayloadTypeRegister.getIdentifier(PayloadTypes.PayloadType.C2S_DATA));
+    public static final PacketCodec<PacketByteBuf, C2SDataPayload> CODEC = CustomPayload.codecOf(C2SDataPayload::write, C2SDataPayload::new);
 
     private C2SDataPayload(PacketByteBuf buf)
     {
@@ -28,9 +28,4 @@ public record C2SDataPayload(Identifier id, PacketByteBuf data) implements Custo
     }
     @Override
     public Id<? extends CustomPayload> getId() { return TYPE; }
-    static
-    {
-        TYPE = new Id<>(PayloadTypeRegister.getIdentifier(PayloadTypes.PayloadType.C2S_DATA));
-        CODEC = CustomPayload.codecOf(C2SDataPayload::write, C2SDataPayload::new);
-    }
 }

@@ -1,10 +1,8 @@
 package fi.dy.masa.malilib.network.handler;
 
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.network.payload.C2SDataPayload;
-import fi.dy.masa.malilib.network.payload.C2SStringPayload;
-import fi.dy.masa.malilib.network.payload.S2CDataPayload;
-import fi.dy.masa.malilib.network.payload.S2CStringPayload;
+import fi.dy.masa.malilib.event.CarpetHandler;
+import fi.dy.masa.malilib.network.payload.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.text.Text;
 
@@ -47,5 +45,23 @@ public class ClientNetworkPlayHandler
         MaLiLib.printDebug("S2CDataListener#receive(): String: {}", response);
         ctx.player().sendMessage(Text.of("Received a message from the server."));
         ctx.player().sendMessage(Text.of("You were sent (DATA): "+response));
+    }
+    public static void sendCarpet(CarpetPayload payload)
+    {
+        // Server-bound packet sent from the Client
+        // --> Carpet server present
+        if (ClientPlayNetworking.canSend(payload.getId()))
+        {
+            ClientPlayNetworking.send(payload);
+        }
+    }
+    public static void receiveCarpet(CarpetPayload payload, ClientPlayNetworking.Context ctx)
+    {
+        // Client-bound packet received from server
+        // --> Carpet server present
+        MaLiLib.printDebug("S2CDataListener#receiveCarpet(): received Carpet Payload (size in bytes): {}", payload.data().getSizeInBytes());
+
+        // Handle Carpet packet
+        ((CarpetHandler) CarpetHandler.getInstance()).onCarpetPayload(payload.data(), ctx);
     }
 }

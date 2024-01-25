@@ -1,15 +1,9 @@
 package fi.dy.masa.malilib.network;
 
 import fi.dy.masa.malilib.MaLiLib;
-
-import fi.dy.masa.malilib.network.payload.C2SDataPayload;
-import fi.dy.masa.malilib.network.payload.C2SStringPayload;
-import fi.dy.masa.malilib.network.payload.S2CDataPayload;
-import fi.dy.masa.malilib.network.payload.S2CStringPayload;
-
+import fi.dy.masa.malilib.network.payload.*;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.util.Identifier;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,8 +19,11 @@ public class PayloadTypeRegister
         MaLiLib.printDebug("PayloadTypeRegister#registerPlayChannels(): registering play channels.");
         PayloadTypeRegistry.playC2S().register(C2SDataPayload.TYPE, C2SDataPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(C2SStringPayload.TYPE, C2SStringPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(CarpetPayload.TYPE, CarpetPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(S2CDataPayload.TYPE, S2CDataPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(S2CStringPayload.TYPE, S2CStringPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(CarpetPayload.TYPE, CarpetPayload.CODEC);
+        // For Carpet "hello" packet (NbtCompound type)
     }
     public static Identifier getIdentifier(PayloadTypes.PayloadType type)
     {
@@ -41,5 +38,7 @@ public class PayloadTypeRegister
         TYPES.put(PayloadTypes.PayloadType.S2C_STRING, new PayloadTypes(PayloadTypes.PayloadType.S2C_STRING, namespace));
         TYPES.put(PayloadTypes.PayloadType.C2S_DATA,   new PayloadTypes(PayloadTypes.PayloadType.C2S_DATA,   namespace));
         TYPES.put(PayloadTypes.PayloadType.S2C_DATA,   new PayloadTypes(PayloadTypes.PayloadType.S2C_DATA,   namespace));
+        TYPES.put(PayloadTypes.PayloadType.CARPET_HELLO,   new PayloadTypes(PayloadTypes.PayloadType.CARPET_HELLO, "carpet"));
+        // For Carpet "hello" packet (NbtCompound type)
     }
 }
