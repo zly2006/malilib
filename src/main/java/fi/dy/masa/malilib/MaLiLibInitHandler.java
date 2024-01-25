@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
 import fi.dy.masa.malilib.network.events.CarpetPayloadListener;
-import fi.dy.masa.malilib.network.test.TestSuite;
 
 public class MaLiLibInitHandler implements IInitializationHandler
 {
@@ -21,15 +20,9 @@ public class MaLiLibInitHandler implements IInitializationHandler
 
         MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeybind().setCallback(new CallbackOpenConfigGui());
 
-        // RUN NETWORK TEST SUITE
-        if (MaLiLibConfigs.Debug.NETWORK_DEBUG.getBooleanValue())
-        {
-            TestSuite.initTestSuite();
-
-            // Register Carpet Handler
-            CarpetPayloadListener listener = new CarpetPayloadListener();
-            CarpetHandler.getInstance().registerCarpetHandler(listener);
-        }
+        // Register Network Listeners
+        CarpetPayloadListener listener = new CarpetPayloadListener();
+        CarpetHandler.getInstance().registerCarpetHandler(listener);
     }
 
     private static class CallbackOpenConfigGui implements IHotkeyCallback

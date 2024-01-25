@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.network.legacy;
 
 import java.util.Objects;
 import io.netty.buffer.ByteBuf;

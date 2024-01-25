@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.network.handler;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.event.CarpetHandler;
 import fi.dy.masa.malilib.network.payload.*;
-import io.netty.buffer.Unpooled;
+import fi.dy.masa.malilib.util.PayloadUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 
@@ -40,11 +40,11 @@ public class ClientNetworkPlayHandler
     {
         // Client-bound packet received from server
         MaLiLib.printDebug("ClientNetworkPlayHandler#receive(): received S2CData Payload (size in bytes): {}", payload.data().getSizeInBytes());
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeByteArray((payload.data().getByteArray(DataPayload.NBT)));
+        PacketByteBuf buf = PayloadUtils.fromNbt(payload.data(), DataPayload.NBT);
+        assert buf != null;
+        MaLiLib.printDebug("ClientNetworkPlayHandler#receive(): buf size in bytes: {}", buf.readableBytes());
         // --> To write a PacketByteBuf from NbtCompound
 //        String response = payload.data().getString(DataPayload.NBT);
-        MaLiLib.printDebug("ClientNetworkPlayHandler#receive(): buf size in bytes: {}", buf.readableBytes());
         String response = buf.readString();
         MaLiLib.printDebug("ClientNetworkPlayHandler#receive(): id: {}, String: {}", payload.getId(), response);
 
