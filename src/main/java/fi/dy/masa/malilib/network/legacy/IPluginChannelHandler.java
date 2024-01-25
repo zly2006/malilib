@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.network.legacy;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.PlayChannelHandler;
+//import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.PlayChannelHandler;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.PacketByteBuf;
@@ -11,6 +11,7 @@ public interface IPluginChannelHandler
 {
     Identifier getChannel();
 
+    /*
     default PlayChannelHandler getClientPacketHandler()
     {
         if (this.usePacketSplitter())
@@ -20,7 +21,7 @@ public interface IPluginChannelHandler
 
         return (mc, net, buf, responder) -> MinecraftClient.getInstance().execute(() -> this.onPacketReceived(buf));
     }
-
+*/
     default void handleViaPacketSplitter(ClientPlayPacketListener netHandler, PacketByteBuf buf)
     {
         PacketByteBuf fullBuf = PacketSplitter.receive(netHandler, this.getChannel(), buf);

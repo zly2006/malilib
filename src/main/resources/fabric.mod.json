@@ -18,7 +18,7 @@
 
 	"license": "LGPLv3",
 	"icon": "assets/malilib/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"main": [
 			"fi.dy.masa.malilib.MaLiLib"

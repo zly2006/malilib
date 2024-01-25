@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+//import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -63,7 +63,7 @@ public class PacketSplitter
 
             buf.writeBytes(packet, thisLen);
 
-            ClientPlayNetworking.send(channel, buf);
+            //ClientPlayNetworking.send(channel, buf);
         }
 
         packet.release();
