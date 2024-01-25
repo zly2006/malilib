@@ -17,11 +17,12 @@ public class PayloadTypeRegister
     public static void registerPlayChannels()
     {
         MaLiLib.printDebug("PayloadTypeRegister#registerPlayChannels(): registering play channels.");
-        PayloadTypeRegistry.playC2S().register(C2SDataPayload.TYPE, C2SDataPayload.CODEC);
-        PayloadTypeRegistry.playC2S().register(C2SStringPayload.TYPE, C2SStringPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(DataPayload.TYPE, DataPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(StringPayload.TYPE, StringPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(CarpetPayload.TYPE, CarpetPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(S2CDataPayload.TYPE, S2CDataPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(S2CStringPayload.TYPE, S2CStringPayload.CODEC);
+
+        PayloadTypeRegistry.playS2C().register(DataPayload.TYPE, DataPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(StringPayload.TYPE, StringPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(CarpetPayload.TYPE, CarpetPayload.CODEC);
         // For Carpet "hello" packet (NbtCompound type)
     }
@@ -34,10 +35,8 @@ public class PayloadTypeRegister
     public static void initTypes(String namespace)
     {
         MaLiLib.printDebug("PayloadTypeRegister#initTypes(): init PayloadTypes for {}.", namespace);
-        TYPES.put(PayloadTypes.PayloadType.C2S_STRING, new PayloadTypes(PayloadTypes.PayloadType.C2S_STRING, namespace));
-        TYPES.put(PayloadTypes.PayloadType.S2C_STRING, new PayloadTypes(PayloadTypes.PayloadType.S2C_STRING, namespace));
-        TYPES.put(PayloadTypes.PayloadType.C2S_DATA,   new PayloadTypes(PayloadTypes.PayloadType.C2S_DATA,   namespace));
-        TYPES.put(PayloadTypes.PayloadType.S2C_DATA,   new PayloadTypes(PayloadTypes.PayloadType.S2C_DATA,   namespace));
+        TYPES.put(PayloadTypes.PayloadType.STRING, new PayloadTypes(PayloadTypes.PayloadType.STRING, namespace));
+        TYPES.put(PayloadTypes.PayloadType.DATA,   new PayloadTypes(PayloadTypes.PayloadType.DATA,   namespace));
         TYPES.put(PayloadTypes.PayloadType.CARPET_HELLO,   new PayloadTypes(PayloadTypes.PayloadType.CARPET_HELLO, "carpet"));
         // For Carpet "hello" packet (NbtCompound type)
     }

@@ -7,10 +7,8 @@ import java.util.Objects;
 public class PayloadTypes implements IPayloadType
 {
     public enum PayloadType {
-        C2S_STRING,
-        S2C_STRING,
-        C2S_DATA,
-        S2C_DATA,
+        STRING,
+        DATA,
         CARPET_HELLO
     }
     private final PayloadType type;
@@ -34,10 +32,8 @@ public class PayloadTypes implements IPayloadType
     private void setType()
     {
         switch (this.type) {
-            case C2S_DATA -> this.path = "c2s-data";
-            case S2C_DATA -> this.path = "s2c-data";
-            case C2S_STRING -> this.path = "c2s-string";
-            case S2C_STRING -> this.path = "s2c-string";
+            case DATA -> this.path = "data";
+            case STRING -> this.path = "string";
             case CARPET_HELLO -> this.path = "hello";
             default -> this.path = "invalid";
         }

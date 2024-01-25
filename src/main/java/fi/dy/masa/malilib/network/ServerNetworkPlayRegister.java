@@ -3,15 +3,13 @@ package fi.dy.masa.malilib.network;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.handler.ServerNetworkPlayHandler;
-import fi.dy.masa.malilib.network.payload.C2SDataPayload;
-import fi.dy.masa.malilib.network.payload.C2SStringPayload;
-
+import fi.dy.masa.malilib.network.payload.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class ServerNetworkPlayRegister
 {
-    static ServerPlayNetworking.PlayPayloadHandler<C2SStringPayload> C2SStringHandler;
-    static ServerPlayNetworking.PlayPayloadHandler<C2SDataPayload> C2SDataHandler;
+    static ServerPlayNetworking.PlayPayloadHandler<StringPayload> C2SStringHandler;
+    static ServerPlayNetworking.PlayPayloadHandler<DataPayload> C2SDataHandler;
     
     public static void registerDefaultReceivers()
     {
@@ -21,10 +19,10 @@ public class ServerNetworkPlayRegister
             MaLiLib.printDebug("ServerHandlerManager#registerDefaultReceivers(): isServer() true.");
             MaLiLib.printDebug("ServerHandlerManager#registerDefaultReceivers(): registerStringHandler()");
 
-            ServerPlayNetworking.registerGlobalReceiver(C2SStringPayload.TYPE, C2SStringHandler);
+            ServerPlayNetworking.registerGlobalReceiver(StringPayload.TYPE, C2SStringHandler);
 
             MaLiLib.printDebug("ServerHandlerManager#registerDefaultReceivers(): registerDataHandler()");
-            ServerPlayNetworking.registerGlobalReceiver(C2SDataPayload.TYPE, C2SDataHandler);
+            ServerPlayNetworking.registerGlobalReceiver(DataPayload.TYPE, C2SDataHandler);
         }
     }
 
@@ -36,10 +34,10 @@ public class ServerNetworkPlayRegister
             MaLiLib.printDebug("ServerHandlerManager#unregisterDefaultReceivers(): isServer() true.");
             MaLiLib.printDebug("ServerHandlerManager#unregisterDefaultReceivers(): registerStringHandler()");
 
-            ServerPlayNetworking.unregisterGlobalReceiver(C2SStringPayload.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(StringPayload.TYPE.id());
 
             MaLiLib.printDebug("ServerHandlerManager#unregisterDefaultReceivers(): registerDataHandler()");
-            ServerPlayNetworking.unregisterGlobalReceiver(C2SDataPayload.TYPE.id());
+            ServerPlayNetworking.unregisterGlobalReceiver(DataPayload.TYPE.id());
         }
     }
     static
