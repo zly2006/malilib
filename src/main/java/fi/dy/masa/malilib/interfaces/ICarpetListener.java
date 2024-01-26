@@ -5,5 +5,6 @@ import net.minecraft.nbt.NbtCompound;
 
 public interface ICarpetListener
 {
-    default void onCarpetPayload(NbtCompound data, ClientPlayNetworking.Context ctx) { }
+    default void receiveCarpetPayload(NbtCompound data, ClientPlayNetworking.Context ctx) { }
+    default void sendCarpetPayload(NbtCompound data) { }
 }

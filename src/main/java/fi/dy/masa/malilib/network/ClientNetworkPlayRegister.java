@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.network;
 
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.network.handler.ClientNetworkPlayHandler;
 import fi.dy.masa.malilib.network.payload.*;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
@@ -11,9 +10,14 @@ public class ClientNetworkPlayRegister
     static ClientPlayNetworking.PlayPayloadHandler<StringPayload> S2CStringHandler;
     static ClientPlayNetworking.PlayPayloadHandler<DataPayload> S2CDataHandler;
     static ClientPlayNetworking.PlayPayloadHandler<CarpetPayload> S2CCarpetNbtHandler;
+    private static boolean receiversInit = false;
+
 
     public static void registerDefaultReceivers()
     {
+        // Don't register more than once
+        if (receiversInit)
+            return;
         // Wait until world/server joined
         if (MaLiLibReference.isClient())
         {
@@ -23,6 +27,7 @@ public class ClientNetworkPlayRegister
             ClientPlayNetworking.registerGlobalReceiver(StringPayload.TYPE, S2CStringHandler);
             ClientPlayNetworking.registerGlobalReceiver(DataPayload.TYPE, S2CDataHandler);
             ClientPlayNetworking.registerGlobalReceiver(CarpetPayload.TYPE, S2CCarpetNbtHandler);
+            receiversInit = true;
         }
     }
 
@@ -35,12 +40,13 @@ public class ClientNetworkPlayRegister
             ClientPlayNetworking.unregisterGlobalReceiver(StringPayload.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(DataPayload.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(CarpetPayload.TYPE.id());
+            receiversInit = false;
         }
     }
     static
     {
-        S2CStringHandler = ClientNetworkPlayHandler::receive;
-        S2CDataHandler = ClientNetworkPlayHandler::receive;
+        S2CStringHandler = ClientNetworkPlayHandler::receiveString;
+        S2CDataHandler = ClientNetworkPlayHandler::receiveData;
         S2CCarpetNbtHandler = ClientNetworkPlayHandler::receiveCarpet;
     }
 }

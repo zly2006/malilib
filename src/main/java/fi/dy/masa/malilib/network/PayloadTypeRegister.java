@@ -1,43 +1,83 @@
 package fi.dy.masa.malilib.network;
 
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.payload.*;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
 
 public class PayloadTypeRegister
 {
     // This is how it looks in the static context per a MOD, which must each include its own Custom Payload Records.
-    // The send/receive handlers can be made into an interface.
-    public static final int MAX_TOTAL_PER_PACKET_S2C = 1048576;
-    public static final int MAX_TOTAL_PER_PACKET_C2S = 32767;
-    private static final Map<PayloadTypes.PayloadType, PayloadTypes> TYPES = new HashMap<>();
-    public static void registerPlayChannels()
-    {
-        MaLiLib.printDebug("PayloadTypeRegister#registerPlayChannels(): registering play channels.");
-        PayloadTypeRegistry.playC2S().register(DataPayload.TYPE, DataPayload.CODEC);
-        PayloadTypeRegistry.playC2S().register(StringPayload.TYPE, StringPayload.CODEC);
-        PayloadTypeRegistry.playC2S().register(CarpetPayload.TYPE, CarpetPayload.CODEC);
+    // --> The send/receive handlers can be made into an interface.
+    //public final int MAX_TOTAL_PER_PACKET_S2C = 1048576;
+    //public final int MAX_TOTAL_PER_PACKET_C2S = 32767;
+    private static final Map<PayloadType, PayloadCodec> TYPES = new HashMap<>();
+    private static boolean channelTypeInit = false;
+    private static boolean channelsInit = false;
 
-        PayloadTypeRegistry.playS2C().register(DataPayload.TYPE, DataPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(StringPayload.TYPE, StringPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(CarpetPayload.TYPE, CarpetPayload.CODEC);
-        // For Carpet "hello" packet (NbtCompound type)
-    }
-    public static Identifier getIdentifier(PayloadTypes.PayloadType type)
+    public static Identifier getIdentifier(PayloadType type)
     {
-        Identifier id = TYPES.get(type).getIdentifier();
-        MaLiLib.printDebug("PayloadTypeRegister#getIdentifier(): type: {}, id: {}.", type, id);
-        return id;
+        return TYPES.get(type).getId();
     }
-    public static void initTypes(String namespace)
+    public static String getKey(PayloadType type)
     {
-        MaLiLib.printDebug("PayloadTypeRegister#initTypes(): init PayloadTypes for {}.", namespace);
-        TYPES.put(PayloadTypes.PayloadType.STRING, new PayloadTypes(PayloadTypes.PayloadType.STRING, namespace));
-        TYPES.put(PayloadTypes.PayloadType.DATA,   new PayloadTypes(PayloadTypes.PayloadType.DATA,   namespace));
-        TYPES.put(PayloadTypes.PayloadType.CARPET_HELLO,   new PayloadTypes(PayloadTypes.PayloadType.CARPET_HELLO, "carpet"));
+        return TYPES.get(type).getKey();
+    }
+    public static void registerDefaultType(PayloadType type, String key, String namespace)
+    {
+        if (!TYPES.containsKey(type))
+        {
+            PayloadCodec codec = new PayloadCodec(type, key, namespace);
+            TYPES.put(type, codec);
+            MaLiLib.printDebug("PayloadTypeRegister#registerDefaultType(): Successfully registered new Payload id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
+        }
+    }
+    public static void registerType(PayloadType type, String key, String namespace, String path)
+    {
+        if (!TYPES.containsKey(type))
+        {
+            PayloadCodec codec = new PayloadCodec(type, key, namespace, path);
+            TYPES.put(type, codec);
+            MaLiLib.printDebug("PayloadTypeRegister#registerDefaultType(): Successfully registered new Payload id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
+        }
+    }
+    public static void registerDefaultTypes(String name)
+    {
+        // Don't invoke more than once
+        if (channelsInit || channelTypeInit)
+            return;
+        MaLiLib.printDebug("PayloadTypeRegister#registerDefaultTypes(): executing.");
+
+        String namespace = name;
+        if (namespace.isEmpty())
+            namespace = MaLiLibReference.COMMON_NAMESPACE;
+
+        registerDefaultType(PayloadType.STRING, "string", namespace);
+        registerDefaultType(PayloadType.DATA, "data", namespace);
         // For Carpet "hello" packet (NbtCompound type)
+        registerType(PayloadType.CARPET_HELLO, "hello", "carpet", "hello");
+        channelTypeInit = true;
+    }
+    public static <T extends CustomPayload> void registerDefaultPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
+    {
+        PayloadTypeRegistry.playC2S().register(id, codec);
+        PayloadTypeRegistry.playS2C().register(id, codec);
+    }
+    public static void registerDefaultPlayChannels()
+    {
+        // Don't invoke more than once
+        if (channelsInit)
+            return;
+        MaLiLib.printDebug("PayloadTypeRegister#registerPlayChannels(): registering play channels.");
+        registerDefaultPlayChannel(DataPayload.TYPE, DataPayload.CODEC);
+        registerDefaultPlayChannel(StringPayload.TYPE, StringPayload.CODEC);
+        registerDefaultPlayChannel(CarpetPayload.TYPE, CarpetPayload.CODEC);
+        channelsInit = true;
     }
 }

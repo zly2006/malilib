@@ -29,13 +29,13 @@ public class CarpetHandler implements ICarpetManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onCarpetPayload(NbtCompound data, ClientPlayNetworking.Context ctx)
+    public void receiveCarpetPayload(NbtCompound data, ClientPlayNetworking.Context ctx)
     {
         if (!this.handlers.isEmpty())
         {
             for (ICarpetListener handler : this.handlers)
             {
-                handler.onCarpetPayload(data, ctx);
+                handler.receiveCarpetPayload(data, ctx);
             }
         }
     }

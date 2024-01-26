@@ -3,8 +3,10 @@ package fi.dy.masa.malilib.mixin;
 import javax.annotation.Nullable;
 
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.network.ClientNetworkPlayInitHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,6 +27,7 @@ public abstract class MixinMinecraftClient
 
     @Shadow public abstract boolean isInSingleplayer();
 
+    @Unique
     private ClientWorld worldBefore;
 
     @Inject(method = "<init>(Lnet/minecraft/client/RunArgs;)V", at = @At("RETURN"))
@@ -80,5 +83,6 @@ public abstract class MixinMinecraftClient
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, null, (MinecraftClient)(Object) this);
         this.worldBefore = null;
         MaLiLibReference.SINGLE_PLAYER = false;
+        ClientNetworkPlayInitHandler.unregisterReceivers();
     }
 }

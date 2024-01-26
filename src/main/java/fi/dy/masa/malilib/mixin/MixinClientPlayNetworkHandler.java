@@ -2,8 +2,10 @@ package fi.dy.masa.malilib.mixin;
 
 import javax.annotation.Nullable;
 
+import fi.dy.masa.malilib.network.ClientNetworkPlayInitHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -18,6 +20,7 @@ public abstract class MixinClientPlayNetworkHandler
 {
     @Shadow private ClientWorld world;
 
+    @Unique
     @Nullable private ClientWorld worldBefore;
 
     @Inject(method = "onGameJoin", at = @At("HEAD"))
@@ -35,6 +38,7 @@ public abstract class MixinClientPlayNetworkHandler
     private void onPreGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
     {
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.worldBefore, this.world, MinecraftClient.getInstance());
+        ClientNetworkPlayInitHandler.registerPlayChannels();
     }
 
     @Inject(method = "onGameJoin", at = @At("RETURN"))
@@ -42,5 +46,6 @@ public abstract class MixinClientPlayNetworkHandler
     {
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, this.world, MinecraftClient.getInstance());
         this.worldBefore = null;
+        ClientNetworkPlayInitHandler.registerReceivers();
     }
 }
