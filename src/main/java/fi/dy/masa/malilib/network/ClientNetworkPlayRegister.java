@@ -10,6 +10,7 @@ public class ClientNetworkPlayRegister
     static ClientPlayNetworking.PlayPayloadHandler<StringPayload> S2CStringHandler;
     static ClientPlayNetworking.PlayPayloadHandler<DataPayload> S2CDataHandler;
     static ClientPlayNetworking.PlayPayloadHandler<CarpetPayload> S2CCarpetNbtHandler;
+    static ClientPlayNetworking.PlayPayloadHandler<ServuxPayload> S2CServUXHandler;
     private static boolean receiversInit = false;
 
 
@@ -27,6 +28,7 @@ public class ClientNetworkPlayRegister
             ClientPlayNetworking.registerGlobalReceiver(StringPayload.TYPE, S2CStringHandler);
             ClientPlayNetworking.registerGlobalReceiver(DataPayload.TYPE, S2CDataHandler);
             ClientPlayNetworking.registerGlobalReceiver(CarpetPayload.TYPE, S2CCarpetNbtHandler);
+            ClientPlayNetworking.registerGlobalReceiver(ServuxPayload.TYPE, S2CServUXHandler);
             receiversInit = true;
         }
     }
@@ -40,6 +42,7 @@ public class ClientNetworkPlayRegister
             ClientPlayNetworking.unregisterGlobalReceiver(StringPayload.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(DataPayload.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(CarpetPayload.TYPE.id());
+            ClientPlayNetworking.unregisterGlobalReceiver(ServuxPayload.TYPE.id());
             receiversInit = false;
         }
     }
@@ -48,5 +51,6 @@ public class ClientNetworkPlayRegister
         S2CStringHandler = ClientNetworkPlayHandler::receiveString;
         S2CDataHandler = ClientNetworkPlayHandler::receiveData;
         S2CCarpetNbtHandler = ClientNetworkPlayHandler::receiveCarpet;
+        S2CServUXHandler = ClientNetworkPlayHandler::receiveServUX;
     }
 }

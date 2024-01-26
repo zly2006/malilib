@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.listeners;
+package fi.dy.masa.malilib.network.packet;
 
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;

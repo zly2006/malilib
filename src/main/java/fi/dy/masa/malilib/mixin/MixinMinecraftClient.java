@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.ClientNetworkPlayInitHandler;
+import fi.dy.masa.malilib.network.packet.PacketProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -83,6 +84,7 @@ public abstract class MixinMinecraftClient
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, null, (MinecraftClient)(Object) this);
         this.worldBefore = null;
         MaLiLibReference.SINGLE_PLAYER = false;
+        PacketProvider.unregisterPayloads();
         ClientNetworkPlayInitHandler.unregisterReceivers();
     }
 }

@@ -62,6 +62,7 @@ public class PayloadTypeRegister
         registerDefaultType(PayloadType.DATA, "data", namespace);
         // For Carpet "hello" packet (NbtCompound type)
         registerType(PayloadType.CARPET_HELLO, "hello", "carpet", "hello");
+        registerType(PayloadType.SERVUX, "structure_bounding_boxes", "servux", "structures");
         channelTypeInit = true;
     }
     public static <T extends CustomPayload> void registerDefaultPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
@@ -78,6 +79,7 @@ public class PayloadTypeRegister
         registerDefaultPlayChannel(DataPayload.TYPE, DataPayload.CODEC);
         registerDefaultPlayChannel(StringPayload.TYPE, StringPayload.CODEC);
         registerDefaultPlayChannel(CarpetPayload.TYPE, CarpetPayload.CODEC);
+        registerDefaultPlayChannel(ServuxPayload.TYPE, ServuxPayload.CODEC);
         channelsInit = true;
     }
 }

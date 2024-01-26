@@ -69,4 +69,19 @@ public class ClientNetworkPlayHandler
         // Handle Carpet packet
         ((CarpetHandler) CarpetHandler.getInstance()).receiveCarpetPayload(payload.data(), ctx);
     }
+    public static void sendServUX(ServuxPayload payload)
+    {
+        // Client-bound packet sent from the Server
+        if (ClientPlayNetworking.canSend(payload.getId()))
+        {
+            ClientPlayNetworking.send(payload);
+            MaLiLib.printDebug("ClientNetworkPlayHandler#sendServUX(): sending payload id: {}", payload.getId());
+        }
+    }
+    public static void receiveServUX(ServuxPayload payload, ClientPlayNetworking.Context ctx)
+    {
+        // Server-bound packet received from the Client
+        MaLiLib.printDebug("ClientNetworkPlayHandler#receiveServUX(): id: {} received ServUX Payload (size in bytes): {}", payload.getId(), payload.data().getSizeInBytes());
+        //((ServuxPayloadHandler) ServuxPayloadHandler.getInstance()).receiveServuxPayload(payload.data(), ctx, payload.getId().id());
+    }
 }
