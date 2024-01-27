@@ -1,9 +1,8 @@
 package fi.dy.masa.malilib.event;
 
 import fi.dy.masa.malilib.interfaces.IServuxPayloadListener;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -31,7 +30,17 @@ public class ServuxPayloadHandler implements IServuxPayloadManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void receiveServuxPayload(NbtCompound data, ServerPlayNetworking.Context ctx, Identifier id)
+    public void reset()
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IServuxPayloadListener handler : this.handlers)
+            {
+                handler.reset();
+            }
+        }
+    }
+    public void receiveServuxPayload(NbtCompound data, ClientPlayNetworking.Context ctx, Identifier id)
     {
         if (!this.handlers.isEmpty())
         {
@@ -42,13 +51,33 @@ public class ServuxPayloadHandler implements IServuxPayloadManager
         }
     }
 
-    public void encodeServuxPayloadWithType(int packetS2cStructureData, NbtCompound tag, ServerPlayerEntity player)
+    public void sendServuxPayload(NbtCompound data)
     {
         if (!this.handlers.isEmpty())
         {
             for (IServuxPayloadListener handler : this.handlers)
             {
-                handler.encodeServuxPayloadWithType(packetS2cStructureData, tag, player);
+                handler.sendServuxPayload(data);
+            }
+        }
+    }
+    public void encodeServuxPayload(NbtCompound data, Identifier id)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IServuxPayloadListener handler : this.handlers)
+            {
+                handler.encodeServuxPayload(data, id);
+            }
+        }
+    }
+    public void decodeServuxPayload(NbtCompound data, Identifier id)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IServuxPayloadListener handler : this.handlers)
+            {
+                handler.decodeServuxPayload(data, id);
             }
         }
     }
