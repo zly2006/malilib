@@ -7,6 +7,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.Identifier;
 
+@Deprecated
 public interface IPluginChannelHandler
 {
     Identifier getChannel();

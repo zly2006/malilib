@@ -4,7 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.util.Identifier;
 
-
+@Deprecated
 public class ClientPacketChannelHandler implements IClientPacketChannelHandler
 {
     private static final ClientPacketChannelHandler INSTANCE = new ClientPacketChannelHandler();

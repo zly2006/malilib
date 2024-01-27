@@ -20,6 +20,7 @@ import net.minecraft.util.Identifier;
  * @author skyrising
  *
  */
+@Deprecated
 public class PacketSplitter
 {
     public static final int MAX_TOTAL_PER_PACKET_S2C = 1048576;

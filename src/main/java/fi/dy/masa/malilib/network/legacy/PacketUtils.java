@@ -4,6 +4,7 @@ import java.util.Objects;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketByteBuf;
 
+@Deprecated
 public class PacketUtils
 {
     /**
