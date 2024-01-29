@@ -13,9 +13,6 @@ public class MaLiLibReference
     public static final String COMMON_NAMESPACE = "fi.dy.masa";
     // Namespace For Network API
     public static boolean SINGLE_PLAYER = false;
-    public static boolean CARPET_CLIENT = false;
     public static boolean isClient() { return MOD_ENVIRONMENT == EnvType.CLIENT; }
-    public static boolean isServer() { return MOD_ENVIRONMENT == EnvType.SERVER; }
     public static boolean isSinglePlayer() { return SINGLE_PLAYER; }
-    public static boolean hasCarpetServer() { return CARPET_CLIENT; }
 }
