@@ -85,4 +85,18 @@ public class ClientNetworkPlayHandler
         MaLiLib.printDebug("ClientNetworkPlayHandler#receiveServUX(): id: {} received ServUX Payload (size in bytes): {}", payload.getId(), payload.data().getSizeInBytes());
         ((ServuxPayloadHandler) ServuxPayloadHandler.getInstance()).receiveServuxPayload(payload.data(), ctx, payload.getId().id());
     }
+
+    public static void sendSyncmatica(SyncmaticaPayload payload)
+    {
+        // Client-bound packet sent from the Server
+        if (ClientPlayNetworking.canSend(payload.getId()))
+        {
+            ClientPlayNetworking.send(payload);
+            MaLiLib.printDebug("ClientNetworkPlayHandler#sendSyncmatica(): sending payload id: {}", payload.getId());
+        }
+    }
+    public static void receiveSyncmatica(SyncmaticaPayload payload, ClientPlayNetworking.Context ctx)
+    {
+        MaLiLib.printDebug("ClientNetworkPlayHandler#receiveSyncmatica(): id: {} received ServUX Payload (size in bytes): {}", payload.getId(), payload.data().getSizeInBytes());
+    }
 }

@@ -63,6 +63,7 @@ public class PayloadTypeRegister
         // For Carpet "hello" packet (NbtCompound type)
         registerType(PayloadType.CARPET_HELLO, "hello", "carpet", "hello");
         registerType(PayloadType.SERVUX, "structure_bounding_boxes", "servux", "structures");
+        registerType(PayloadType.SYNCMATICA, "syncmatic", "syncmatica", "syncmatics");
         channelTypeInit = true;
     }
     public static <T extends CustomPayload> void registerDefaultPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
@@ -80,6 +81,7 @@ public class PayloadTypeRegister
         registerDefaultPlayChannel(StringPayload.TYPE, StringPayload.CODEC);
         registerDefaultPlayChannel(CarpetPayload.TYPE, CarpetPayload.CODEC);
         registerDefaultPlayChannel(ServuxPayload.TYPE, ServuxPayload.CODEC);
+        registerDefaultPlayChannel(SyncmaticaPayload.TYPE, SyncmaticaPayload.CODEC);
         channelsInit = true;
     }
 }
