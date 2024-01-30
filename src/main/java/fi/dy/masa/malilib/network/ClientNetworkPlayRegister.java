@@ -11,11 +11,9 @@ public class ClientNetworkPlayRegister
     //static ClientPlayNetworking.PlayPayloadHandler<DataPayload> S2CDataHandler;
     static ClientPlayNetworking.PlayPayloadHandler<CarpetPayload> S2CCarpetNbtHandler;
     static ClientPlayNetworking.PlayPayloadHandler<ServuxPayload> S2CServUXHandler;
-    //static ClientPlayNetworking.PlayPayloadHandler<SyncmaticaPayload> S2CSyncmaticaHandler;
+    static ClientPlayNetworking.PlayPayloadHandler<SyncmaticaPayload> S2CSyncmaticaHandler;
     private static boolean receiversInit = false;
-
-
-    public static void registerDefaultReceivers()
+    public static void registerReceivers()
     {
         // Don't register more than once
         if (receiversInit)
@@ -30,12 +28,12 @@ public class ClientNetworkPlayRegister
             //ClientPlayNetworking.registerGlobalReceiver(DataPayload.TYPE, S2CDataHandler);
             ClientPlayNetworking.registerGlobalReceiver(CarpetPayload.TYPE, S2CCarpetNbtHandler);
             ClientPlayNetworking.registerGlobalReceiver(ServuxPayload.TYPE, S2CServUXHandler);
-            //ClientPlayNetworking.registerGlobalReceiver(SyncmaticaPayload.TYPE, S2CSyncmaticaHandler);
+            ClientPlayNetworking.registerGlobalReceiver(SyncmaticaPayload.TYPE, S2CSyncmaticaHandler);
             receiversInit = true;
         }
     }
 
-    public static void unregisterDefaultReceivers()
+    public static void unregisterReceivers()
     {
         // Do when disconnecting from server/world
         if (MaLiLibReference.isClient())
@@ -45,7 +43,7 @@ public class ClientNetworkPlayRegister
             //ClientPlayNetworking.unregisterGlobalReceiver(DataPayload.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(CarpetPayload.TYPE.id());
             ClientPlayNetworking.unregisterGlobalReceiver(ServuxPayload.TYPE.id());
-            //ClientPlayNetworking.unregisterGlobalReceiver(SyncmaticaPayload.TYPE.id());
+            ClientPlayNetworking.unregisterGlobalReceiver(SyncmaticaPayload.TYPE.id());
             receiversInit = false;
         }
     }
@@ -55,6 +53,6 @@ public class ClientNetworkPlayRegister
         //S2CDataHandler = ClientNetworkPlayHandler::receiveData;
         S2CCarpetNbtHandler = ClientNetworkPlayHandler::receiveCarpet;
         S2CServUXHandler = ClientNetworkPlayHandler::receiveServUX;
-        //S2CSyncmaticaHandler = ClientNetworkPlayHandler::receiveSyncmatica;
+        S2CSyncmaticaHandler = ClientNetworkPlayHandler::receiveSyncmatica;
     }
 }

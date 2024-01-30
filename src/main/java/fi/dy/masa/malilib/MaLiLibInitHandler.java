@@ -22,13 +22,10 @@ public class MaLiLibInitHandler implements IInitializationHandler
 
         MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeybind().setCallback(new CallbackOpenConfigGui());
 
-        // Always Register Play Channels first
+        // Register network protocols
         ClientNetworkPlayInitHandler.registerPlayChannels();
-        // --> ServerHandler/MixinClientPlayNetworkHandler registers receivers
         ServerListener serverListener = new ServerListener();
         ServerHandler.getInstance().registerServerHandler(serverListener);
-
-        // Register All Packet Providers
         PacketProvider.registerPayloads();
     }
 

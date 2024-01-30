@@ -2,9 +2,9 @@ package fi.dy.masa.malilib.mixin;
 
 import javax.annotation.Nullable;
 
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.ClientNetworkPlayInitHandler;
-import fi.dy.masa.malilib.network.packet.PacketProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -32,21 +32,21 @@ public abstract class MixinMinecraftClient
     private ClientWorld worldBefore;
 
     @Inject(method = "<init>(Lnet/minecraft/client/RunArgs;)V", at = @At("RETURN"))
-    private void onInitComplete(RunArgs args, CallbackInfo ci)
+    private void malilib_onInitComplete(RunArgs args, CallbackInfo ci)
     {
         // Register all mod handlers
         ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();
     }
 
     @Inject(method = "tick()V", at = @At("RETURN"))
-    private void onPostKeyboardInput(CallbackInfo ci)
+    private void malilib_onPostKeyboardInput(CallbackInfo ci)
     {
         KeybindMulti.reCheckPressedKeys();
         TickHandler.getInstance().onClientTick((MinecraftClient)(Object) this);
     }
 
     @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;)V", at = @At("HEAD"))
-    private void onLoadWorldPre(@Nullable ClientWorld worldClientIn, CallbackInfo ci)
+    private void malilib_onLoadWorldPre(@Nullable ClientWorld worldClientIn, CallbackInfo ci)
     {
         // Only handle dimension changes/respawns here.
         // The initial join is handled in MixinClientPlayNetworkHandler onGameJoin 
@@ -55,10 +55,11 @@ public abstract class MixinMinecraftClient
             this.worldBefore = this.world;
             ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.world, worldClientIn, (MinecraftClient)(Object) this);
         }
+        MaLiLib.printDebug("malilib_onLoadWorldPre()");
     }
 
     @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;)V", at = @At("RETURN"))
-    private void onLoadWorldPost(@Nullable ClientWorld worldClientIn, CallbackInfo ci)
+    private void malilib_onLoadWorldPost(@Nullable ClientWorld worldClientIn, CallbackInfo ci)
     {
         if (this.worldBefore != null)
         {
@@ -69,22 +70,28 @@ public abstract class MixinMinecraftClient
         {
             MaLiLibReference.SINGLE_PLAYER = true;
         }
+//        else
+//        {
+//            ClientNetworkPlayInitHandler.registerReceivers();
+//        }
+        MaLiLib.printDebug("malilib_onLoadWorldPost()");
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("HEAD"))
-    private void onDisconnectPre(Screen disconnectionScreen, boolean bl, CallbackInfo ci)
+    private void malilib_onDisconnectPre(Screen disconnectionScreen, boolean bl, CallbackInfo ci)
     {
         this.worldBefore = this.world;
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.worldBefore, null, (MinecraftClient)(Object) this);
+        MaLiLib.printDebug("malilib_onDisconnectPre()");
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("RETURN"))
-    private void onDisconnectPost(Screen disconnectionScreen, boolean bl, CallbackInfo ci)
+    private void malilib_onDisconnectPost(Screen disconnectionScreen, boolean bl, CallbackInfo ci)
     {
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, null, (MinecraftClient)(Object) this);
         this.worldBefore = null;
         MaLiLibReference.SINGLE_PLAYER = false;
-        PacketProvider.unregisterPayloads();
         ClientNetworkPlayInitHandler.unregisterReceivers();
+        MaLiLib.printDebug("malilib_onDisconnectPost()");
     }
 }

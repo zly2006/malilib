@@ -15,12 +15,7 @@ public class PayloadTypeRegister
 {
     // This is how it looks in the static context per a MOD, which must each include its own Custom Payload Records.
     // --> The send/receive handlers can be made into an interface.
-    //public final int MAX_TOTAL_PER_PACKET_S2C = 1048576;
-    //public final int MAX_TOTAL_PER_PACKET_C2S = 32767;
     private static final Map<PayloadType, PayloadCodec> TYPES = new HashMap<>();
-    private static boolean channelTypeInit = false;
-    private static boolean channelsInit = false;
-
     public static Identifier getIdentifier(PayloadType type)
     {
         return TYPES.get(type).getId();
@@ -29,6 +24,8 @@ public class PayloadTypeRegister
     {
         return TYPES.get(type).getKey();
     }
+    private static boolean typesRegistered = false;
+    private static boolean playRegistered = false;
     public static void registerDefaultType(PayloadType type, String key, String namespace)
     {
         if (!TYPES.containsKey(type))
@@ -47,10 +44,9 @@ public class PayloadTypeRegister
             MaLiLib.printDebug("PayloadTypeRegister#registerDefaultType(): Successfully registered new Payload id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
         }
     }
-    public static void registerDefaultTypes(String name)
+    public static void registerTypes(String name)
     {
-        // Don't invoke more than once
-        if (channelsInit || channelTypeInit)
+        if (typesRegistered)
             return;
         MaLiLib.printDebug("PayloadTypeRegister#registerDefaultTypes(): executing.");
 
@@ -63,25 +59,28 @@ public class PayloadTypeRegister
         // For Carpet "hello" packet (NbtCompound type)
         registerType(PayloadType.CARPET_HELLO, "hello", "carpet", "hello");
         registerType(PayloadType.SERVUX, "structure_bounding_boxes", "servux", "structures");
-        //registerType(PayloadType.SYNCMATICA, "syncmatic", "syncmatica", "syncmatics");
-        channelTypeInit = true;
+        registerType(PayloadType.SYNCMATICA, "syncmatic", "syncmatica", "syncmatics");
+
+        typesRegistered = true;
     }
-    public static <T extends CustomPayload> void registerDefaultPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
+    public static <T extends CustomPayload> void registerPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
     {
         PayloadTypeRegistry.playC2S().register(id, codec);
         PayloadTypeRegistry.playS2C().register(id, codec);
     }
-    public static void registerDefaultPlayChannels()
+    public static void registerPlayChannels()
     {
         // Don't invoke more than once
-        if (channelsInit)
+        if (playRegistered)
             return;
         MaLiLib.printDebug("PayloadTypeRegister#registerPlayChannels(): registering play channels.");
-        //registerDefaultPlayChannel(DataPayload.TYPE, DataPayload.CODEC);
-        //registerDefaultPlayChannel(StringPayload.TYPE, StringPayload.CODEC);
-        registerDefaultPlayChannel(CarpetPayload.TYPE, CarpetPayload.CODEC);
-        registerDefaultPlayChannel(ServuxPayload.TYPE, ServuxPayload.CODEC);
-        //registerDefaultPlayChannel(SyncmaticaPayload.TYPE, SyncmaticaPayload.CODEC);
-        channelsInit = true;
+
+        //registerPlayChannel(DataPayload.TYPE, DataPayload.CODEC);
+        //registerPlayChannel(StringPayload.TYPE, StringPayload.CODEC);
+        registerPlayChannel(CarpetPayload.TYPE, CarpetPayload.CODEC);
+        registerPlayChannel(ServuxPayload.TYPE, ServuxPayload.CODEC);
+        registerPlayChannel(SyncmaticaPayload.TYPE, SyncmaticaPayload.CODEC);
+
+        playRegistered = true;
     }
 }

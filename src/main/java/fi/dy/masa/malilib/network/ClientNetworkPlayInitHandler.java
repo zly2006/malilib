@@ -1,6 +1,8 @@
 package fi.dy.masa.malilib.network;
 
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.network.packet.PacketProvider;
 import fi.dy.masa.malilib.network.test.ClientDebugSuite;
 
 public class ClientNetworkPlayInitHandler
@@ -10,8 +12,10 @@ public class ClientNetworkPlayInitHandler
      */
     public static void registerPlayChannels()
     {
-        PayloadTypeRegister.registerDefaultTypes(MaLiLibReference.COMMON_NAMESPACE);
-        PayloadTypeRegister.registerDefaultPlayChannels();
+        MaLiLib.printDebug("ClientNetworkPlayInitHandler#registerPlayChannels(): called.");
+        PayloadTypeRegister.registerTypes(MaLiLibReference.COMMON_NAMESPACE);
+        PayloadTypeRegister.registerPlayChannels();
+        PacketProvider.registerPayloads();
         ClientDebugSuite.checkGlobalChannels();
     }
     /**
@@ -19,12 +23,14 @@ public class ClientNetworkPlayInitHandler
      */
     public static void registerReceivers()
     {
-        ClientNetworkPlayRegister.registerDefaultReceivers();
+        MaLiLib.printDebug("ClientNetworkPlayInitHandler#registerReceivers(): called.");
+        ClientNetworkPlayRegister.registerReceivers();
         ClientDebugSuite.checkGlobalChannels();
     }
     public static void unregisterReceivers()
     {
-        ClientNetworkPlayRegister.unregisterDefaultReceivers();
+        MaLiLib.printDebug("ClientNetworkPlayInitHandler#unregisterReceivers(): called.");
+        ClientNetworkPlayRegister.unregisterReceivers();
         ClientDebugSuite.checkGlobalChannels();
     }
 }
