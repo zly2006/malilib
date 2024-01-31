@@ -8,6 +8,15 @@ import fi.dy.masa.malilib.util.PayloadUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
 
+/**
+ * canSend()
+ * Wraps: canSend(payload.getId().id());
+ * -> Wraps Internally as:
+ * `--> ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getSendableChannels().contains(payload.getId().id());
+ * send()
+ * Wraps internally as:
+ * --> MinecraftClient.getInstance().getNetworkHandler().sendPacket();
+ */
 public class ClientNetworkPlayHandler
 {
     // String Payload
