@@ -3,10 +3,7 @@ package fi.dy.masa.malilib.mixin;
 import javax.annotation.Nullable;
 
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.event.SyncmaticaPayloadHandler;
 import fi.dy.masa.malilib.network.ClientNetworkPlayInitHandler;
-import fi.dy.masa.malilib.network.payload.SyncmaticaPayload;
-import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -55,8 +52,5 @@ public abstract class MixinClientPlayNetworkHandler
         this.worldBefore = null;
         ClientNetworkPlayInitHandler.registerReceivers();
         MaLiLib.printDebug("malilib_onPostGameJoin()");
-        NbtCompound nbt = new NbtCompound();
-        nbt.putString("hello", "hi hi");
-        ((SyncmaticaPayloadHandler) SyncmaticaPayloadHandler.getInstance()).encodeSyncmaticaPayload(nbt, SyncmaticaPayload.TYPE.id());
     }
 }

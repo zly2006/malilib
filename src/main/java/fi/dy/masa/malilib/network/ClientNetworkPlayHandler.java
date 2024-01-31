@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.network;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.event.CarpetHandler;
 import fi.dy.masa.malilib.event.ServuxPayloadHandler;
-import fi.dy.masa.malilib.event.SyncmaticaPayloadHandler;
 import fi.dy.masa.malilib.network.payload.*;
 import fi.dy.masa.malilib.util.PayloadUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -99,6 +98,6 @@ public class ClientNetworkPlayHandler
     public static void receiveSyncmatica(SyncmaticaPayload payload, ClientPlayNetworking.Context ctx)
     {
         MaLiLib.printDebug("ClientNetworkPlayHandler#receiveSyncmatica(): id: {} received ServUX Payload (size in bytes): {}", payload.getId(), payload.data().getSizeInBytes());
-        ((SyncmaticaPayloadHandler) SyncmaticaPayloadHandler.getInstance()).receiveSyncmaticaPayload(payload.data(), ctx, payload.getId().id());
+        //((SyncmaticaPayloadHandler) SyncmaticaPayloadHandler.getInstance()).receiveSyncmaticaPayload(payload.data(), ctx, payload.getId().id());
     }
 }

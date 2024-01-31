@@ -11,7 +11,6 @@ public class ServerListener implements IServerListener
 {
     /**
      * This interface for IntegratedServers() works much more reliably than invoking a WorldLoadHandler
-     * @param minecraftServer
      */
 
     public void onServerStarting(MinecraftServer minecraftServer)
