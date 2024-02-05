@@ -56,7 +56,9 @@ public class PayloadTypeRegister
 
         // For Carpet "hello" packet (NbtCompound type)
         registerType(PayloadType.CARPET_HELLO, "hello", "carpet", "hello");
-        registerType(PayloadType.SERVUX, "structure_bounding_boxes", "servux", "structures");
+        registerType(PayloadType.SERVUX_LITEMATICS, "litematic_shared_storage", "servux", "litematics");
+        registerType(PayloadType.SERVUX_METADATA, "metadata_service", "servux", "metadata");
+        registerType(PayloadType.SERVUX_STRUCTURES, "structure_bounding_boxes", "servux", "structures");
         typesRegistered = true;
     }
     public static <T extends CustomPayload> void registerPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
@@ -71,8 +73,10 @@ public class PayloadTypeRegister
             return;
         MaLiLib.printDebug("PayloadTypeRegister#registerPlayChannels(): registering play channels.");
 
-        registerPlayChannel(CarpetPayload.TYPE, CarpetPayload.CODEC);
-        registerPlayChannel(ServuxPayload.TYPE, ServuxPayload.CODEC);
+        registerPlayChannel(CarpetHelloPayload.TYPE, CarpetHelloPayload.CODEC);
+        registerPlayChannel(ServuxLitematicsPayload.TYPE, ServuxLitematicsPayload.CODEC);
+        registerPlayChannel(ServuxMetadataPayload.TYPE, ServuxMetadataPayload.CODEC);
+        registerPlayChannel(ServuxStructuresPayload.TYPE, ServuxStructuresPayload.CODEC);
         playRegistered = true;
     }
 }

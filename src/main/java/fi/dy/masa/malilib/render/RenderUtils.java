@@ -1,13 +1,14 @@
 package fi.dy.masa.malilib.render;
 
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
+import org.jetbrains.annotations.NotNull;
+import org.joml.*;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -93,7 +94,8 @@ public class RenderUtils
 
     public static void enableDiffuseLightingForLevel(MatrixStack matrixStack)
     {
-        DiffuseLighting.enableForLevel(matrixStack.peek().getPositionMatrix());
+        //DiffuseLighting.enableForLevel(matrixStack.peek().getPositionMatrix());
+        DiffuseLighting.enableForLevel();
     }
 
     public static void enableDiffuseLightingGui3D()
@@ -370,6 +372,32 @@ public class RenderUtils
         }
     }
 
+    /**
+     *public static void applyModelViewMatrix() {
+     *---      Matrix4f matrix4f = new Matrix4f(modelViewStack.peek().getPositionMatrix());
+     *+++      Matrix4f matrix4f = new Matrix4f(modelViewStack);
+     *         if (!isOnRenderThread()) {
+     *             recordRenderCall(() -> {
+     *                 modelViewMatrix = matrix4f;
+     *             });
+     *         } else {
+     *             modelViewMatrix = matrix4f;
+     *         }
+     *
+     *     }
+     *
+     *     public static MatrixStack getModelViewStack() {
+     *         return modelViewStack;
+     *     }
+     *     -->
+     *     public static Matrix4fStack getModelViewStack() {
+     *         return modelViewStack;
+     *     }
+     *     -->
+     *     modelViewStack = new MatrixStack();
+     *     ->>
+     *     modelViewStack = new Matrix4fStack(16);
+     */
     public static int renderText(int xOff, int yOff, double scale, int textColor, int bgColor,
             HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines,
             DrawContext drawContext)
@@ -386,7 +414,8 @@ public class RenderUtils
             return 0;
         }
 
-        MatrixStack globalStack = RenderSystem.getModelViewStack();
+        //MatrixStack globalStack = RenderSystem.getModelViewStack();
+        Matrix4fStack globalStack = RenderSystem.getModelViewStack();
         boolean scaled = scale != 1.0;
 
         if (scaled)
@@ -397,7 +426,8 @@ public class RenderUtils
                 yOff = (int) (yOff * scale);
             }
 
-            globalStack.push();
+            //globalStack.push();
+            globalStack.pushMatrix();
             globalStack.scale((float) scale, (float) scale, 1.0f);
             RenderSystem.applyModelViewMatrix();
         }
@@ -419,7 +449,7 @@ public class RenderUtils
                     posX = (scaledWidth / scale) - width - xOff - bgMargin;
                     break;
                 case CENTER:
-                    posX = (scaledWidth / scale / 2) - (width / 2) - xOff;
+                    posX = (scaledWidth / scale / 2) - ((double) width / 2) - xOff;
                     break;
                 default:
             }
@@ -438,7 +468,8 @@ public class RenderUtils
 
         if (scaled)
         {
-            globalStack.pop();
+            //globalStack.pop();
+            globalStack.popMatrix();
             RenderSystem.applyModelViewMatrix();
         }
 
@@ -745,8 +776,10 @@ public class RenderUtils
         double cz = cameraPos.z;
         TextRenderer textRenderer = mc().textRenderer;
 
-        MatrixStack globalStack = RenderSystem.getModelViewStack();
-        globalStack.push();
+        //MatrixStack globalStack = RenderSystem.getModelViewStack();
+        //globalStack.push();
+        Matrix4fStack globalStack = RenderSystem.getModelViewStack();
+        globalStack.pushMatrix();
         globalStack.translate(x - cx, y - cy, z - cz);
 
         Quaternionf rot = new Quaternionf().rotationYXZ(-yaw * (float) (Math.PI / 180.0), pitch * (float) (Math.PI / 180.0), 0.0F);
@@ -842,8 +875,10 @@ public class RenderUtils
         double y = pos.getY() + 0.5d - cameraPos.y;
         double z = pos.getZ() + 0.5d - cameraPos.z;
 
-        MatrixStack globalStack = RenderSystem.getModelViewStack();
-        globalStack.push();
+        //MatrixStack globalStack = RenderSystem.getModelViewStack();
+        Matrix4fStack globalStack = RenderSystem.getModelViewStack();
+        //globalStack.push();
+        globalStack.pushMatrix();
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing, globalStack);
         RenderSystem.applyModelViewMatrix();
 
@@ -934,7 +969,8 @@ public class RenderUtils
         buffer.vertex(x + 0.25, y + 0.25, z).color(c, c, c, c).next();
         tessellator.draw();
 
-        globalStack.pop();
+        //globalStack.pop();
+        globalStack.popMatrix();
         RenderSystem.applyModelViewMatrix();
     }
 
@@ -948,8 +984,10 @@ public class RenderUtils
         double y = pos.getY() + 0.5d - cameraPos.y;
         double z = pos.getZ() + 0.5d - cameraPos.z;
 
-        MatrixStack globalStack = RenderSystem.getModelViewStack();
-        globalStack.push();
+        //MatrixStack globalStack = RenderSystem.getModelViewStack();
+        //globalStack.push();
+        Matrix4fStack globalStack = RenderSystem.getModelViewStack();
+        globalStack.pushMatrix();
 
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing, globalStack);
         RenderSystem.applyModelViewMatrix();
@@ -987,7 +1025,8 @@ public class RenderUtils
 
         tessellator.draw();
 
-        globalStack.pop();
+        //globalStack.pop();
+        globalStack.popMatrix();
         RenderSystem.applyModelViewMatrix();
     }
 
@@ -1101,8 +1140,10 @@ public class RenderUtils
             }
 
             disableDiffuseLighting();
-            MatrixStack matrixStack = RenderSystem.getModelViewStack();
-            matrixStack.push();
+            //MatrixStack matrixStack = RenderSystem.getModelViewStack();
+            //matrixStack.push();
+            Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
+            matrixStack.pushMatrix();
             matrixStack.translate(0, 0, 500);
             RenderSystem.applyModelViewMatrix();
 
@@ -1113,7 +1154,8 @@ public class RenderUtils
             Inventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
             InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc(), drawContext);
 
-            matrixStack.pop();
+            //matrixStack.pop();
+            matrixStack.popMatrix();
             RenderSystem.applyModelViewMatrix();
         }
     }
@@ -1145,8 +1187,10 @@ public class RenderUtils
             return;
         }
 
-        MatrixStack matrixStack = RenderSystem.getModelViewStack();
-        matrixStack.push();
+        //MatrixStack matrixStack = RenderSystem.getModelViewStack();
+        //matrixStack.push();
+        Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.pushMatrix();
         bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         mc().getTextureManager().getTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
 
@@ -1156,13 +1200,18 @@ public class RenderUtils
 
         setupGuiTransform(x, y, model.hasDepth(), zLevel);
         //model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
-        matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(30));
-        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(225));
+
+        //matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(30));
+        //matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(225));
+
+        matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_X.rotationDegrees(30)));
+        matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(225)));
         matrixStack.scale(0.625f, 0.625f, 0.625f);
 
         renderModel(model, state);
 
-        matrixStack.pop();
+        //matrixStack.pop();
+        matrixStack.popMatrix();
     }
 
     public static void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d, float zLevel)
@@ -1170,17 +1219,22 @@ public class RenderUtils
         setupGuiTransform(RenderSystem.getModelViewStack(), xPosition, yPosition, zLevel);
     }
 
-    public static void setupGuiTransform(MatrixStack matrixStack, int xPosition, int yPosition, float zLevel)
+    public static void setupGuiTransform(Matrix4fStack matrixStack, int xPosition, int yPosition, float zLevel)
     {
-        matrixStack.translate(xPosition + 8.0, yPosition + 8.0, zLevel + 100.0);
-        matrixStack.scale(16, -16, 16);
+        //matrixStack.translate(xPosition + 8.0, yPosition + 8.0, zLevel + 100.0);
+        //matrixStack.scale(16, -16, 16);
+        matrixStack.translate((float) (xPosition + 8.0), (float) (yPosition + 8.0), (float) (zLevel + 100.0));
+        matrixStack.scale((float) 16, (float) -16, (float) 16);
     }
 
     private static void renderModel(BakedModel model, BlockState state)
     {
-        MatrixStack matrixStack = RenderSystem.getModelViewStack();
-        matrixStack.push();
-        matrixStack.translate(-0.5, -0.5, -0.5);
+        //MatrixStack matrixStack = RenderSystem.getModelViewStack();
+        //matrixStack.push();
+        Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.pushMatrix();
+        //matrixStack.translate(-0.5, -0.5, -0.5);
+        matrixStack.translate((float) -0.5, (float) -0.5, (float) -0.5);
         int color = 0xFFFFFFFF;
 
         if (model.isBuiltin() == false)
@@ -1202,7 +1256,8 @@ public class RenderUtils
             tessellator.draw();
         }
 
-        matrixStack.pop();
+        //matrixStack.pop();
+        matrixStack.popMatrix();
     }
 
     private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, BlockState state, int color)
@@ -1246,9 +1301,50 @@ public class RenderUtils
         */
     }
 
+    @NotNull
     private static MinecraftClient mc()
     {
         return MinecraftClient.getInstance();
+    }
+
+    // These makes my brain hurt
+    public static Matrix4f convertQuaternionToMatrix4f(Quaternionf q)
+    {
+        return new Matrix4f(
+        1.0f - 2.0f * ( q.y() * q.y() + q.z() * q.z() ),
+        2.0f * (q.x() * q.y() + q.z() * q.w()),
+        2.0f * (q.x() * q.z() - q.y() * q.w()),
+        0.0f,
+
+        2.0f * ( q.x() * q.y() - q.z() * q.w() ),
+        1.0f - 2.0f * ( q.x() * q.x() + q.z() * q.z() ),
+        2.0f * (q.z() * q.y() + q.x() * q.w() ),
+        0.0f,
+
+        2.0f * ( q.x() * q.z() + q.y() * q.w() ),
+        2.0f * ( q.y() * q.z() - q.x() * q.w() ),
+        1.0f - 2.0f * ( q.x() * q.x() + q.y() * q.y() ),
+        0.0f,
+
+        0, 0, 0, 1.0f);
+    }
+    private static Matrix4f createTransformaionMatrix(Vector3f position, Vector3f scale, Quaternionf rotation)
+    {
+        float q00 = 2.0f * rotation.x * rotation.x;
+        float q01 = 2.0f * rotation.x * rotation.y;
+        float q02 = 2.0f * rotation.x * rotation.z;
+        float q03 = 2.0f * rotation.x * rotation.w;
+        float q11 = 2.0f * rotation.y * rotation.y;
+        float q12 = 2.0f * rotation.y * rotation.z;
+        float q13 = 2.0f * rotation.y * rotation.w;
+        float q22 = 2.0f * rotation.z * rotation.z;
+        float q23 = 2.0f * rotation.z * rotation.w;
+
+        return new Matrix4f(
+                (1.0f - q11 - q22) * scale.x, (q01 + q23) * scale.x, (q02 - q13) * scale.x, 0.0f,
+                (q01 - q23) * scale.y,(1.0f - q22 - q00) * scale.y, (q12 + q03) * scale.y, 0.0f,
+                (q02 + q13) * scale.z, (q12 - q03) * scale.z, (1.0f - q11 - q00) * scale.z, 0.0f,
+                position.x, position.y, position.z,1.0f);
     }
 
     /*
