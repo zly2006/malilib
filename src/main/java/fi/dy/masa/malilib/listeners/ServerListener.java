@@ -24,7 +24,7 @@ public class ServerListener implements IServerListener
     public void onServerStarted(MinecraftServer minecraftServer)
     {
         ClientNetworkPlayInitHandler.registerReceivers();
-        ClientDebugSuite.checkGlobalChannels();
+        //ClientDebugSuite.checkGlobalChannels();
         MaLiLib.printDebug("MinecraftServerEvents#onServerStarted(): invoked.");
     }
     public void onServerStopping(MinecraftServer minecraftServer)
@@ -36,7 +36,7 @@ public class ServerListener implements IServerListener
     public void onServerStopped(MinecraftServer minecraftServer)
     {
         PacketProvider.unregisterPayloads();
-        ClientDebugSuite.checkGlobalChannels();
+        //ClientDebugSuite.checkGlobalChannels();
         MaLiLib.printDebug("MinecraftServerEvents#onServerStopped(): invoked.");
     }
 }

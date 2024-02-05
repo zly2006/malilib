@@ -54,13 +54,9 @@ public class PayloadTypeRegister
         if (namespace.isEmpty())
             namespace = MaLiLibReference.COMMON_NAMESPACE;
 
-        //registerDefaultType(PayloadType.STRING, "string", namespace);
-        //registerDefaultType(PayloadType.DATA, "data", namespace);
         // For Carpet "hello" packet (NbtCompound type)
         registerType(PayloadType.CARPET_HELLO, "hello", "carpet", "hello");
         registerType(PayloadType.SERVUX, "structure_bounding_boxes", "servux", "structures");
-        //registerType(PayloadType.SYNCMATICA, "syncmatic", "syncmatica", "syncmatics");
-
         typesRegistered = true;
     }
     public static <T extends CustomPayload> void registerPlayChannel(CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> codec)
@@ -75,12 +71,8 @@ public class PayloadTypeRegister
             return;
         MaLiLib.printDebug("PayloadTypeRegister#registerPlayChannels(): registering play channels.");
 
-        //registerPlayChannel(DataPayload.TYPE, DataPayload.CODEC);
-        //registerPlayChannel(StringPayload.TYPE, StringPayload.CODEC);
         registerPlayChannel(CarpetPayload.TYPE, CarpetPayload.CODEC);
         registerPlayChannel(ServuxPayload.TYPE, ServuxPayload.CODEC);
-        //registerPlayChannel(SyncmaticaPayload.TYPE, SyncmaticaPayload.CODEC);
-
         playRegistered = true;
     }
 }
