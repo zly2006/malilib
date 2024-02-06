@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
 public interface IRenderer
@@ -17,7 +16,7 @@ public interface IRenderer
     /**
      * Called after vanilla world rendering
      */
-    default void onRenderWorldLast(MatrixStack matrixStack, Matrix4f projMatrix) {}
+    default void onRenderWorldLast(Matrix4f matrixStack, Matrix4f projMatrix) {}
 
     /**
      * Called after the tooltip text of an item has been rendered

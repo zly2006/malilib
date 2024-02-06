@@ -7,7 +7,6 @@ import org.joml.Matrix4f;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
 import fi.dy.masa.malilib.interfaces.IRenderDispatcher;
@@ -30,7 +29,7 @@ public class RenderEventHandler implements IRenderDispatcher
     @Override
     public void registerGameOverlayRenderer(IRenderer renderer)
     {
-        if (this.overlayRenderers.contains(renderer) == false)
+        if (!this.overlayRenderers.contains(renderer))
         {
             this.overlayRenderers.add(renderer);
         }
@@ -39,7 +38,7 @@ public class RenderEventHandler implements IRenderDispatcher
     @Override
     public void registerTooltipLastRenderer(IRenderer renderer)
     {
-        if (this.tooltipLastRenderers.contains(renderer) == false)
+        if (!this.tooltipLastRenderers.contains(renderer))
         {
             this.tooltipLastRenderers.add(renderer);
         }
@@ -48,7 +47,7 @@ public class RenderEventHandler implements IRenderDispatcher
     @Override
     public void registerWorldLastRenderer(IRenderer renderer)
     {
-        if (this.worldLastRenderers.contains(renderer) == false)
+        if (!this.worldLastRenderers.contains(renderer))
         {
             this.worldLastRenderers.add(renderer);
         }
@@ -61,7 +60,7 @@ public class RenderEventHandler implements IRenderDispatcher
     {
         mc.getProfiler().push("malilib_rendergameoverlaypost");
 
-        if (this.overlayRenderers.isEmpty() == false)
+        if (!this.overlayRenderers.isEmpty())
         {
             for (IRenderer renderer : this.overlayRenderers)
             {
@@ -83,7 +82,7 @@ public class RenderEventHandler implements IRenderDispatcher
      */
     public void onRenderTooltipLast(DrawContext drawContext, ItemStack stack, int x, int y)
     {
-        if (this.tooltipLastRenderers.isEmpty() == false)
+        if (!this.tooltipLastRenderers.isEmpty())
         {
             for (IRenderer renderer : this.tooltipLastRenderers)
             {
@@ -95,9 +94,9 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderWorldLast(MatrixStack matrixStack, Matrix4f projMatrix, MinecraftClient mc)
+    public void onRenderWorldLast(Matrix4f matrixStack, Matrix4f projMatrix, MinecraftClient mc)
     {
-        if (this.worldLastRenderers.isEmpty() == false)
+        if (!this.worldLastRenderers.isEmpty())
         {
             mc.getProfiler().swap("malilib_renderworldlast");
 

@@ -39,7 +39,8 @@ public class InventoryUtils
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.canCombine(stack1, stack2);
+        //return ItemStack.canCombine(stack1, stack2);
+        return ItemStack.areItemsAndNbtEqual(stack1, stack2);
     }
 
     /**
@@ -48,7 +49,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
-        if (ItemStack.areItemsEqual(stack1, stack2) == false)
+        if (!ItemStack.areItemsEqual(stack1, stack2))
         {
             return false;
         }
@@ -61,7 +62,7 @@ public class InventoryUtils
             return tag1 == tag2;
         }
 
-        if (stack1.isDamageable() == false && stack2.isDamageable() == false)
+        if (!stack1.isDamageable() && !stack2.isDamageable())
         {
             return Objects.equals(tag1, tag2);
         }
@@ -77,14 +78,14 @@ public class InventoryUtils
         keys1.removeAll(ignoredKeys);
         keys2.removeAll(ignoredKeys);
 
-        if (Objects.equals(keys1, keys2) == false)
+        if (!Objects.equals(keys1, keys2))
         {
             return false;
         }
 
         for (String key : keys1)
         {
-            if (Objects.equals(tag1.get(key), tag2.get(key)) == false)
+            if (!Objects.equals(tag1.get(key), tag2.get(key)))
             {
                 return false;
             }
@@ -102,6 +103,7 @@ public class InventoryUtils
     public static void swapSlots(ScreenHandler container, int slotNum, int hotbarSlot)
     {
         MinecraftClient mc = MinecraftClient.getInstance();
+        assert mc.interactionManager != null;
         mc.interactionManager.clickSlot(container.syncId, slotNum, hotbarSlot, SlotActionType.SWAP, mc.player);
     }
 
@@ -167,7 +169,7 @@ public class InventoryUtils
         {
             Slot slot = container.slots.get(slotNum);
 
-            if ((isPlayerInv == false || isRegularInventorySlot(slot.id, false)) &&
+            if ((!isPlayerInv || isRegularInventorySlot(slot.id, false)) &&
                 areStacksEqualIgnoreDurability(slot.getStack(), stackReference))
             {
                 return slot.id;
@@ -187,6 +189,7 @@ public class InventoryUtils
     public static boolean swapItemToMainHand(ItemStack stackReference, MinecraftClient mc)
     {
         PlayerEntity player = mc.player;
+        assert player != null;
         boolean isCreative = player.isCreative();
 
         // Already holding the requested item
@@ -198,6 +201,7 @@ public class InventoryUtils
         if (isCreative)
         {
             player.getInventory().addPickBlock(stackReference);
+            assert mc.interactionManager != null;
             mc.interactionManager.clickCreativeStack(player.getMainHandStack(), 36 + player.getInventory().selectedSlot); // sendSlotPacket
             return true;
         }
@@ -208,6 +212,7 @@ public class InventoryUtils
             if (slot != -1)
             {
                 int currentHotbarSlot = player.getInventory().selectedSlot;
+                assert mc.interactionManager != null;
                 mc.interactionManager.clickSlot(player.playerScreenHandler.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
                 return true;
             }
@@ -229,7 +234,7 @@ public class InventoryUtils
         @SuppressWarnings("deprecation")
         boolean isLoaded = world.isChunkLoaded(pos);
 
-        if (isLoaded == false)
+        if (!isLoaded)
         {
             return null;
         }
@@ -325,7 +330,7 @@ public class InventoryUtils
                 {
                     ItemStack stack = ItemStack.fromNbt(tagList.getCompound(i));
 
-                    if (stack.isEmpty() == false)
+                    if (!stack.isEmpty())
                     {
                         items.add(stack);
                     }
@@ -384,7 +389,7 @@ public class InventoryUtils
                     ItemStack stack = ItemStack.fromNbt(tag);
                     int slot = tag.getByte("Slot");
 
-                    if (slot >= 0 && slot < items.size() && stack.isEmpty() == false)
+                    if (slot >= 0 && slot < items.size() && !stack.isEmpty())
                     {
                         items.set(slot, stack);
                     }
@@ -410,7 +415,7 @@ public class InventoryUtils
 
         for (ItemStack stack : items)
         {
-            if (stack.isEmpty() == false)
+            if (!stack.isEmpty())
             {
                 map.addTo(new ItemType(stack), stack.getCount());
             }
@@ -435,7 +440,7 @@ public class InventoryUtils
         {
             ItemStack stack = inv.getStack(slot);
 
-            if (stack.isEmpty() == false)
+            if (!stack.isEmpty())
             {
                 map.addTo(new ItemType(stack, false, true), stack.getCount());
 

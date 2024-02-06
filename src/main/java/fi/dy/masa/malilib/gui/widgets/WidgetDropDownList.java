@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringRetriever;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
+import org.joml.Matrix4fStack;
 
 /**
  * A dropdown selection widget for entries in the given list.
@@ -139,7 +140,7 @@ public class WidgetDropDownList<T> extends WidgetBase
             }
             else
             {
-                if (this.scrollBar.wasMouseOver() == false)
+                if (!this.scrollBar.wasMouseOver())
                 {
                     int relY = mouseY - this.y - this.height;
                     int ddHeight = this.height * this.maxVisibleEntries;
@@ -153,11 +154,11 @@ public class WidgetDropDownList<T> extends WidgetBase
             }
         }
 
-        if (this.isOpen == false || (mouseX < this.x + this.width - this.scrollbarWidth || mouseY < this.y + this.height))
+        if (!this.isOpen || (mouseX < this.x + this.width - this.scrollbarWidth || mouseY < this.y + this.height))
         {
             this.isOpen = ! this.isOpen;
 
-            if (this.isOpen == false)
+            if (!this.isOpen)
             {
                 this.searchBar.getTextField().setText("");
                 this.updateFilteredEntries();
@@ -212,7 +213,7 @@ public class WidgetDropDownList<T> extends WidgetBase
         this.filteredEntries.clear();
         String filterText = this.searchBar.getTextField().getText();
 
-        if (this.isOpen && filterText.isEmpty() == false)
+        if (this.isOpen && !filterText.isEmpty())
         {
             for (int i = 0; i < this.entries.size(); ++i)
             {
@@ -259,8 +260,8 @@ public class WidgetDropDownList<T> extends WidgetBase
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        MatrixStack matrixStack = RenderSystem.getModelViewStack();
-        matrixStack.push();
+        Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.pushMatrix();
         matrixStack.translate(0, 0, 10);
         MatrixStack matrixStackIn = drawContext.getMatrices();
         matrixStackIn.push();
@@ -283,7 +284,7 @@ public class WidgetDropDownList<T> extends WidgetBase
 
         if (this.isOpen)
         {
-            if (this.searchBar.getTextField().getText().isEmpty() == false)
+            if (!this.searchBar.getTextField().getText().isEmpty())
             {
                 this.searchBar.draw(mouseX, mouseY, drawContext);
             }
@@ -331,7 +332,8 @@ public class WidgetDropDownList<T> extends WidgetBase
             RenderUtils.drawTexturedRect(this.x + this.width - 16, this.y + 2, i.getU() + i.getWidth(), i.getV(), i.getWidth(), i.getHeight());
         }
 
-        matrixStack.pop();
+        matrixStack.popMatrix();
+        //matrixStack.pop();
         matrixStackIn.pop();
     }
 

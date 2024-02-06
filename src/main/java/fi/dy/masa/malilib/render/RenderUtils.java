@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.item.map.MapId;
 import org.jetbrains.annotations.NotNull;
 import org.joml.*;
 
@@ -218,7 +219,7 @@ public class RenderUtils
     {
         MinecraftClient mc = mc();
 
-        if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
+        if (!textLines.isEmpty() && GuiUtils.getCurrentScreen() != null)
         {
             RenderSystem.enableDepthTest();
             TextRenderer font = mc.textRenderer;
@@ -360,7 +361,7 @@ public class RenderUtils
 
     public static void renderText(int x, int y, int color, List<String> lines, DrawContext drawContext)
     {
-        if (lines.isEmpty() == false)
+        if (!lines.isEmpty())
         {
             TextRenderer textRenderer = mc().textRenderer;
 
@@ -488,7 +489,7 @@ public class RenderUtils
 
             Collection<StatusEffectInstance> effects = player.getStatusEffects();
 
-            if (effects.isEmpty() == false)
+            if (!effects.isEmpty())
             {
                 int y1 = 0;
                 int y2 = 0;
@@ -780,10 +781,10 @@ public class RenderUtils
         //globalStack.push();
         Matrix4fStack globalStack = RenderSystem.getModelViewStack();
         globalStack.pushMatrix();
-        globalStack.translate(x - cx, y - cy, z - cz);
+        globalStack.translate((float) (x - cx), (float) (y - cy), (float) (z - cz));
 
         Quaternionf rot = new Quaternionf().rotationYXZ(-yaw * (float) (Math.PI / 180.0), pitch * (float) (Math.PI / 180.0), 0.0F);
-        globalStack.multiply(rot);
+        globalStack.mul(convertQuaternionToMatrix4f(rot));
 
         globalStack.scale(-scale, -scale, scale);
         RenderSystem.applyModelViewMatrix();
@@ -852,7 +853,7 @@ public class RenderUtils
             textY += textRenderer.fontHeight;
         }
 
-        if (disableDepth == false)
+        if (!disableDepth)
         {
             RenderSystem.polygonOffset(0f, 0f);
             RenderSystem.disablePolygonOffset();
@@ -861,7 +862,8 @@ public class RenderUtils
         color(1f, 1f, 1f, 1f);
         RenderSystem.enableCull();
         RenderSystem.disableBlend();
-        globalStack.pop();
+        //globalStack.pop();
+        globalStack.popMatrix();
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side, Vec3d hitVec,
@@ -1031,34 +1033,36 @@ public class RenderUtils
     }
 
     private static void blockTargetingOverlayTranslations(double x, double y, double z,
-            Direction side, Direction playerFacing, MatrixStack matrixStack)
+            Direction side, Direction playerFacing, Matrix4f matrixStack)
     {
-        matrixStack.translate(x, y, z);
+        matrixStack.translate((float) x, (float) y, (float) z);
 
         switch (side)
         {
             case DOWN:
-                matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180f - playerFacing.asRotation()));
-                matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90f));
+                //matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180f - playerFacing.asRotation()));
+                //matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90f));
+                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(180f - playerFacing.asRotation())));
+                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_X.rotationDegrees(90f)));
                 break;
             case UP:
-                matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180f - playerFacing.asRotation()));
-                matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-90f));
+                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(180f - playerFacing.asRotation())));
+                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_X.rotationDegrees(-90f)));
                 break;
             case NORTH:
-                matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180f));
+                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(180f)));
                 break;
             case SOUTH:
                 break;
             case WEST:
-                matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-90f));
+                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(-90f)));
                 break;
             case EAST:
-                matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90f));
+                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(90f)));
                 break;
         }
 
-        matrixStack.translate(-x, -y, -z + 0.510);
+        matrixStack.translate((float) -x, (float) -y, (float) (-z + 0.510));
     }
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
@@ -1073,7 +1077,8 @@ public class RenderUtils
             int x2 = x1 + dimensions;
             int z = 300;
 
-            Integer mapId = FilledMapItem.getMapId(stack);
+            //Integer mapId = FilledMapItem.getMapId(stack);
+            MapId mapId = FilledMapItem.getMapId(stack);
             MapState mapState = FilledMapItem.getMapState(mapId, mc().world);
 
             Identifier bgTexture = mapState == null ? TEXTURE_MAP_BACKGROUND : TEXTURE_MAP_BACKGROUND_CHECKERBOARD;
@@ -1116,7 +1121,7 @@ public class RenderUtils
         {
             DefaultedList<ItemStack> items = InventoryUtils.getStoredItems(stack, -1);
 
-            if (items.size() == 0)
+            if (items.isEmpty())
             {
                 return;
             }
@@ -1237,7 +1242,7 @@ public class RenderUtils
         matrixStack.translate((float) -0.5, (float) -0.5, (float) -0.5);
         int color = 0xFFFFFFFF;
 
-        if (model.isBuiltin() == false)
+        if (!model.isBuiltin())
         {
             RenderSystem.setShader(GameRenderer::getRenderTypeSolidProgram);
             RenderSystem.applyModelViewMatrix();
@@ -1308,7 +1313,7 @@ public class RenderUtils
     }
 
     // These makes my brain hurt
-    public static Matrix4f convertQuaternionToMatrix4f(Quaternionf q)
+    protected static Matrix4f convertQuaternionToMatrix4f(Quaternionf q)
     {
         return new Matrix4f(
         1.0f - 2.0f * ( q.y() * q.y() + q.z() * q.z() ),
@@ -1328,7 +1333,7 @@ public class RenderUtils
 
         0, 0, 0, 1.0f);
     }
-    private static Matrix4f createTransformaionMatrix(Vector3f position, Vector3f scale, Quaternionf rotation)
+    protected static Matrix4f createTransformaionMatrix(Vector3f position, Vector3f scale, Quaternionf rotation)
     {
         float q00 = 2.0f * rotation.x * rotation.x;
         float q01 = 2.0f * rotation.x * rotation.y;
