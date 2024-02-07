@@ -877,9 +877,10 @@ public class RenderUtils
         double y = pos.getY() + 0.5d - cameraPos.y;
         double z = pos.getZ() + 0.5d - cameraPos.z;
 
+        // Matrix4fStack method
         //MatrixStack globalStack = RenderSystem.getModelViewStack();
-        Matrix4fStack globalStack = RenderSystem.getModelViewStack();
         //globalStack.push();
+        Matrix4fStack globalStack = RenderSystem.getModelViewStack();
         globalStack.pushMatrix();
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing, globalStack);
         RenderSystem.applyModelViewMatrix();
@@ -1313,7 +1314,7 @@ public class RenderUtils
     }
 
     // These makes my brain hurt
-    protected static Matrix4f convertQuaternionToMatrix4f(Quaternionf q)
+    public static Matrix4f convertQuaternionToMatrix4f(Quaternionf q)
     {
         return new Matrix4f(
         1.0f - 2.0f * ( q.y() * q.y() + q.z() * q.z() ),
@@ -1333,7 +1334,7 @@ public class RenderUtils
 
         0, 0, 0, 1.0f);
     }
-    protected static Matrix4f createTransformaionMatrix(Vector3f position, Vector3f scale, Quaternionf rotation)
+    public static Matrix4f createTransformaionMatrix(Vector3f position, Vector3f scale, Quaternionf rotation)
     {
         float q00 = 2.0f * rotation.x * rotation.x;
         float q01 = 2.0f * rotation.x * rotation.y;
