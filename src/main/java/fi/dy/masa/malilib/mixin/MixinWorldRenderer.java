@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.mixin;
 
-import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,10 +37,12 @@ public abstract class MixinWorldRenderer
             Matrix4f matrix4f2,
             CallbackInfo ci)
     {
+        /*
         MatrixStack matrixStack = new MatrixStack();
         matrixStack.multiplyPositionMatrix(matrix4f);
+         */
 
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(matrixStack, matrix4f2, this.client);
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(matrix4f, matrix4f2, this.client);
     }
 
     @Inject(method = "render",
@@ -60,9 +61,11 @@ public abstract class MixinWorldRenderer
             Matrix4f matrix4f2,
             CallbackInfo ci)
     {
+        /*
         MatrixStack matrixStack = new MatrixStack();
         matrixStack.multiplyPositionMatrix(matrix4f);
+         */
 
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(matrixStack, matrix4f2, this.client);
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(matrix4f, matrix4f2, this.client);
     }
 }
