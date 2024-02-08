@@ -1,6 +1,8 @@
 package fi.dy.masa.malilib.interfaces;
 
 import java.util.function.Supplier;
+
+import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.gui.DrawContext;
@@ -16,7 +18,7 @@ public interface IRenderer
     /**
      * Called after vanilla world rendering
      */
-    default void onRenderWorldLast(Matrix4f matrix4f, Matrix4f projMatrix) {}
+    default void onRenderWorldLast(MatrixStack matrixStack, Matrix4f projMatrix) {}
 
     /**
      * Called after the tooltip text of an item has been rendered

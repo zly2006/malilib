@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.mixin;
 
+import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,6 +18,9 @@ import net.minecraft.client.render.WorldRenderer;
 
 import fi.dy.masa.malilib.event.RenderEventHandler;
 
+/**
+ * The "MatrixStack" parameter was removed from WorldRenderer in favor of using a Matrix4f
+ */
 @Mixin(WorldRenderer.class)
 public abstract class MixinWorldRenderer
 {
@@ -27,10 +31,17 @@ public abstract class MixinWorldRenderer
                      target = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/LightmapTextureManager;FDDD)V"))
     private void onRenderWorldLastNormal(
             float tickDelta, long limitTime, boolean renderBlockOutline,
-            Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager,
-            Matrix4f matrix4f, Matrix4f matrix4f2, CallbackInfo ci)
+            Camera camera,
+            GameRenderer gameRenderer,
+            LightmapTextureManager lightmapTextureManager,
+            Matrix4f matrix4f,
+            Matrix4f matrix4f2,
+            CallbackInfo ci)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(matrix4f, matrix4f2, this.client);
+        MatrixStack matrixStack = new MatrixStack();
+        matrixStack.multiplyPositionMatrix(matrix4f);
+
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(matrixStack, matrix4f2, this.client);
     }
 
     @Inject(method = "render",
@@ -41,8 +52,17 @@ public abstract class MixinWorldRenderer
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/client/gl/PostEffectProcessor;render(F)V"))
     private void onRenderWorldLastFabulous(
-            float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, Matrix4f matrix4f2, CallbackInfo ci)
+            float tickDelta, long limitTime, boolean renderBlockOutline,
+            Camera camera,
+            GameRenderer gameRenderer,
+            LightmapTextureManager lightmapTextureManager,
+            Matrix4f matrix4f,
+            Matrix4f matrix4f2,
+            CallbackInfo ci)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(matrix4f, matrix4f2, this.client);
+        MatrixStack matrixStack = new MatrixStack();
+        matrixStack.multiplyPositionMatrix(matrix4f);
+
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(matrixStack, matrix4f2, this.client);
     }
 }

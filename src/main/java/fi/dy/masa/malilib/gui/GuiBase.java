@@ -125,10 +125,9 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     @Override
     public void resize(MinecraftClient mc, int width, int height)
     {
-        if (mc != null) {
-            if (this.getParent() != null) {
-                this.getParent().resize(mc, width, height);
-            }
+        if (mc != null && this.getParent() != null)
+        {
+            this.getParent().resize(mc, width, height);
         }
 
         super.resize(mc, width, height);

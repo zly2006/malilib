@@ -44,7 +44,6 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.LocalRandom;
 
@@ -93,9 +92,10 @@ public class RenderUtils
         DiffuseLighting.disableGuiDepthLighting();
     }
 
-    public static void enableDiffuseLightingForLevel(MatrixStack matrixStack)
+    //public static void enableDiffuseLightingForLevel(MatrixStack matrixStack)
+    //DiffuseLighting.enableForLevel(matrixStack.peek().getPositionMatrix());
+    public static void enableDiffuseLightingForLevel()
     {
-        //DiffuseLighting.enableForLevel(matrixStack.peek().getPositionMatrix());
         DiffuseLighting.enableForLevel();
     }
 
@@ -384,14 +384,10 @@ public class RenderUtils
      *         } else {
      *             modelViewMatrix = matrix4f;
      *         }
-     *
      *     }
      *
-     *     public static MatrixStack getModelViewStack() {
-     *         return modelViewStack;
-     *     }
-     *     -->
-     *     public static Matrix4fStack getModelViewStack() {
+     *---  public static MatrixStack getModelViewStack() {
+     *+++  public static Matrix4fStack getModelViewStack() {
      *         return modelViewStack;
      *     }
      *     -->
@@ -415,6 +411,7 @@ public class RenderUtils
             return 0;
         }
 
+        // FIXME -- RenderSystem's 'modelViewStack' was changed to a Matrix4fStack method
         //MatrixStack globalStack = RenderSystem.getModelViewStack();
         Matrix4fStack globalStack = RenderSystem.getModelViewStack();
         boolean scaled = scale != 1.0;
@@ -450,7 +447,7 @@ public class RenderUtils
                     posX = (scaledWidth / scale) - width - xOff - bgMargin;
                     break;
                 case CENTER:
-                    posX = (scaledWidth / scale / 2) - ((double) width / 2) - xOff;
+                    posX = (scaledWidth / scale / 2) - (width / 2) - xOff;
                     break;
                 default:
             }
@@ -630,8 +627,8 @@ public class RenderUtils
         final double y2 = posMax.getY() + 1 - cameraPos.y;
         final double z2 = posMax.getZ() + 1 - cameraPos.z;
 
-        fi.dy.masa.malilib.render.RenderUtils.drawBoxAllSidesBatchedQuads(x1, y1, z1, x2, y2, z2, colorSides, bufferQuads);
-        fi.dy.masa.malilib.render.RenderUtils.drawBoxAllEdgesBatchedLines(x1, y1, z1, x2, y2, z2, colorLines, bufferLines);
+        RenderUtils.drawBoxAllSidesBatchedQuads(x1, y1, z1, x2, y2, z2, colorSides, bufferQuads);
+        RenderUtils.drawBoxAllEdgesBatchedLines(x1, y1, z1, x2, y2, z2, colorLines, bufferLines);
     }
 
     /**
@@ -777,14 +774,15 @@ public class RenderUtils
         double cz = cameraPos.z;
         TextRenderer textRenderer = mc().textRenderer;
 
+        // FIXME -- RenderSystem's 'modelViewStack' was changed to a Matrix4fStack method
         //MatrixStack globalStack = RenderSystem.getModelViewStack();
         //globalStack.push();
         Matrix4fStack globalStack = RenderSystem.getModelViewStack();
         globalStack.pushMatrix();
         globalStack.translate((float) (x - cx), (float) (y - cy), (float) (z - cz));
 
-        Quaternionf rot = new Quaternionf().rotationYXZ(-yaw * (float) (Math.PI / 180.0), pitch * (float) (Math.PI / 180.0), 0.0F);
-        globalStack.mul(convertQuaternionToMatrix4f(rot));
+        //Quaternionf rot = new Quaternionf().rotationYXZ(-yaw * (float) (Math.PI / 180.0), pitch * (float) (Math.PI / 180.0), 0.0F);
+        globalStack.rotateYXZ(-yaw * (float) (Math.PI / 180.0), pitch * (float) (Math.PI / 180.0), 0.0F);
 
         globalStack.scale(-scale, -scale, scale);
         RenderSystem.applyModelViewMatrix();
@@ -867,7 +865,7 @@ public class RenderUtils
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side, Vec3d hitVec,
-            Color4f color, Matrix4f matrixStack, MinecraftClient mc)
+            Color4f color, MatrixStack matrixStack, MinecraftClient mc)
     {
         Direction playerFacing = entity.getHorizontalFacing();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
@@ -978,7 +976,7 @@ public class RenderUtils
     }
 
     public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, Direction side,
-            Color4f color, Matrix4f matrixStack, MinecraftClient mc)
+            Color4f color, MatrixStack matrixStack, MinecraftClient mc)
     {
         Direction playerFacing = entity.getHorizontalFacing();
         Vec3d cameraPos = mc.gameRenderer.getCamera().getPos();
@@ -1034,7 +1032,7 @@ public class RenderUtils
     }
 
     private static void blockTargetingOverlayTranslations(double x, double y, double z,
-            Direction side, Direction playerFacing, Matrix4f matrixStack)
+            Direction side, Direction playerFacing, Matrix4fStack matrixStack)
     {
         matrixStack.translate((float) x, (float) y, (float) z);
 
@@ -1043,23 +1041,24 @@ public class RenderUtils
             case DOWN:
                 //matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180f - playerFacing.asRotation()));
                 //matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90f));
-                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(180f - playerFacing.asRotation())));
-                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_X.rotationDegrees(90f)));
+
+                matrixStack.rotateY(180f - playerFacing.asRotation());
+                matrixStack.rotateX(90f);
                 break;
             case UP:
-                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(180f - playerFacing.asRotation())));
-                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_X.rotationDegrees(-90f)));
+                matrixStack.rotateY(180f - playerFacing.asRotation());
+                matrixStack.rotateX(-90f);
                 break;
             case NORTH:
-                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(180f)));
+                matrixStack.rotateY(180f);
                 break;
             case SOUTH:
                 break;
             case WEST:
-                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(-90f)));
+                matrixStack.rotateY(-90f);
                 break;
             case EAST:
-                matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(90f)));
+                matrixStack.rotateY(90f);
                 break;
         }
 
@@ -1157,7 +1156,7 @@ public class RenderUtils
 
             enableDiffuseLightingGui3D();
 
-            Inventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
+            Inventory inv = InventoryUtils.getAsInventory(items);
             InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc(), drawContext);
 
             //matrixStack.pop();
@@ -1210,8 +1209,9 @@ public class RenderUtils
         //matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(30));
         //matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(225));
 
-        matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_X.rotationDegrees(30)));
-        matrixStack.mul(convertQuaternionToMatrix4f(RotationAxis.POSITIVE_Y.rotationDegrees(225)));
+        matrixStack.rotateX(30);
+        matrixStack.rotateY(225);
+
         matrixStack.scale(0.625f, 0.625f, 0.625f);
 
         renderModel(model, state);
@@ -1313,10 +1313,41 @@ public class RenderUtils
         return MinecraftClient.getInstance();
     }
 
-    // These makes my brain hurt
-    public static Matrix4f convertQuaternionToMatrix4f(Quaternionf q)
-    {
-        return new Matrix4f(
+    /**
+     * These makes my brain hurt
+      */
+    /*
+        double w2 = q.w() * q.w();
+        double x2 = q.x() * q.x();
+        double y2 = q.y() * q.y();
+        double z2 = q.z() * q.z();
+        double zw = q.z() * q.w();
+        double xy = q.x() * q.y();
+        double xz = q.x() * q.z();
+        double yw = q.y() * q.w();
+        double yz = q.y() * q.z();
+        double xw = q.x() * q.w();
+        return
+        _m00((float) (w2 + x2 - z2 - y2)).
+        _m01((float) (xy + zw + zw + xy)).
+        _m02((float) (xz - yw + xz - yw)).
+        _m03(0.0f).
+        _m10((float) (-zw + xy - zw + xy)).
+        _m11((float) (y2 - z2 + w2 - x2)).
+        _m12((float) (yz + yz + xw + xw)).
+        _m13(0.0f).
+        _m20((float) (yw + xz + xz + yw)).
+        _m21((float) (yz + yz - xw - xw)).
+        _m22((float) (z2 - y2 - x2 + w2)).
+        _m30(0.0f).
+        _m31(0.0f).
+        _m32(0.0f).
+        _m33(1.0f).
+        _properties(PROPERTY_AFFINE | PROPERTY_ORTHONORMAL);
+     */
+    /*
+    OLD:
+    return new Matrix4f(
         1.0f - 2.0f * ( q.y() * q.y() + q.z() * q.z() ),
         2.0f * (q.x() * q.y() + q.z() * q.w()),
         2.0f * (q.x() * q.z() - q.y() * q.w()),
@@ -1333,6 +1364,34 @@ public class RenderUtils
         0.0f,
 
         0, 0, 0, 1.0f);
+     */
+    public static Matrix4f convertQuaternionToMatrix4f(Quaternionf q)
+    {
+        double w2 = q.w() * q.w();
+        double x2 = q.x() * q.x();
+        double y2 = q.y() * q.y();
+        double z2 = q.z() * q.z();
+        double zw = q.z() * q.w();
+        double xy = q.x() * q.y();
+        double xz = q.x() * q.z();
+        double yw = q.y() * q.w();
+        double yz = q.y() * q.z();
+        double xw = q.x() * q.w();
+
+        return new Matrix4f(
+            (float) (w2 + x2 - z2 - y2),
+            (float) (xy + zw + zw + xy),
+            (float) (xz - yw + xz - yw),
+            0.0f,
+            (float) (-zw + xy - zw + xy),
+            (float) (y2 - z2 + w2 - x2),
+            (float) (yz + yz + xw + xw),
+            0.0f,
+            (float) (yw + xz + xz + yw),
+            (float) (yz + yz - xw - xw),
+            (float) (z2 - y2 - x2 + w2),
+            0.0f,
+            0, 0, 0, 1.0f);
     }
     public static Matrix4f createTransformaionMatrix(Vector3f position, Vector3f scale, Quaternionf rotation)
     {

@@ -2,6 +2,8 @@ package fi.dy.masa.malilib.event;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.MinecraftClient;
@@ -94,7 +96,7 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderWorldLast(Matrix4f matrixStack, Matrix4f projMatrix, MinecraftClient mc)
+    public void onRenderWorldLast(MatrixStack matrixStack, Matrix4f projMatrix, MinecraftClient mc)
     {
         if (!this.worldLastRenderers.isEmpty())
         {
