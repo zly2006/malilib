@@ -32,8 +32,8 @@ public class MaLiLibConfigs implements IConfigHandler
     public static class Debug
     {
         public static final ConfigBoolean INPUT_CANCELLATION_DEBUG  = new ConfigBoolean("inputCancellationDebugging", false, "When enabled, then the cancellation reason/source\nfor inputs (keyboard and mouse) is printed out");
-        public static final ConfigBoolean KEYBIND_DEBUG             = new ConfigBoolean("keybindDebugging", true, "When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)");
-        public static final ConfigBoolean KEYBIND_DEBUG_ACTIONBAR   = new ConfigBoolean("keybindDebuggingIngame", true, "If enabled, then the messages from 'keybindDebugging'\nare also printed to the in-game action bar");
+        public static final ConfigBoolean KEYBIND_DEBUG             = new ConfigBoolean("keybindDebugging", false, "When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)");
+        public static final ConfigBoolean KEYBIND_DEBUG_ACTIONBAR   = new ConfigBoolean("keybindDebuggingIngame", false, "If enabled, then the messages from 'keybindDebugging'\nare also printed to the in-game action bar");
         public static final ConfigBoolean MOUSE_SCROLL_DEBUG        = new ConfigBoolean("mouseScrollDebug", false, "If enabled, some debug values from mouse scrolling\nare printed to the game console/log");
         public static final ConfigBoolean NETWORK_DEBUG             = new ConfigBoolean("networkDebugging", true, "When enabled, networking API events are\nprinted to the game console/log");
 

@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.item.map.MapId;
+import net.minecraft.util.math.*;
 import org.jetbrains.annotations.NotNull;
 import org.joml.*;
 
@@ -41,10 +42,6 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.LocalRandom;
 
 import fi.dy.masa.malilib.config.HudAlignment;
@@ -782,7 +779,7 @@ public class RenderUtils
         globalStack.translate((float) (x - cx), (float) (y - cy), (float) (z - cz));
 
         //Quaternionf rot = new Quaternionf().rotationYXZ(-yaw * (float) (Math.PI / 180.0), pitch * (float) (Math.PI / 180.0), 0.0F);
-        globalStack.rotateYXZ(-yaw * (float) (Math.PI / 180.0), pitch * (float) (Math.PI / 180.0), 0.0F);
+        globalStack.rotateYXZ((-yaw) * ((float) (Math.PI / 180.0)), pitch * ((float) (Math.PI / 180.0)), 0.0F);
 
         globalStack.scale(-scale, -scale, scale);
         RenderSystem.applyModelViewMatrix();
@@ -1031,9 +1028,20 @@ public class RenderUtils
         RenderSystem.applyModelViewMatrix();
     }
 
+    /**
+     * Matrix4f rotation adds direct values without adding these numbers.
+     * .
+     * default Quaternionf rotationDegrees(float deg) {
+     *         return this.rotation(deg * 0.017453292F);
+     *     }
+     *  -->
+     *     float sin = Math.sin(angle * 0.5f);
+     *     float cos = Math.cosFromSin(sin, angle * 0.5f);
+     */
     private static void blockTargetingOverlayTranslations(double x, double y, double z,
             Direction side, Direction playerFacing, Matrix4fStack matrixStack)
     {
+        // FIXME figure out math to fix flexible block placement grid
         matrixStack.translate((float) x, (float) y, (float) z);
 
         switch (side)
@@ -1041,28 +1049,29 @@ public class RenderUtils
             case DOWN:
                 //matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180f - playerFacing.asRotation()));
                 //matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90f));
+                RotationAxis.POSITIVE_X.rotationDegrees(90f);
 
-                matrixStack.rotateY(180f - playerFacing.asRotation());
-                matrixStack.rotateX(90f);
+                matrixStack.rotateY(blockTargetingMaths(180f - playerFacing.asRotation()));
+                matrixStack.rotateX(blockTargetingMaths(90f));
                 break;
             case UP:
-                matrixStack.rotateY(180f - playerFacing.asRotation());
-                matrixStack.rotateX(-90f);
+                matrixStack.rotateY(blockTargetingMaths((180f - playerFacing.asRotation())));
+                matrixStack.rotateX(blockTargetingMaths(-90f));
                 break;
             case NORTH:
-                matrixStack.rotateY(180f);
+                matrixStack.rotateY(blockTargetingMaths(180f));
                 break;
             case SOUTH:
                 break;
             case WEST:
-                matrixStack.rotateY(-90f);
+                matrixStack.rotateY(blockTargetingMaths(-90f));
                 break;
             case EAST:
-                matrixStack.rotateY(90f);
+                matrixStack.rotateY(blockTargetingMaths(90f));
                 break;
         }
 
-        matrixStack.translate((float) -x, (float) -y, (float) (-z + 0.510));
+        matrixStack.translate((float) (-x), (float) (-y), (float) ((-z) + 0.510));
     }
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
@@ -1194,6 +1203,7 @@ public class RenderUtils
 
         //MatrixStack matrixStack = RenderSystem.getModelViewStack();
         //matrixStack.push();
+
         Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
         matrixStack.pushMatrix();
         bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
@@ -1229,6 +1239,7 @@ public class RenderUtils
     {
         //matrixStack.translate(xPosition + 8.0, yPosition + 8.0, zLevel + 100.0);
         //matrixStack.scale(16, -16, 16);
+
         matrixStack.translate((float) (xPosition + 8.0), (float) (yPosition + 8.0), (float) (zLevel + 100.0));
         matrixStack.scale((float) 16, (float) -16, (float) 16);
     }
@@ -1237,8 +1248,10 @@ public class RenderUtils
     {
         //MatrixStack matrixStack = RenderSystem.getModelViewStack();
         //matrixStack.push();
+
         Matrix4fStack matrixStack = RenderSystem.getModelViewStack();
         matrixStack.pushMatrix();
+
         //matrixStack.translate(-0.5, -0.5, -0.5);
         matrixStack.translate((float) -0.5, (float) -0.5, (float) -0.5);
         int color = 0xFFFFFFFF;
@@ -1313,105 +1326,6 @@ public class RenderUtils
         return MinecraftClient.getInstance();
     }
 
-    /**
-     * These makes my brain hurt
-      */
-    /*
-        double w2 = q.w() * q.w();
-        double x2 = q.x() * q.x();
-        double y2 = q.y() * q.y();
-        double z2 = q.z() * q.z();
-        double zw = q.z() * q.w();
-        double xy = q.x() * q.y();
-        double xz = q.x() * q.z();
-        double yw = q.y() * q.w();
-        double yz = q.y() * q.z();
-        double xw = q.x() * q.w();
-        return
-        _m00((float) (w2 + x2 - z2 - y2)).
-        _m01((float) (xy + zw + zw + xy)).
-        _m02((float) (xz - yw + xz - yw)).
-        _m03(0.0f).
-        _m10((float) (-zw + xy - zw + xy)).
-        _m11((float) (y2 - z2 + w2 - x2)).
-        _m12((float) (yz + yz + xw + xw)).
-        _m13(0.0f).
-        _m20((float) (yw + xz + xz + yw)).
-        _m21((float) (yz + yz - xw - xw)).
-        _m22((float) (z2 - y2 - x2 + w2)).
-        _m30(0.0f).
-        _m31(0.0f).
-        _m32(0.0f).
-        _m33(1.0f).
-        _properties(PROPERTY_AFFINE | PROPERTY_ORTHONORMAL);
-     */
-    /*
-    OLD:
-    return new Matrix4f(
-        1.0f - 2.0f * ( q.y() * q.y() + q.z() * q.z() ),
-        2.0f * (q.x() * q.y() + q.z() * q.w()),
-        2.0f * (q.x() * q.z() - q.y() * q.w()),
-        0.0f,
-
-        2.0f * ( q.x() * q.y() - q.z() * q.w() ),
-        1.0f - 2.0f * ( q.x() * q.x() + q.z() * q.z() ),
-        2.0f * (q.z() * q.y() + q.x() * q.w() ),
-        0.0f,
-
-        2.0f * ( q.x() * q.z() + q.y() * q.w() ),
-        2.0f * ( q.y() * q.z() - q.x() * q.w() ),
-        1.0f - 2.0f * ( q.x() * q.x() + q.y() * q.y() ),
-        0.0f,
-
-        0, 0, 0, 1.0f);
-     */
-    public static Matrix4f convertQuaternionToMatrix4f(Quaternionf q)
-    {
-        double w2 = q.w() * q.w();
-        double x2 = q.x() * q.x();
-        double y2 = q.y() * q.y();
-        double z2 = q.z() * q.z();
-        double zw = q.z() * q.w();
-        double xy = q.x() * q.y();
-        double xz = q.x() * q.z();
-        double yw = q.y() * q.w();
-        double yz = q.y() * q.z();
-        double xw = q.x() * q.w();
-
-        return new Matrix4f(
-            (float) (w2 + x2 - z2 - y2),
-            (float) (xy + zw + zw + xy),
-            (float) (xz - yw + xz - yw),
-            0.0f,
-            (float) (-zw + xy - zw + xy),
-            (float) (y2 - z2 + w2 - x2),
-            (float) (yz + yz + xw + xw),
-            0.0f,
-            (float) (yw + xz + xz + yw),
-            (float) (yz + yz - xw - xw),
-            (float) (z2 - y2 - x2 + w2),
-            0.0f,
-            0, 0, 0, 1.0f);
-    }
-    public static Matrix4f createTransformaionMatrix(Vector3f position, Vector3f scale, Quaternionf rotation)
-    {
-        float q00 = 2.0f * rotation.x * rotation.x;
-        float q01 = 2.0f * rotation.x * rotation.y;
-        float q02 = 2.0f * rotation.x * rotation.z;
-        float q03 = 2.0f * rotation.x * rotation.w;
-        float q11 = 2.0f * rotation.y * rotation.y;
-        float q12 = 2.0f * rotation.y * rotation.z;
-        float q13 = 2.0f * rotation.y * rotation.w;
-        float q22 = 2.0f * rotation.z * rotation.z;
-        float q23 = 2.0f * rotation.z * rotation.w;
-
-        return new Matrix4f(
-                (1.0f - q11 - q22) * scale.x, (q01 + q23) * scale.x, (q02 - q13) * scale.x, 0.0f,
-                (q01 - q23) * scale.y,(1.0f - q22 - q00) * scale.y, (q12 + q03) * scale.y, 0.0f,
-                (q02 + q13) * scale.z, (q12 - q03) * scale.z, (1.0f - q11 - q00) * scale.z, 0.0f,
-                position.x, position.y, position.z,1.0f);
-    }
-
     /*
     public static void enableGUIStandardItemLighting(float scale)
     {
@@ -1448,4 +1362,13 @@ public class RenderUtils
         RenderSystem.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, RenderHelper.setColorBuffer(ambientLightStrength, ambientLightStrength, ambientLightStrength, 1.0F));
     }
     */
+
+    /**
+     * Only required for translating the values to their RotationAxis.POSITIVE_?.rotationDegrees() equivalence
+     */
+    private static float blockTargetingMaths(float ang)
+    {
+        //return (ang * 0.017453292F) * 0.5f;
+        return (ang * 0.017453292F);
+    }
 }
