@@ -2,7 +2,10 @@ package fi.dy.masa.malilib.network;
 
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.network.payload.*;
+import fi.dy.masa.malilib.network.payload.channel.CarpetHelloPayload;
+import fi.dy.masa.malilib.network.payload.channel.ServuxLitematicsPayload;
+import fi.dy.masa.malilib.network.payload.channel.ServuxMetadataPayload;
+import fi.dy.masa.malilib.network.payload.channel.ServuxStructuresPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 public class ClientNetworkPlayRegister

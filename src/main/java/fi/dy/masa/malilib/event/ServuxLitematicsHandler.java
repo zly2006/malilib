@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.event;
 import fi.dy.masa.malilib.interfaces.IServuxLitematicsListener;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,13 +40,13 @@ public class ServuxLitematicsHandler implements IServuxLitematicsManager
             }
         }
     }
-    public void receiveServuxLitematics(NbtCompound data, ClientPlayNetworking.Context ctx)
+    public void receiveServuxLitematics(NbtCompound data, ClientPlayNetworking.Context ctx, Identifier id)
     {
         if (!this.handlers.isEmpty())
         {
             for (IServuxLitematicsListener handler : this.handlers)
             {
-                handler.receiveServuxLitematics(data, ctx);
+                handler.receiveServuxLitematics(data, ctx, id);
             }
         }
     }
@@ -60,23 +61,23 @@ public class ServuxLitematicsHandler implements IServuxLitematicsManager
             }
         }
     }
-    public void encodeServuxLitematics(NbtCompound data)
+    public void encodeServuxLitematics(NbtCompound data, Identifier id)
     {
         if (!this.handlers.isEmpty())
         {
             for (IServuxLitematicsListener handler : this.handlers)
             {
-                handler.encodeServuxLitematics(data);
+                handler.encodeServuxLitematics(data, id);
             }
         }
     }
-    public void decodeServuxLitematics(NbtCompound data)
+    public void decodeServuxLitematics(NbtCompound data, Identifier id)
     {
         if (!this.handlers.isEmpty())
         {
             for (IServuxLitematicsListener handler : this.handlers)
             {
-                handler.decodeServuxLitematics(data);
+                handler.decodeServuxLitematics(data, id);
             }
         }
     }

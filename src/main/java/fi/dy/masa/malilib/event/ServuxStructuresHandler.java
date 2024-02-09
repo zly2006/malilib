@@ -40,13 +40,13 @@ public class ServuxStructuresHandler implements IServuxStructuresManager
             }
         }
     }
-    public void receiveServuxStructures(NbtCompound data, ClientPlayNetworking.Context ctx)
+    public void receiveServuxStructures(NbtCompound data, ClientPlayNetworking.Context ctx, Identifier id)
     {
         if (!this.handlers.isEmpty())
         {
             for (IServuxStructuresListener handler : this.handlers)
             {
-                handler.receiveServuxStructures(data, ctx);
+                handler.receiveServuxStructures(data, ctx, id);
             }
         }
     }
@@ -61,23 +61,23 @@ public class ServuxStructuresHandler implements IServuxStructuresManager
             }
         }
     }
-    public void encodeServuxStructures(NbtCompound data)
+    public void encodeServuxStructures(NbtCompound data, Identifier id)
     {
         if (!this.handlers.isEmpty())
         {
             for (IServuxStructuresListener handler : this.handlers)
             {
-                handler.encodeServuxStructures(data);
+                handler.encodeServuxStructures(data, id);
             }
         }
     }
-    public void decodeServuxStructures(NbtCompound data)
+    public void decodeServuxStructures(NbtCompound data, Identifier id)
     {
         if (!this.handlers.isEmpty())
         {
             for (IServuxStructuresListener handler : this.handlers)
             {
-                handler.decodeServuxStructures(data);
+                handler.decodeServuxStructures(data, id);
             }
         }
     }

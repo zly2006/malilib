@@ -1,5 +1,8 @@
 package fi.dy.masa.malilib.network.packet;
 
+/**
+ * Example PacketProvider file for downstream mods
+ */
 public class PacketProvider
 {
     //static SyncmaticaPayloadListener syncmaticaListener = new SyncmaticaPayloadListener();

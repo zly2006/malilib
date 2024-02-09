@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.network;
+package fi.dy.masa.malilib.network.payload;
 
 public enum PayloadType
 {

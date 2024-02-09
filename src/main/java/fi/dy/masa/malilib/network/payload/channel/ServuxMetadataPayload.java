@@ -1,7 +1,7 @@
-package fi.dy.masa.malilib.network.payload;
+package fi.dy.masa.malilib.network.payload.channel;
 
-import fi.dy.masa.malilib.network.PayloadType;
-import fi.dy.masa.malilib.network.PayloadTypeRegister;
+import fi.dy.masa.malilib.network.payload.PayloadType;
+import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;

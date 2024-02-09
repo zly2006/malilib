@@ -1,8 +1,11 @@
-package fi.dy.masa.malilib.network;
+package fi.dy.masa.malilib.network.payload;
 
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.network.payload.*;
+import fi.dy.masa.malilib.network.payload.channel.CarpetHelloPayload;
+import fi.dy.masa.malilib.network.payload.channel.ServuxLitematicsPayload;
+import fi.dy.masa.malilib.network.payload.channel.ServuxMetadataPayload;
+import fi.dy.masa.malilib.network.payload.channel.ServuxStructuresPayload;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;

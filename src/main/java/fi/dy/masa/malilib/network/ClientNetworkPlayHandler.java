@@ -5,7 +5,10 @@ import fi.dy.masa.malilib.event.CarpetHelloHandler;
 import fi.dy.masa.malilib.event.ServuxLitematicsHandler;
 import fi.dy.masa.malilib.event.ServuxMetadataHandler;
 import fi.dy.masa.malilib.event.ServuxStructuresHandler;
-import fi.dy.masa.malilib.network.payload.*;
+import fi.dy.masa.malilib.network.payload.channel.CarpetHelloPayload;
+import fi.dy.masa.malilib.network.payload.channel.ServuxLitematicsPayload;
+import fi.dy.masa.malilib.network.payload.channel.ServuxMetadataPayload;
+import fi.dy.masa.malilib.network.payload.channel.ServuxStructuresPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 /**
@@ -26,7 +29,7 @@ public class ClientNetworkPlayHandler
         if (ClientPlayNetworking.canSend(payload.getId()))
         {
             ClientPlayNetworking.send(payload);
-            MaLiLib.printDebug("ClientNetworkPlayHandler#sendCarpetHello(): sending payload id: {}", payload.getId());
+            MaLiLib.printDebug("ClientNetworkPlayHandler#sendCarpetHello(): sending payload id: {}", payload.getId().id());
         }
     }
     public static void sendServuxLitematics(ServuxLitematicsPayload payload)
@@ -35,7 +38,7 @@ public class ClientNetworkPlayHandler
         if (ClientPlayNetworking.canSend(payload.getId()))
         {
             ClientPlayNetworking.send(payload);
-            MaLiLib.printDebug("ClientNetworkPlayHandler#sendServuxLitematics(): sending payload id: {}", payload.getId());
+            MaLiLib.printDebug("ClientNetworkPlayHandler#sendServuxLitematics(): sending payload id: {}", payload.getId().id());
         }
     }
 
@@ -45,7 +48,7 @@ public class ClientNetworkPlayHandler
         if (ClientPlayNetworking.canSend(payload.getId()))
         {
             ClientPlayNetworking.send(payload);
-            MaLiLib.printDebug("ClientNetworkPlayHandler#sendServuxMetadata(): sending payload id: {}", payload.getId());
+            MaLiLib.printDebug("ClientNetworkPlayHandler#sendServuxMetadata(): sending payload id: {}", payload.getId().id());
         }
     }
     public static void sendServuxStructures(ServuxStructuresPayload payload)
@@ -54,7 +57,7 @@ public class ClientNetworkPlayHandler
         if (ClientPlayNetworking.canSend(payload.getId()))
         {
             ClientPlayNetworking.send(payload);
-            MaLiLib.printDebug("ClientNetworkPlayHandler#sendServuxStructures(): sending payload id: {}", payload.getId());
+            MaLiLib.printDebug("ClientNetworkPlayHandler#sendServuxStructures(): sending payload id: {}", payload.getId().id());
         }
     }
     public static void receiveCarpetHello(CarpetHelloPayload payload, ClientPlayNetworking.Context ctx)
@@ -70,19 +73,19 @@ public class ClientNetworkPlayHandler
     {
         MaLiLib.printDebug("ClientNetworkPlayHandler#receiveServuxLitematics(): id: {} received ServUX Payload (size in bytes): {}", payload.getId(), payload.data().getSizeInBytes());
 
-        ((ServuxLitematicsHandler) ServuxLitematicsHandler.getInstance()).receiveServuxLitematics(payload.data(), ctx);
+        ((ServuxLitematicsHandler) ServuxLitematicsHandler.getInstance()).receiveServuxLitematics(payload.data(), ctx, payload.getId().id());
     }
     public static void receiveServuxMetadata(ServuxMetadataPayload payload, ClientPlayNetworking.Context ctx)
     {
         MaLiLib.printDebug("ClientNetworkPlayHandler#receiveServuxMetadata(): id: {} received ServUX Payload (size in bytes): {}", payload.getId(), payload.data().getSizeInBytes());
 
-        ((ServuxMetadataHandler) ServuxMetadataHandler.getInstance()).receiveServuxMetadata(payload.data(), ctx);
+        ((ServuxMetadataHandler) ServuxMetadataHandler.getInstance()).receiveServuxMetadata(payload.data(), ctx, payload.getId().id());
     }
     public static void receiveServuxStructures(ServuxStructuresPayload payload, ClientPlayNetworking.Context ctx)
     {
         // Client-bound packet received from the Server
         MaLiLib.printDebug("ClientNetworkPlayHandler#receiveServuxStructures(): id: {} received ServUX Payload (size in bytes): {}", payload.getId(), payload.data().getSizeInBytes());
 
-        ((ServuxStructuresHandler) ServuxStructuresHandler.getInstance()).receiveServuxStructures(payload.data(), ctx);
+        ((ServuxStructuresHandler) ServuxStructuresHandler.getInstance()).receiveServuxStructures(payload.data(), ctx, payload.getId().id());
     }
 }

@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.event;
 import fi.dy.masa.malilib.interfaces.IServuxMetadataListener;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,13 +40,13 @@ public class ServuxMetadataHandler implements IServuxMetadataManager
             }
         }
     }
-    public void receiveServuxMetadata(NbtCompound data, ClientPlayNetworking.Context ctx)
+    public void receiveServuxMetadata(NbtCompound data, ClientPlayNetworking.Context ctx, Identifier id)
     {
         if (!this.handlers.isEmpty())
         {
             for (IServuxMetadataListener handler : this.handlers)
             {
-                handler.receiveServuxMetadata(data, ctx);
+                handler.receiveServuxMetadata(data, ctx, id);
             }
         }
     }
@@ -60,23 +61,23 @@ public class ServuxMetadataHandler implements IServuxMetadataManager
             }
         }
     }
-    public void encodeServuxMetadata(NbtCompound data)
+    public void encodeServuxMetadata(NbtCompound data, Identifier id)
     {
         if (!this.handlers.isEmpty())
         {
             for (IServuxMetadataListener handler : this.handlers)
             {
-                handler.encodeServuxMetadata(data);
+                handler.encodeServuxMetadata(data, id);
             }
         }
     }
-    public void decodeServuxMetadata(NbtCompound data)
+    public void decodeServuxMetadata(NbtCompound data, Identifier id)
     {
         if (!this.handlers.isEmpty())
         {
             for (IServuxMetadataListener handler : this.handlers)
             {
-                handler.decodeServuxMetadata(data);
+                handler.decodeServuxMetadata(data, id);
             }
         }
     }
