@@ -8,9 +8,12 @@ import fi.dy.masa.malilib.network.payload.channel.ServuxMetadataPayload;
 import fi.dy.masa.malilib.network.payload.channel.ServuxStructuresPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
+/**
+ * This probably cannot be made abstract, because it references items in the static context directly
+ */
 public class ClientNetworkPlayRegister
 {
-    static ClientPlayNetworking.PlayPayloadHandler<CarpetHelloPayload> S2CCarpetNbtHandler;
+    static ClientPlayNetworking.PlayPayloadHandler<CarpetHelloPayload> S2CCarpetHelloHandler;
     static ClientPlayNetworking.PlayPayloadHandler<ServuxLitematicsPayload> S2CServuxLitematicsHandler;
     static ClientPlayNetworking.PlayPayloadHandler<ServuxMetadataPayload> S2CServuxMetadataHandler;
     static ClientPlayNetworking.PlayPayloadHandler<ServuxStructuresPayload> S2CServuxStructuresHandler;
@@ -27,7 +30,7 @@ public class ClientNetworkPlayRegister
                 MaLiLib.printDebug("ClientHandlerManager#registerDefaultReceivers(): Game is running in Single Player Mode.");
             MaLiLib.printDebug("ClientHandlerManager#registerDefaultReceivers(): isClient() true.  Register handlers.");
 
-            ClientPlayNetworking.registerGlobalReceiver(CarpetHelloPayload.TYPE, S2CCarpetNbtHandler);
+            ClientPlayNetworking.registerGlobalReceiver(CarpetHelloPayload.TYPE, S2CCarpetHelloHandler);
             ClientPlayNetworking.registerGlobalReceiver(ServuxLitematicsPayload.TYPE, S2CServuxLitematicsHandler);
             ClientPlayNetworking.registerGlobalReceiver(ServuxMetadataPayload.TYPE, S2CServuxMetadataHandler);
             ClientPlayNetworking.registerGlobalReceiver(ServuxStructuresPayload.TYPE, S2CServuxStructuresHandler);
@@ -51,7 +54,7 @@ public class ClientNetworkPlayRegister
     }
     static
     {
-        S2CCarpetNbtHandler = ClientNetworkPlayHandler::receiveCarpetHello;
+        S2CCarpetHelloHandler = ClientNetworkPlayHandler::receiveCarpetHello;
         S2CServuxLitematicsHandler = ClientNetworkPlayHandler::receiveServuxLitematics;
         S2CServuxMetadataHandler = ClientNetworkPlayHandler::receiveServuxMetadata;
         S2CServuxStructuresHandler = ClientNetworkPlayHandler::receiveServuxStructures;

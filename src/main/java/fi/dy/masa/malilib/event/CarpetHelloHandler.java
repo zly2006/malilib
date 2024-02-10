@@ -7,6 +7,9 @@ import net.minecraft.nbt.NbtCompound;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Interface Handler for Carpet Hello packets (Litematica)
+ */
 public class CarpetHelloHandler implements ICarpetHelloManager
 {
     private static final CarpetHelloHandler INSTANCE = new CarpetHelloHandler();
@@ -29,16 +32,6 @@ public class CarpetHelloHandler implements ICarpetHelloManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void sendCarpetHello(NbtCompound data)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (ICarpetHelloListener handler : this.handlers)
-            {
-                handler.sendCarpetHello(data);
-            }
-        }
-    }
     public void receiveCarpetHello(NbtCompound data, ClientPlayNetworking.Context ctx)
     {
         if (!this.handlers.isEmpty())
@@ -48,5 +41,9 @@ public class CarpetHelloHandler implements ICarpetHelloManager
                 handler.receiveCarpetHello(data, ctx);
             }
         }
+    }
+    public void sendCarpetHello(NbtCompound data)
+    {
+        // Downstream mods should implement this
     }
 }

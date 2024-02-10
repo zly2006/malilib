@@ -8,6 +8,9 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Interface Handler for Servux Structures packets (MiniHUD)
+ */
 public class ServuxStructuresHandler implements IServuxStructuresManager
 {
     private static final ServuxStructuresHandler INSTANCE = new ServuxStructuresHandler();
@@ -50,27 +53,6 @@ public class ServuxStructuresHandler implements IServuxStructuresManager
             }
         }
     }
-
-    public void sendServuxStructures(NbtCompound data)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IServuxStructuresListener handler : this.handlers)
-            {
-                handler.sendServuxStructures(data);
-            }
-        }
-    }
-    public void encodeServuxStructures(NbtCompound data, Identifier id)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IServuxStructuresListener handler : this.handlers)
-            {
-                handler.encodeServuxStructures(data, id);
-            }
-        }
-    }
     public void decodeServuxStructures(NbtCompound data, Identifier id)
     {
         if (!this.handlers.isEmpty())
@@ -80,5 +62,13 @@ public class ServuxStructuresHandler implements IServuxStructuresManager
                 handler.decodeServuxStructures(data, id);
             }
         }
+    }
+    public void sendServuxStructures(NbtCompound data)
+    {
+        // Downstream mods should implement this
+    }
+    public void encodeServuxStructures(NbtCompound data, Identifier id)
+    {
+        // Downstream mods should implement this
     }
 }

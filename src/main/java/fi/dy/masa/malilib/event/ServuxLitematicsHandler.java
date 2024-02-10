@@ -8,6 +8,9 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Interface Handler for Servux Litematics packets (Syncmatica / Litematica ?)
+ */
 public class ServuxLitematicsHandler implements IServuxLitematicsManager
 {
     private static final ServuxLitematicsHandler INSTANCE = new ServuxLitematicsHandler();
@@ -50,27 +53,6 @@ public class ServuxLitematicsHandler implements IServuxLitematicsManager
             }
         }
     }
-
-    public void sendServuxLitematics(NbtCompound data)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IServuxLitematicsListener handler : this.handlers)
-            {
-                handler.sendServuxLitematics(data);
-            }
-        }
-    }
-    public void encodeServuxLitematics(NbtCompound data, Identifier id)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IServuxLitematicsListener handler : this.handlers)
-            {
-                handler.encodeServuxLitematics(data, id);
-            }
-        }
-    }
     public void decodeServuxLitematics(NbtCompound data, Identifier id)
     {
         if (!this.handlers.isEmpty())
@@ -80,5 +62,13 @@ public class ServuxLitematicsHandler implements IServuxLitematicsManager
                 handler.decodeServuxLitematics(data, id);
             }
         }
+    }
+    public void sendServuxLitematics(NbtCompound data)
+    {
+        // Downstream mods should implement this
+    }
+    public void encodeServuxLitematics(NbtCompound data, Identifier id)
+    {
+        // Downstream mods should implement this
     }
 }

@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.network.packet;
 
 /**
- * Example PacketProvider file for downstream mods
+ * Example for PacketListeners for downstream mods
  */
-public class PacketProvider
+public class PacketUtils
 {
     //static SyncmaticaPayloadListener syncmaticaListener = new SyncmaticaPayloadListener();
     private static boolean payloadsRegistered = false;

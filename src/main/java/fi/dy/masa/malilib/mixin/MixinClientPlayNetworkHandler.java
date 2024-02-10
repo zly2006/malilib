@@ -40,6 +40,8 @@ public abstract class MixinClientPlayNetworkHandler
     {
         // Call only in case channels aren't registered.
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.worldBefore, this.world, MinecraftClient.getInstance());
+
+        // Abstract maybe in the future?
         ClientNetworkPlayInitHandler.registerPlayChannels();
         MaLiLib.printDebug("malilib_onPreGameJoin()");
     }
@@ -50,6 +52,8 @@ public abstract class MixinClientPlayNetworkHandler
         // Register receivers
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, this.world, MinecraftClient.getInstance());
         this.worldBefore = null;
+
+        // Abstract maybe in the future?
         ClientNetworkPlayInitHandler.registerReceivers();
         MaLiLib.printDebug("malilib_onPostGameJoin()");
     }

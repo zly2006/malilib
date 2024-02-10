@@ -6,6 +6,10 @@ import net.minecraft.server.MinecraftServer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Interface Handler for Server loading / unloading events --> similar to WorldLoadHandler,
+ * but it only executes once at the proper time to register packet receivers, etc.
+ */
 public class ServerHandler implements IServerManager
 {
 private static final ServerHandler INSTANCE = new ServerHandler();

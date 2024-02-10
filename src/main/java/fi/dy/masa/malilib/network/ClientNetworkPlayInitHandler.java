@@ -2,10 +2,13 @@ package fi.dy.masa.malilib.network;
 
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.network.packet.PacketProvider;
+import fi.dy.masa.malilib.network.packet.PacketUtils;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.test.ClientDebugSuite;
 
+/**
+ * Perhaps this can be made more abstract or simplified
+ */
 public class ClientNetworkPlayInitHandler
 {
     /**
@@ -16,7 +19,7 @@ public class ClientNetworkPlayInitHandler
         MaLiLib.printDebug("ClientNetworkPlayInitHandler#registerPlayChannels(): called.");
         PayloadTypeRegister.registerTypes(MaLiLibReference.COMMON_NAMESPACE);
         PayloadTypeRegister.registerPlayChannels();
-        PacketProvider.registerPayloads();
+        PacketUtils.registerPayloads();
         ClientDebugSuite.checkGlobalChannels();
     }
     /**

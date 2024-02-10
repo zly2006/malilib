@@ -37,7 +37,7 @@ public abstract class MixinWorldRenderer
             Matrix4f matrix4f2,
             CallbackInfo ci)
     {
-        /*
+        /* TODO - Don't copy the entire matrix stack unless we *absolutely* have to for broken Minecraft-bound render() calls
         MatrixStack matrixStack = new MatrixStack();
         matrixStack.multiplyPositionMatrix(matrix4f);
          */
@@ -61,7 +61,7 @@ public abstract class MixinWorldRenderer
             Matrix4f matrix4f2,
             CallbackInfo ci)
     {
-        /*
+        /* TODO - Don't copy the entire matrix stack unless we *absolutely* have to for broken Minecraft-bound render() calls
         MatrixStack matrixStack = new MatrixStack();
         matrixStack.multiplyPositionMatrix(matrix4f);
          */

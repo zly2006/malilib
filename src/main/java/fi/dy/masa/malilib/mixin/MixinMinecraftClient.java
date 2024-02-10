@@ -70,10 +70,6 @@ public abstract class MixinMinecraftClient
         {
             MaLiLibReference.SINGLE_PLAYER = true;
         }
-//        else
-//        {
-//            ClientNetworkPlayInitHandler.registerReceivers();
-//        }
         MaLiLib.printDebug("malilib_onLoadWorldPost()");
     }
 
@@ -82,6 +78,7 @@ public abstract class MixinMinecraftClient
     {
         this.worldBefore = this.world;
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.worldBefore, null, (MinecraftClient)(Object) this);
+
         MaLiLib.printDebug("malilib_onDisconnectPre()");
     }
 
@@ -91,6 +88,8 @@ public abstract class MixinMinecraftClient
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, null, (MinecraftClient)(Object) this);
         this.worldBefore = null;
         MaLiLibReference.SINGLE_PLAYER = false;
+
+        // Abstract in the future?
         ClientNetworkPlayInitHandler.unregisterReceivers();
         MaLiLib.printDebug("malilib_onDisconnectPost()");
     }

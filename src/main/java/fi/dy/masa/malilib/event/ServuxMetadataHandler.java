@@ -8,6 +8,9 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Interface Handler for Servux Metadata packets (Any downstream mod who needs special server-side data)
+ */
 public class ServuxMetadataHandler implements IServuxMetadataManager
 {
     private static final ServuxMetadataHandler INSTANCE = new ServuxMetadataHandler();
@@ -50,27 +53,6 @@ public class ServuxMetadataHandler implements IServuxMetadataManager
             }
         }
     }
-
-    public void sendServuxMetadata(NbtCompound data)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IServuxMetadataListener handler : this.handlers)
-            {
-                handler.sendServuxMetadata(data);
-            }
-        }
-    }
-    public void encodeServuxMetadata(NbtCompound data, Identifier id)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IServuxMetadataListener handler : this.handlers)
-            {
-                handler.encodeServuxMetadata(data, id);
-            }
-        }
-    }
     public void decodeServuxMetadata(NbtCompound data, Identifier id)
     {
         if (!this.handlers.isEmpty())
@@ -80,5 +62,13 @@ public class ServuxMetadataHandler implements IServuxMetadataManager
                 handler.decodeServuxMetadata(data, id);
             }
         }
+    }
+    public void sendServuxMetadata(NbtCompound data)
+    {
+        // Downstream mods should implement this
+    }
+    public void encodeServuxMetadata(NbtCompound data, Identifier id)
+    {
+        // Downstream mods should implement this
     }
 }

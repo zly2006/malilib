@@ -14,6 +14,12 @@ import net.minecraft.util.Identifier;
 
 import java.util.*;
 
+/**
+ * This is made to "manage" the payload types and do the actual channel registrations via the Fabric Network API (4.0.0+)
+ * From here, we Map the payload CODEC and TYPE into a HashMap; for our own reference by the Payloads based on their PacketType.
+ * This was done in an attempt to make the remaining functions more abstract, which doesn't seem to work in my own attempts,
+ * because the Payload Records themselves need to be declared statically.
+ */
 public class PayloadTypeRegister
 {
     // This is how it looks in the static context per a MOD, which must each include its own Custom Payload Records.
@@ -29,15 +35,6 @@ public class PayloadTypeRegister
     }
     private static boolean typesRegistered = false;
     private static boolean playRegistered = false;
-    public static void registerDefaultType(PayloadType type, String key, String namespace)
-    {
-        if (!TYPES.containsKey(type))
-        {
-            PayloadCodec codec = new PayloadCodec(type, key, namespace);
-            TYPES.put(type, codec);
-            MaLiLib.printDebug("PayloadTypeRegister#registerDefaultType(): Successfully registered new Payload id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
-        }
-    }
     public static void registerType(PayloadType type, String key, String namespace, String path)
     {
         if (!TYPES.containsKey(type))
