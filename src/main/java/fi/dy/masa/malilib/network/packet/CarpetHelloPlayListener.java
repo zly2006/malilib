@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.network.payload.PayloadCodec;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.payload.channel.CarpetHelloPayload;
-import fi.dy.masa.malilib.network.test.ClientDebugSuite;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -28,12 +27,22 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
         @Override
         public void receive(CarpetHelloPayload payload, ClientPlayNetworking.Context context)
         {
-            //CarpetHelloPlayListener.INSTANCE.receiveS2CPlayPayload(PayloadType.CARPET_HELLO, payload, context);
-            CarpetHelloPlayListener.INSTANCE.receiveS2CPlayPayload(PayloadType.CARPET_HELLO, payload, context.player().networkHandler);
-            //TODO --> let's try the network handler interface for Carpet Hello packets.
+            ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+
+            if (handler != null)
+            {
+                CarpetHelloPlayListener.INSTANCE.receiveS2CPlayPayload(PayloadType.CARPET_HELLO, payload, handler);
+                // TODO --> the networkHandler interface must be used for Carpet Server
+                //  because they don't use Fabric API.
+            }
+            else
+                CarpetHelloPlayListener.INSTANCE.receiveS2CPlayPayload(PayloadType.CARPET_HELLO, payload, context);
         }
     };
     private final Map<PayloadType, Boolean> registered = new HashMap<>();
+    private final boolean carpetRespond = true;
+    private boolean carpetRegister;
+    private String carpetVersion;
     @Override
     public PayloadType getPayloadType() { return PayloadType.CARPET_HELLO; }
 
@@ -41,7 +50,9 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
     public void reset(PayloadType type)
     {
         // Don't unregister
-        unregisterPlayHandler(type);
+        this.carpetRegister = false;
+        this.carpetVersion = "";
+        CarpetHelloPlayListener.INSTANCE.unregisterPlayHandler(type);
         if (this.registered.containsKey(type))
             this.registered.replace(type, false);
         else
@@ -71,13 +82,31 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
     public void decodeS2CNbtCompound(PayloadType type, NbtCompound data)
     {
         // Handle packet.
-        String carpetVersion = data.getString(PacketType.CarpetHello.HI);
-        MaLiLib.printDebug("CarpetHelloPlayListener#decodeS2CNbtCompound(): received Carpet Hello packet. (Carpet Server {})", carpetVersion);
+        if (!this.carpetRegister)
+        {
+            String carpetVersion = data.getString(PacketType.CarpetHello.HI);
+            MaLiLib.printDebug("CarpetHelloPlayListener#decodeS2CNbtCompound(): received Carpet Hello packet. (Carpet Server {})", carpetVersion);
 
-        this.registered.replace(type, true);
-        NbtCompound nbt = new NbtCompound();
-        nbt.putString(PacketType.CarpetHello.HELLO, MaLiLibReference.MOD_ID+"-"+MaLiLibReference.MOD_VERSION);
-        CarpetHelloPlayListener.INSTANCE.encodeC2SNbtCompound(type, nbt);
+            // We have a Carpet server.
+            this.carpetRegister = true;
+            this.carpetVersion = carpetVersion;
+            this.registered.replace(type, true);
+
+            // Respond to Carpet's HI packet.  Set to false if you don't want to participate.
+            if (this.carpetRespond)
+            {
+                // TODO --> Say HELLO back to Mr Gnembon's mod :),
+                //  We can fully implement various Carpet Hello packets from here on out directly.
+                NbtCompound nbt = new NbtCompound();
+                nbt.putString(PacketType.CarpetHello.HELLO, MaLiLibReference.MOD_ID + "-" + MaLiLibReference.MOD_VERSION);
+                CarpetHelloPlayListener.INSTANCE.encodeC2SNbtCompound(type, nbt);
+            }
+        }
+        else
+        {
+            // TODO --> Handle additional Carpet Packets
+            MaLiLib.printDebug("CarpetHelloPlayListener#decodeS2CNbtCompound(): received unhandled Carpet Hello packet. (size: {})", data.getSizeInBytes());
+        }
     }
 
     @Override
