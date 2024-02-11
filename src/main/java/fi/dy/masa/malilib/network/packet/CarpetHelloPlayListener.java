@@ -25,7 +25,8 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
         public void receive(CarpetHelloPayload payload, ClientPlayNetworking.Context context)
         {
             //MaLiLib.printDebug("CarpetHelloPlayListener#receive(): received a Carpet Hello payload.");
-            ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, payload, context);
+            //((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, payload, context);
+            CarpetHelloPlayListener.INSTANCE.receiveS2CPlayPayload(PayloadType.CARPET_HELLO, payload, context);
         }
     };
     private final Map<PayloadType, Boolean> registered = new HashMap<>();
