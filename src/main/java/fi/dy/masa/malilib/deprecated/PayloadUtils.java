@@ -1,9 +1,13 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.deprecated;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 
+/**
+ * Remaining code from some previous versions of my Network API
+ */
+@Deprecated(forRemoval = true)
 public class PayloadUtils
 {
     public static PacketByteBuf fromNbt(NbtCompound nbt, String key)

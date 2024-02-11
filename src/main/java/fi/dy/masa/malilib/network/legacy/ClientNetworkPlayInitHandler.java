@@ -1,14 +1,11 @@
-package fi.dy.masa.malilib.network;
+package fi.dy.masa.malilib.network.legacy;
 
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.network.packet.PacketUtils;
-import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
-import fi.dy.masa.malilib.network.test.ClientDebugSuite;
 
 /**
  * Perhaps this can be made more abstract or simplified
  */
+@Deprecated(forRemoval = true)
 public class ClientNetworkPlayInitHandler
 {
     /**
@@ -17,10 +14,10 @@ public class ClientNetworkPlayInitHandler
     public static void registerPlayChannels()
     {
         MaLiLib.printDebug("ClientNetworkPlayInitHandler#registerPlayChannels(): called.");
-        PayloadTypeRegister.registerTypes(MaLiLibReference.COMMON_NAMESPACE);
-        PayloadTypeRegister.registerPlayChannels();
-        PacketUtils.registerPayloads();
-        ClientDebugSuite.checkGlobalChannels();
+        //FIXME PayloadTypeRegister.registerTypes(MaLiLibReference.COMMON_NAMESPACE);
+        //FIXME PayloadTypeRegister.registerPlayChannels();
+        //FIXME PacketUtils.registerPayloads();
+        //ClientDebugSuite.checkGlobalChannels();
     }
     /**
      * Should be called when Client joins a server
@@ -28,13 +25,13 @@ public class ClientNetworkPlayInitHandler
     public static void registerReceivers()
     {
         MaLiLib.printDebug("ClientNetworkPlayInitHandler#registerReceivers(): called.");
-        ClientNetworkPlayRegister.registerReceivers();
-        ClientDebugSuite.checkGlobalChannels();
+        // FIXME ClientCommonHandlerRegister.registerReceivers();
+        //ClientDebugSuite.checkGlobalChannels();
     }
     public static void unregisterReceivers()
     {
         MaLiLib.printDebug("ClientNetworkPlayInitHandler#unregisterReceivers(): called.");
-        ClientNetworkPlayRegister.unregisterReceivers();
-        ClientDebugSuite.checkGlobalChannels();
+        // FIXME ClientCommonHandlerRegister.unregisterReceivers();
+        //ClientDebugSuite.checkGlobalChannels();
     }
 }

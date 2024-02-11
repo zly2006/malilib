@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinMinecraftServer
 {
     /**
-     * For invoking IntergratedServer() calls
-     * @param ci
+     * For invoking IntergratedServer() and DedicatedServer() calls --
+     * Works much better for Network API initialization
      */
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
     private void malilib_onServerStarting(CallbackInfo ci)

@@ -3,7 +3,8 @@ package fi.dy.masa.malilib.mixin;
 import javax.annotation.Nullable;
 
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.network.ClientNetworkPlayInitHandler;
+import fi.dy.masa.malilib.network.packet.PacketUtils;
+import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,7 +21,6 @@ import fi.dy.masa.malilib.event.WorldLoadHandler;
 public abstract class MixinClientPlayNetworkHandler
 {
     @Shadow private ClientWorld world;
-
     @Unique
     @Nullable private ClientWorld worldBefore;
 
@@ -41,8 +41,9 @@ public abstract class MixinClientPlayNetworkHandler
         // Call only in case channels aren't registered.
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.worldBefore, this.world, MinecraftClient.getInstance());
 
-        // Abstract maybe in the future?
-        ClientNetworkPlayInitHandler.registerPlayChannels();
+        // TODO For network API Debugging (For when you join a Remote Server)
+        PacketUtils.registerPayloads();
+        //((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayPayload(PayloadType.CARPET_HELLO);
         MaLiLib.printDebug("malilib_onPreGameJoin()");
     }
 
@@ -53,8 +54,9 @@ public abstract class MixinClientPlayNetworkHandler
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, this.world, MinecraftClient.getInstance());
         this.worldBefore = null;
 
-        // Abstract maybe in the future?
-        ClientNetworkPlayInitHandler.registerReceivers();
+        // TODO For network API Debugging (For when you join a Remote Server)
+        //((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayHandler(PayloadType.CARPET_HELLO);
+        PayloadTypeRegister.getInstance().registerAllHandlers();
         MaLiLib.printDebug("malilib_onPostGameJoin()");
     }
 }

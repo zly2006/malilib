@@ -1,9 +1,10 @@
-package fi.dy.masa.malilib.interfaces;
+package fi.dy.masa.malilib.deprecated;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
+@Deprecated
 public interface IServuxLitematicsListener
 {
     /**

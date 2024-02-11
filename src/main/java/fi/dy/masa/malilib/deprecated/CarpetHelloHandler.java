@@ -1,6 +1,5 @@
-package fi.dy.masa.malilib.event;
+package fi.dy.masa.malilib.deprecated;
 
-import fi.dy.masa.malilib.interfaces.ICarpetHelloListener;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
 
@@ -10,6 +9,7 @@ import java.util.List;
 /**
  * Interface Handler for Carpet Hello packets (Litematica)
  */
+@Deprecated
 public class CarpetHelloHandler implements ICarpetHelloManager
 {
     private static final CarpetHelloHandler INSTANCE = new CarpetHelloHandler();

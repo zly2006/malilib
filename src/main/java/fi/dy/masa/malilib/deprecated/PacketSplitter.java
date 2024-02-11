@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.network.legacy;
+package fi.dy.masa.malilib.deprecated;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ import net.minecraft.util.Identifier;
  * @author skyrising
  *
  */
-@Deprecated
+@Deprecated(forRemoval = false)
 public class PacketSplitter
 {
     public static final int MAX_TOTAL_PER_PACKET_S2C = 1048576;

@@ -1,37 +1,38 @@
-package fi.dy.masa.malilib.interfaces;
+package fi.dy.masa.malilib.deprecated;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
-public interface IServuxStructuresListener
+@Deprecated
+public interface IServuxMetadataListener
 {
     /**
      * Used by downstream mods to "reset()" their register status of the listener
      */
     default void reset() { }
     /**
-     * Used by downstream mods when they receive a ServuxStructuresPayload to decode
+     * Used by downstream mods when they receive a ServuxMetadataPayload to decode
      * @param data (Data contained in the payload)
      * @param ctx (Context packet is received by)
      * @param id (Pass the Payload Channel Id())
      */
-    default void receiveServuxStructures(NbtCompound data, ClientPlayNetworking.Context ctx, Identifier id) { }
+    default void receiveServuxMetadata(NbtCompound data, ClientPlayNetworking.Context ctx, Identifier id) { }
     /**
-     * Used by downstream mods when they decode a ServuxStructuresPayload
+     * Used by downstream mods when they decode a ServuxMetadataPayload
      * @param data (Data contained in the payload)
      * @param id (Pass the Payload Channel Id())
      */
-    default void decodeServuxStructures(NbtCompound data, Identifier id) { }
+    default void decodeServuxMetadata(NbtCompound data, Identifier id) { }
     /**
-     * Used by the downstream mod to encode the data for sending a ServuxStructuresPayload
+     * Used by the downstream mod to encode the data for sending a ServuxMetadataPayload
      * @param data (Data to be encapsulated in the Payload)
      * @param id (Pass the Payload Channel Id())
      */
-    default void encodeServuxStructures(NbtCompound data, Identifier id) { }
+    default void encodeServuxMetadata(NbtCompound data, Identifier id) { }
     /**
-     * Used by the downstream mod to send an encoded ServuxStructuresPayload
+     * Used by the downstream mod to send an encoded ServuxMetadataPayload
      * @param data (Data to be encapsulated in the Payload)
      */
-    default void sendServuxStructures(NbtCompound data) { }
+    default void sendServuxMetadata(NbtCompound data) { }
 }

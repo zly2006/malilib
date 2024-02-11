@@ -1,6 +1,5 @@
-package fi.dy.masa.malilib.event;
+package fi.dy.masa.malilib.deprecated;
 
-import fi.dy.masa.malilib.interfaces.IServuxStructuresListener;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -11,6 +10,7 @@ import java.util.List;
 /**
  * Interface Handler for Servux Structures packets (MiniHUD)
  */
+@Deprecated
 public class ServuxStructuresHandler implements IServuxStructuresManager
 {
     private static final ServuxStructuresHandler INSTANCE = new ServuxStructuresHandler();

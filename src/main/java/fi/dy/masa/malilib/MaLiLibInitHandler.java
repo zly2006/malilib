@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
 import fi.dy.masa.malilib.listeners.ServerListener;
-import fi.dy.masa.malilib.network.ClientNetworkPlayInitHandler;
 import fi.dy.masa.malilib.network.packet.PacketUtils;
 
 public class MaLiLibInitHandler implements IInitializationHandler
@@ -22,8 +21,7 @@ public class MaLiLibInitHandler implements IInitializationHandler
 
         MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeybind().setCallback(new CallbackOpenConfigGui());
 
-        // Register network protocols
-        ClientNetworkPlayInitHandler.registerPlayChannels();
+        // TODO New Server Listener Interface to Network API Testing
         ServerListener serverListener = new ServerListener();
         ServerHandler.getInstance().registerServerHandler(serverListener);
         PacketUtils.registerPayloads();

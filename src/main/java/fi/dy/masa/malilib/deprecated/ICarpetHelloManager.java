@@ -1,7 +1,6 @@
-package fi.dy.masa.malilib.event;
+package fi.dy.masa.malilib.deprecated;
 
-import fi.dy.masa.malilib.interfaces.ICarpetHelloListener;
-
+@Deprecated
 public interface ICarpetHelloManager
 {
     /**

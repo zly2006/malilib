@@ -89,11 +89,10 @@ public class RenderUtils
         DiffuseLighting.disableGuiDepthLighting();
     }
 
-    // TODO -- Uses Matrix4fStack method
-    //public static void enableDiffuseLightingForLevel(MatrixStack matrixStack)
-    //DiffuseLighting.enableForLevel(matrixStack.peek().getPositionMatrix());
     public static void enableDiffuseLightingForLevel()
     {
+        // Uses Matrix4fStack method now
+        //DiffuseLighting.enableForLevel(matrixStack.peek().getPositionMatrix());
         DiffuseLighting.enableForLevel();
     }
 
@@ -1238,7 +1237,7 @@ public class RenderUtils
         //matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(30));
         //matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(225));
 
-        // TODO -- Verify we get the correct rotations for this method
+        // TODO -- Verify we get the correct rotations for this method using the matrix4fRotateFix()
         matrix4fStack.rotateX(matrix4fRotateFix(30));
         matrix4fStack.rotateY(matrix4fRotateFix(225));
 

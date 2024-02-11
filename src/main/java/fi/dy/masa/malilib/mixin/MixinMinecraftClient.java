@@ -3,8 +3,6 @@ package fi.dy.masa.malilib.mixin;
 import javax.annotation.Nullable;
 
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.network.ClientNetworkPlayInitHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -26,7 +24,7 @@ public abstract class MixinMinecraftClient
     @Shadow
     public ClientWorld world;
 
-    @Shadow public abstract boolean isInSingleplayer();
+    //@Shadow public abstract boolean isInSingleplayer();
 
     @Unique
     private ClientWorld worldBefore;
@@ -66,10 +64,12 @@ public abstract class MixinMinecraftClient
             ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, worldClientIn, (MinecraftClient)(Object) this);
             this.worldBefore = null;
         }
+        /*
         if (this.isInSingleplayer())
         {
             MaLiLibReference.SINGLE_PLAYER = true;
         }
+         */
         MaLiLib.printDebug("malilib_onLoadWorldPost()");
     }
 
@@ -87,10 +87,8 @@ public abstract class MixinMinecraftClient
     {
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, null, (MinecraftClient)(Object) this);
         this.worldBefore = null;
-        MaLiLibReference.SINGLE_PLAYER = false;
+        //MaLiLibReference.SINGLE_PLAYER = false;
 
-        // Abstract in the future?
-        ClientNetworkPlayInitHandler.unregisterReceivers();
         MaLiLib.printDebug("malilib_onDisconnectPost()");
     }
 }

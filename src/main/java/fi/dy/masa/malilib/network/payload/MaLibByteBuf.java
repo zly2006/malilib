@@ -5,11 +5,11 @@ import net.minecraft.network.PacketByteBuf;
 
 /**
  * This can be used as a replacement for your legacy "PacketByteBuf" type of CustomPayloads,
- * And can be used to try to (re)-implement your IPluginChannelHandler
+ * And can be used to try to (re)-implement some of your IPluginChannelHandler based protocols
  */
-public class MaLibBuf extends PacketByteBuf
+public class MaLibByteBuf extends PacketByteBuf
 {
-    public MaLibBuf(ByteBuf parent)
+    public MaLibByteBuf(ByteBuf parent)
     {
         super(parent);
     }

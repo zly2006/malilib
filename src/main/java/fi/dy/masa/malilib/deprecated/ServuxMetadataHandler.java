@@ -1,6 +1,5 @@
-package fi.dy.masa.malilib.event;
+package fi.dy.masa.malilib.deprecated;
 
-import fi.dy.masa.malilib.interfaces.IServuxMetadataListener;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
@@ -11,6 +10,7 @@ import java.util.List;
 /**
  * Interface Handler for Servux Metadata packets (Any downstream mod who needs special server-side data)
  */
+@Deprecated
 public class ServuxMetadataHandler implements IServuxMetadataManager
 {
     private static final ServuxMetadataHandler INSTANCE = new ServuxMetadataHandler();

@@ -1,10 +1,10 @@
-package fi.dy.masa.malilib.network.legacy;
+package fi.dy.masa.malilib.deprecated;
 
 import java.util.Objects;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.PacketByteBuf;
 
-@Deprecated
+@Deprecated(forRemoval = false)
 public class PacketUtils
 {
     /**

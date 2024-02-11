@@ -1,10 +1,6 @@
-package fi.dy.masa.malilib.network;
+package fi.dy.masa.malilib.deprecated;
 
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.event.CarpetHelloHandler;
-import fi.dy.masa.malilib.event.ServuxLitematicsHandler;
-import fi.dy.masa.malilib.event.ServuxMetadataHandler;
-import fi.dy.masa.malilib.event.ServuxStructuresHandler;
 import fi.dy.masa.malilib.network.payload.channel.CarpetHelloPayload;
 import fi.dy.masa.malilib.network.payload.channel.ServuxLitematicsPayload;
 import fi.dy.masa.malilib.network.payload.channel.ServuxMetadataPayload;
@@ -24,6 +20,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
  * Wraps internally as:
  * --> MinecraftClient.getInstance().getNetworkHandler().sendPacket();
  */
+@Deprecated(forRemoval = true)
+// FIXME --> Move into an abstract layer
 public class ClientNetworkPlayHandler
 {
     public static void sendCarpetHello(CarpetHelloPayload payload)

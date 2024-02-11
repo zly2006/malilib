@@ -5,7 +5,7 @@ import net.minecraft.world.chunk.Chunk;
 
 public class ChunkUtils {
     /**
-     * Replaces getHighestNonEmptySectionYOffset() marked for removal from API --
+     * Replaces getHighestNonEmptySectionYOffset() marked for removal from Minecraft and used across downstream mods
      * Returns Maximum Y Offset Value of a Chunk.
      */
     public static int getHighestSectionYOffset(Chunk chunk)
