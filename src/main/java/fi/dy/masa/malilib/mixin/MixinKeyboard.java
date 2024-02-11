@@ -16,7 +16,7 @@ public abstract class MixinKeyboard implements IF3KeyStateSetter
     private boolean switchF3State;
 
     @Override
-    public void setF3KeyState(boolean value)
+    public void malilib$setF3KeyState(boolean value)
     {
         this.switchF3State = value;
     }
