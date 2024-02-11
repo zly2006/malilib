@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
+import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
 
@@ -99,6 +100,16 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
             for (IPluginConfigHandler<T> handler : this.handlers.get(type))
             {
                 handler.receiveS2CConfigPayload(type, payload, ctx);
+            }
+        }
+    }
+    public <P extends CustomPayload> void receiveS2CConfigPayload(PayloadType type, P payload, ClientConfigurationNetworkHandler networkHandler)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IPluginConfigHandler<T> handler : this.handlers.get(type))
+            {
+                handler.receiveS2CConfigPayload(type, payload, networkHandler);
             }
         }
     }

@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
 
@@ -104,6 +105,16 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
            }
        }
    }
+    public <P extends CustomPayload> void receiveS2CPlayPayload(PayloadType type, P payload, ClientPlayNetworkHandler networkHandler)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IPluginPlayHandler<T> handler : this.handlers.get(type))
+            {
+                handler.receiveS2CPlayPayload(type, payload, networkHandler);
+            }
+        }
+    }
    public void decodeS2CNbtCompound(PayloadType type, NbtCompound data)
    {
        if (!this.handlers.isEmpty())
