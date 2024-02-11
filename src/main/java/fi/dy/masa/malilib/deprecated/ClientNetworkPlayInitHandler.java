@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.network.legacy;
+package fi.dy.masa.malilib.deprecated;
 
 import fi.dy.masa.malilib.MaLiLib;
 

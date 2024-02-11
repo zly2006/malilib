@@ -84,7 +84,7 @@ public class PayloadTypeRegister
         MaLiLib.printDebug("PayloadTypeRegister#registerPlayChannel(): registering Play C2S Channel: {}", id.id().toString());
         PayloadTypeRegistry.playC2S().register(id, packetCodec);
         PayloadTypeRegistry.playS2C().register(id, packetCodec);
-        // TODO Do we need to register the S2C channel also or only on the server?
+        // We need to register the channel bi-directionally for it to work.
     }
 
     public <T extends CustomPayload> void registerConfigChannel(PayloadType type, CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> packetCodec)
@@ -99,14 +99,21 @@ public class PayloadTypeRegister
         MaLiLib.printDebug("PayloadTypeRegister#registerConfigChannel(): registering Configuration C2S Channel: {}", id.id().toString());
         PayloadTypeRegistry.configurationC2S().register(id, packetCodec);
         PayloadTypeRegistry.configurationS2C().register(id, packetCodec);
-        // TODO Do we need to register the S2C channel also or only on the server?
+        // We need to register the channel bi-directionally for it to work.
     }
+
+    /**
+     * Abstract method for CustomPayload's to define their PACKET_CODEC value.
+     */
     @Nullable
     public PayloadCodec getPayloadCodec(PayloadType type)
     {
         //MaLiLib.printDebug("PayloadTypeRegister#getPayloadCodec(): type: {}", type.toString());
         return TYPES.getOrDefault(type, null);
     }
+    /**
+     * Abstract method for CustomPayload's to define their PACKET_TYPE value, derived from the channel Identifier
+     */
     @Nullable
     public Identifier getIdentifier(PayloadType type)
     {
@@ -115,7 +122,8 @@ public class PayloadTypeRegister
     }
 
     /**
-     * The Payload "KEY" field is simply for declaring any special "default" key Values for data if none are known
+     * The Payload "KEY" field is simply for declaring any special "default" key Values for data if none are known,
+     * Such as for example nbt.getString(KEY) -- These are not required, but can prove to be very useful.
      */
     @Nullable
     public String getKey(PayloadType type)
@@ -123,11 +131,15 @@ public class PayloadTypeRegister
         //MaLiLib.printDebug("PayloadTypeRegister#getKey(): type: {}", type.toString());
         return TYPES.getOrDefault(type, null).getKey();
     }
+
+    /**
+     * The init for this method.  This must be called at the first possible moment, so it can behave like it's static
+     */
     public void initPayloads()
     {
         MaLiLib.printDebug("PayloadTypeRegister#initPayloads(): invoked.");
 
-        // TODO Register the play/config channel codec for every existing PayLoad or CRASH :)
+        // Register the play/config channel codec for every existing PayLoad in our TYPES HashMap<>.
         register(PayloadType.CARPET_HELLO,      "carpet_hello",             "carpet",   "hello");
         register(PayloadType.MALILIB_BYTE_BUF,  "malilib_bytebuf",          "malilib",  "bytebuf");
         register(PayloadType.SERVUX_LITEMATICS, "litematic_shared_storage", "servux",   "litematics");
@@ -136,14 +148,25 @@ public class PayloadTypeRegister
 
         listTypes();
     }
+
+    /**
+     * Forces a reset() signal on all registered payloads
+     */
     public void resetPayloads()
     {
         MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): sending reset() to all registered Payload types.");
         for (PayloadType type : TYPES.keySet())
         {
-            ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).reset(type);
+            if (TYPES.get(type).isPlayRegistered())
+                ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).reset(type);
+            if (TYPES.get(type).isConfigRegistered())
+                ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).reset(type);
         }
     }
+    /**
+     * Forces a Type Handler Registration signal on all registered payloads
+     * This is how data() fur babies are made.
+     */
     public void registerAllHandlers()
     {
         MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): sending registerHandlers() to all registered Payload types.");
