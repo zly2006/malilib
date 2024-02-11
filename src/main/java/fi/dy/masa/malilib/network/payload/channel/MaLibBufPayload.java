@@ -13,7 +13,7 @@ import net.minecraft.network.packet.CustomPayload;
  */
 public record MaLibBufPayload(MaLibByteBuf byteBuf) implements CustomPayload
 {
-    public static final Id<MaLibBufPayload> TYPE = new Id<>(PayloadTypeRegister.INSTANCE.getIdentifier(PayloadType.MALILIB_BYTE_BUF));
+    public static final Id<MaLibBufPayload> TYPE = new Id<>(PayloadTypeRegister.INSTANCE.getIdentifier(PayloadType.MALILIB_BYTEBUF));
     public static final PacketCodec<PacketByteBuf, MaLibBufPayload> CODEC = CustomPayload.codecOf(MaLibBufPayload::write, MaLibBufPayload::new);
 
     public MaLibBufPayload(PacketByteBuf input)

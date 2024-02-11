@@ -24,7 +24,7 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
         @Override
         public void receive(CarpetHelloPayload payload, ClientPlayNetworking.Context context)
         {
-            MaLiLib.printDebug("CarpetHelloPlayListener#receive(): received a Carpet Hello payload.");
+            //MaLiLib.printDebug("CarpetHelloPlayListener#receive(): received a Carpet Hello payload.");
             ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, payload, context);
         }
     };
@@ -48,7 +48,7 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
     {
         //IPluginPlayHandler.super.receiveS2CPlayPayload(type, payload, ctx);
         CarpetHelloPayload packet = (CarpetHelloPayload) payload;
-        MaLiLib.printDebug("CarpetHelloPlayListener#receiveS2CPlayPayload(): received a CarpetHello payload.");
+        //MaLiLib.printDebug("CarpetHelloPlayListener#receiveS2CPlayPayload(): received a CarpetHello payload.");
         ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).decodeS2CNbtCompound(PayloadType.CARPET_HELLO, packet.data());
     }
 
@@ -72,7 +72,7 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
     {
         //IPluginPlayHandler.super.encodeC2SNbtCompound(type, data);
 
-        MaLiLib.printDebug("CarpetHelloPlayListener#encodeC2SNbtCompound(): encoding Carpet Hello packet.");
+        //MaLiLib.printDebug("CarpetHelloPlayListener#encodeC2SNbtCompound(): encoding Carpet Hello packet.");
 
         // Encode Payload
         CarpetHelloPayload payload = new CarpetHelloPayload(data);
@@ -105,7 +105,7 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
         {
             PayloadTypeRegister.getInstance().registerPlayChannel(type, ClientCommonHandlerRegister.getInstance().getPayloadType(type), ClientCommonHandlerRegister.getInstance().getPacketCodec(type));
         }
-        ClientDebugSuite.checkGlobalChannels();
+        ClientDebugSuite.checkGlobalPlayChannels();
     }
     @Override
     @SuppressWarnings("unchecked")
@@ -126,7 +126,7 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
             else
                 this.registered.put(type, true);
         }
-        ClientDebugSuite.checkGlobalChannels();
+        ClientDebugSuite.checkGlobalPlayChannels();
     }
 
     @Override

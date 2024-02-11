@@ -22,20 +22,15 @@ public class ServerListener implements IServerListener
     public void onServerStarting(MinecraftServer minecraftServer)
     {
         PacketUtils.registerPayloads();
-        //((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayPayload(PayloadType.CARPET_HELLO);
-        //((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).registerConfigPayload(PayloadType.CARPET_HELLO);
-
-        //ClientDebugSuite.checkGlobalChannels();
         MaLiLib.printDebug("MinecraftServerEvents#onServerStarting(): invoked.");
     }
     public void onServerStarted(MinecraftServer minecraftServer)
     {
-        // PacketUtils is responsible for registering the Handlers
-
+        // PayloadTypeRegister is responsible for registering *ALL* of the Handlers
         PayloadTypeRegister.getInstance().registerAllHandlers();
-        //((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayHandler(PayloadType.CARPET_HELLO);
-        //((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).registerConfigHandler(PayloadType.CARPET_HELLO);
-        ClientDebugSuite.checkGlobalChannels();
+
+        ClientDebugSuite.checkGlobalPlayChannels();
+        ClientDebugSuite.checkGlobalConfigChannels();
 
         MaLiLib.printDebug("MinecraftServerEvents#onServerStarted(): invoked.");
     }
@@ -43,7 +38,9 @@ public class ServerListener implements IServerListener
     {
         PayloadTypeRegister.getInstance().resetPayloads();
         // This sends a global reset() to all network Handler's.
-        ClientDebugSuite.checkGlobalChannels();
+
+        ClientDebugSuite.checkGlobalPlayChannels();
+        ClientDebugSuite.checkGlobalConfigChannels();
 
         MaLiLib.printDebug("MinecraftServerEvents#onServerStopping(): invoked.");
     }

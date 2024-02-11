@@ -7,7 +7,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
 
-public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHandler {
+public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHandler
+{
     private static final ClientPlayHandler<CustomPayload> INSTANCE = new ClientPlayHandler<>();
     private final ArrayListMultimap<PayloadType, IPluginPlayHandler<T>> handlers = ArrayListMultimap.create();
     public static IClientPlayHandler getInstance()

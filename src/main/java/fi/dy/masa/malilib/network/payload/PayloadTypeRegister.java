@@ -36,7 +36,6 @@ public class PayloadTypeRegister
             TYPES.put(type, codec);
             MaLiLib.printDebug("PayloadTypeRegister#register(): registering a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
 
-            MaLiLib.printDebug("PayloadTypeRegister#register(): VERIFY containsKey(): {}", TYPES.containsKey(type));
             return codec;
         }
         else
@@ -141,7 +140,7 @@ public class PayloadTypeRegister
 
         // Register the play/config channel codec for every existing PayLoad in our TYPES HashMap<>.
         register(PayloadType.CARPET_HELLO,      "carpet_hello",             "carpet",   "hello");
-        register(PayloadType.MALILIB_BYTE_BUF,  "malilib_bytebuf",          "malilib",  "bytebuf");
+        register(PayloadType.MALILIB_BYTEBUF,   "malilib_bytebuf",          "malilib",  "bytebuf");
         register(PayloadType.SERVUX_LITEMATICS, "litematic_shared_storage", "servux",   "litematics");
         register(PayloadType.SERVUX_METADATA,   "metadata_service",         "servux",   "metadata");
         register(PayloadType.SERVUX_STRUCTURES, "structure_bounding_boxes", "servux",   "structures");

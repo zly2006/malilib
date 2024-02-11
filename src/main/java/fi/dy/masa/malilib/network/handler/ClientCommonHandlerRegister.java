@@ -40,8 +40,8 @@ public class ClientCommonHandlerRegister
     @SuppressWarnings("unchecked")
     public <T extends CustomPayload> CustomPayload.Id<T> getPayloadType(PayloadType type)
     {
-        MaLiLib.printDebug("ClientCommonHandlerRegister#getPayload(): type {}", type.toString());
-        if (type == PayloadType.MALILIB_BYTE_BUF)
+        //MaLiLib.printDebug("ClientCommonHandlerRegister#getPayload(): type {}", type.toString());
+        if (type == PayloadType.MALILIB_BYTEBUF)
         {
             return (CustomPayload.Id<T>) MaLibBufPayload.TYPE;
         }
@@ -69,8 +69,8 @@ public class ClientCommonHandlerRegister
     @SuppressWarnings("unchecked")
     public <B extends ByteBuf, T extends CustomPayload> PacketCodec<B, T> getPacketCodec(PayloadType type)
     {
-        MaLiLib.printDebug("ClientCommonHandlerRegister#getPacketCodec(): type {}", type.toString());
-        if (type == PayloadType.MALILIB_BYTE_BUF)
+        //MaLiLib.printDebug("ClientCommonHandlerRegister#getPacketCodec(): type {}", type.toString());
+        if (type == PayloadType.MALILIB_BYTEBUF)
         {
             return (PacketCodec<B, T>) MaLibBufPayload.CODEC;
         }

@@ -13,11 +13,12 @@ public interface IPluginConfigHandler<T extends CustomPayload> extends ClientCon
     default void registerConfigPayload(PayloadType type) {}
     default void registerConfigHandler(PayloadType type) {}
     default void unregisterConfigHandler(PayloadType type) {}
-    default <P extends CustomPayload> void receiveS2CConfigPayload(PayloadType type, P payload, ClientConfigurationNetworking.Context ctx) { }
+    default <P extends CustomPayload> void receiveS2CConfigPayload(PayloadType type, P payload, ClientConfigurationNetworking.Context ctx) {}
     default void decodeS2CNbtCompound(PayloadType type, NbtCompound data) {}
     default void decodeS2CByteBuf(PayloadType type, MaLibByteBuf data) {}
 
-    // TODO Senders/Encoders need to be implemented on the Mod end, but we provide them with an interface for calling ClientConfig.send by default
+    // TODO Senders/Encoders need to be implemented on the Mod end,
+    //  but we need to provide them with an interface for calling ClientConfig.send on a standard roadmap
     default <P extends CustomPayload> void sendC2SConfigPayload(PayloadType type, P payload) {}
     default void encodeC2SNbtCompound(PayloadType type, NbtCompound data) {}
     default void encodeC2SByteBuf(PayloadType type, MaLibByteBuf data) {}

@@ -7,7 +7,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworkin
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
 
-public class ClientConfigHandler<T extends CustomPayload> implements IClientConfigHandler {
+public class ClientConfigHandler<T extends CustomPayload> implements IClientConfigHandler
+{
     private static final ClientConfigHandler<CustomPayload> INSTANCE = new ClientConfigHandler<>();
     private final ArrayListMultimap<PayloadType, IPluginConfigHandler<T>> handlers = ArrayListMultimap.create();
     public static IClientConfigHandler getInstance()

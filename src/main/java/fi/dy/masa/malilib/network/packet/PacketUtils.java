@@ -9,21 +9,21 @@ import fi.dy.masa.malilib.network.payload.channel.CarpetHelloPayload;
  */
 public class PacketUtils
 {
-    static fi.dy.masa.malilib.network.packet.CarpetHelloPlayListener<CarpetHelloPayload> CarpetHelloPlayListener = fi.dy.masa.malilib.network.packet.CarpetHelloPlayListener.INSTANCE;
+    static CarpetHelloPlayListener<CarpetHelloPayload> CarpetHelloistener = CarpetHelloPlayListener.INSTANCE;
     private static boolean payloadsRegistered = false;
     public static void registerPayloads()
     {
         if (payloadsRegistered)
             return;
         MaLiLib.printDebug("PacketProvider#registerPayloads(): registerCarpetHandler()");
-        ClientPlayHandler.getInstance().registerClientPlayHandler(CarpetHelloPlayListener);
+        ClientPlayHandler.getInstance().registerClientPlayHandler(CarpetHelloistener);
 
         payloadsRegistered = true;
     }
     public static void unregisterPayloads()
     {
         MaLiLib.printDebug("PacketProvider#unregisterPayloads(): unregisterCarpetHandler()");
-        ClientPlayHandler.getInstance().unregisterClientPlayHandler(CarpetHelloPlayListener);
+        ClientPlayHandler.getInstance().unregisterClientPlayHandler(CarpetHelloistener);
 
         payloadsRegistered = false;
     }
