@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.listeners;
 
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.interfaces.IServerListener;
-import fi.dy.masa.malilib.network.packet.PacketUtils;
+import fi.dy.masa.malilib.network.packet.PacketUtils_example;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.test.ClientDebugSuite;
 import net.minecraft.server.MinecraftServer;
@@ -21,8 +21,11 @@ public class ServerListener implements IServerListener
 
     public void onServerStarting(MinecraftServer minecraftServer)
     {
-        PacketUtils.registerPayloads();
+        PacketUtils_example.registerPayloads();
         MaLiLib.printDebug("MinecraftServerEvents#onServerStarting(): invoked.");
+
+        ClientDebugSuite.checkGlobalPlayChannels();
+        ClientDebugSuite.checkGlobalConfigChannels();
     }
     public void onServerStarted(MinecraftServer minecraftServer)
     {
@@ -46,7 +49,9 @@ public class ServerListener implements IServerListener
     }
     public void onServerStopped(MinecraftServer minecraftServer)
     {
-        //ClientDebugSuite.checkGlobalChannels();
+        ClientDebugSuite.checkGlobalPlayChannels();
+        ClientDebugSuite.checkGlobalConfigChannels();
+
         MaLiLib.printDebug("MinecraftServerEvents#onServerStopped(): invoked.");
     }
 }

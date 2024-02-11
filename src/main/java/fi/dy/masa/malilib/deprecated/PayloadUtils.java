@@ -6,8 +6,9 @@ import net.minecraft.network.PacketByteBuf;
 
 /**
  * Remaining code from some previous versions of my Network API
+ * Might want to keep for future purposes
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public class PayloadUtils
 {
     public static PacketByteBuf fromNbt(NbtCompound nbt, String key)

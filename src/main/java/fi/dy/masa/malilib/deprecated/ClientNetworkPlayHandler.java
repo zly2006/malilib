@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.network.payload.channel.ServuxStructuresPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 /**
- * Probably can make this abstract, but it needs to be mapped as static, so I made a secondary abstract layer under the "packet" folder via PacketUtils.
+ * Probably can make this abstract, but it needs to be mapped as static, so I made a secondary abstract layer under the "packet" folder via PacketUtils_example.
  */
 
 /** NOTES
@@ -20,7 +20,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
  * Wraps internally as:
  * --> MinecraftClient.getInstance().getNetworkHandler().sendPacket();
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 // FIXME --> Move into an abstract layer
 public class ClientNetworkPlayHandler
 {
@@ -75,19 +75,19 @@ public class ClientNetworkPlayHandler
     {
         MaLiLib.printDebug("ClientNetworkPlayHandler#receiveServuxLitematics(): id: {} received Servux Litematics Payload (size in bytes): {}", payload.getId(), payload.data().getSizeInBytes());
 
-        ((ServuxLitematicsHandler) ServuxLitematicsHandler.getInstance()).receiveServuxLitematics(payload.data(), ctx, payload.getId().id());
+        //((ServuxLitematicsHandler) ServuxLitematicsHandler.getInstance()).receiveServuxLitematics(payload.data(), ctx, payload.getId().id());
     }
     public static void receiveServuxMetadata(ServuxMetadataPayload payload, ClientPlayNetworking.Context ctx)
     {
         MaLiLib.printDebug("ClientNetworkPlayHandler#receiveServuxMetadata(): id: {} received Servux Metadata Payload (size in bytes): {}", payload.getId(), payload.data().getSizeInBytes());
 
-        ((ServuxMetadataHandler) ServuxMetadataHandler.getInstance()).receiveServuxMetadata(payload.data(), ctx, payload.getId().id());
+        //((ServuxMetadataHandler) ServuxMetadataHandler.getInstance()).receiveServuxMetadata(payload.data(), ctx, payload.getId().id());
     }
     public static void receiveServuxStructures(ServuxStructuresPayload payload, ClientPlayNetworking.Context ctx)
     {
         // Client-bound packet received from the Server
         MaLiLib.printDebug("ClientNetworkPlayHandler#receiveServuxStructures(): id: {} received Servux Structures Payload (size in bytes): {}", payload.getId(), payload.data().getSizeInBytes());
 
-        ((ServuxStructuresHandler) ServuxStructuresHandler.getInstance()).receiveServuxStructures(payload.data(), ctx, payload.getId().id());
+        //((ServuxStructuresHandler) ServuxStructuresHandler.getInstance()).receiveServuxStructures(payload.data(), ctx, payload.getId().id());
     }
 }

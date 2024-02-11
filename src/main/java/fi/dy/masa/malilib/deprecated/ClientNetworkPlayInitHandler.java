@@ -5,7 +5,7 @@ import fi.dy.masa.malilib.MaLiLib;
 /**
  * Perhaps this can be made more abstract or simplified
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public class ClientNetworkPlayInitHandler
 {
     /**
@@ -16,7 +16,7 @@ public class ClientNetworkPlayInitHandler
         MaLiLib.printDebug("ClientNetworkPlayInitHandler#registerPlayChannels(): called.");
         //FIXME PayloadTypeRegister.registerTypes(MaLiLibReference.COMMON_NAMESPACE);
         //FIXME PayloadTypeRegister.registerPlayChannels();
-        //FIXME PacketUtils.registerPayloads();
+        //FIXME PacketUtils_example.registerPayloads();
         //ClientDebugSuite.checkGlobalChannels();
     }
     /**

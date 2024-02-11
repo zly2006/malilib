@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.network.packet;
 
 /**
- * Example PacketType file for Downstream Mods
+ * Example PacketType_example file for Downstream Mods
  */
-public class PacketType
+public class PacketType_example
 {
     public record CarpetHello()
     {

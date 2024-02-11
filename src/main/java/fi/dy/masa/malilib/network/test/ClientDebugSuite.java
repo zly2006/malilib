@@ -11,7 +11,6 @@ import java.util.Set;
 /**
  * Simple Debug Logger test to display all registered Global Play channels that extends CustomPayload in this static context
  */
-//@Deprecated
 public class ClientDebugSuite
 {
     public static void checkGlobalPlayChannels()

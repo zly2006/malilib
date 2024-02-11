@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
 import fi.dy.masa.malilib.listeners.ServerListener;
-import fi.dy.masa.malilib.network.packet.PacketUtils;
+import fi.dy.masa.malilib.network.packet.PacketUtils_example;
 
 public class MaLiLibInitHandler implements IInitializationHandler
 {
@@ -21,10 +21,11 @@ public class MaLiLibInitHandler implements IInitializationHandler
 
         MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeybind().setCallback(new CallbackOpenConfigGui());
 
-        // TODO New Server Listener Interface to Network API Testing
+        // TODO - New Server Listener Interface to Network API Testing,
+        //  Can remove in future
         ServerListener serverListener = new ServerListener();
         ServerHandler.getInstance().registerServerHandler(serverListener);
-        PacketUtils.registerPayloads();
+        PacketUtils_example.registerPayloads();
     }
 
     private static class CallbackOpenConfigGui implements IHotkeyCallback

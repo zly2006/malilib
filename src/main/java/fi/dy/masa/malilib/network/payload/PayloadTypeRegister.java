@@ -14,7 +14,7 @@ import java.util.*;
 
 /**
  * This is made to "manage" the payload types and do the actual channel registrations via the Fabric Network API (4.0.0+)
- * From here, we Map the payload CODEC and TYPE into a HashMap; for our own reference by the Payloads based on their PacketType.
+ * From here, we Map the payload CODEC and TYPE into a HashMap; for our own reference by the Payloads based on their PacketType_example.
  * This was done in an attempt to make the remaining functions more abstract.
  */
 public class PayloadTypeRegister
@@ -145,7 +145,8 @@ public class PayloadTypeRegister
         register(PayloadType.SERVUX_METADATA,   "metadata_service",         "servux",   "metadata");
         register(PayloadType.SERVUX_STRUCTURES, "structure_bounding_boxes", "servux",   "structures");
 
-        listTypes();
+        // TODO -- Remove debugging calls
+        //listTypes();
     }
 
     /**
