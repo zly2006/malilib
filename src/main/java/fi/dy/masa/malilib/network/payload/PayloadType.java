@@ -7,9 +7,12 @@ public enum PayloadType
 {
     MALILIB_BYTEBUF,
     CARPET_HELLO,
-    SERVUX_STRUCTURES,
+    SERVUX_BLOCKS,
+    SERVUX_BYTEBUF,
+    SERVUX_ENTITIES,
+    SERVUX_LITEMATICS,
     SERVUX_METADATA,
-    SERVUX_LITEMATICS;
+    SERVUX_STRUCTURES;
     public boolean exists(PayloadType type)
     {
         for (final PayloadType p : PayloadType.values())

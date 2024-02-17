@@ -140,9 +140,11 @@ public class PayloadTypeRegister
 
         // Register the play/config channel codec for every existing PayLoad in our TYPES HashMap<>.
         register(PayloadType.CARPET_HELLO,      "carpet_hello",             "carpet",   "hello");
-        register(PayloadType.MALILIB_BYTEBUF,   "malilib_bytebuf",          "malilib",  "bytebuf");
-        register(PayloadType.SERVUX_LITEMATICS, "litematic_shared_storage", "servux",   "litematics");
-        register(PayloadType.SERVUX_METADATA,   "metadata_service",         "servux",   "metadata");
+        //register(PayloadType.MALILIB_BYTEBUF,   "malilib_bytebuf",          "malilib",  "bytebuf");
+        //register(PayloadType.SERVUX_BLOCKS,     "block_metadata",           "servux",   "blocks");
+        //register(PayloadType.SERVUX_ENTITIES,   "entity_provider",          "servux",   "entities");
+        //register(PayloadType.SERVUX_LITEMATICS, "litematic_shared_storage", "servux",   "litematics");
+        //register(PayloadType.SERVUX_METADATA,   "metadata_service",         "servux",   "metadata");
         register(PayloadType.SERVUX_STRUCTURES, "structure_bounding_boxes", "servux",   "structures");
 
         // TODO -- Remove debugging calls
