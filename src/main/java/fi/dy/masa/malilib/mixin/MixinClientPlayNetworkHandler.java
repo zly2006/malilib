@@ -51,11 +51,10 @@ public abstract class MixinClientPlayNetworkHandler {
 
     @Inject(method = "onGameJoin", at = @At("RETURN"))
     private void malilib_onPostGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
-        // Register receivers
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, this.world, MinecraftClient.getInstance());
         this.worldBefore = null;
 
-        // TODO For network API Debugging (For when you join a Remote Server)
+        // For network API handler registration
         PayloadTypeRegister.getInstance().registerAllHandlers();
         MaLiLib.printDebug("malilib_onPostGameJoin()");
     }
