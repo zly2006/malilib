@@ -103,6 +103,24 @@ public class PayloadTypeRegister
     }
 
     /**
+     * Search for a registered Payload type by Identifier
+     */
+    @Nullable
+    public PayloadType getPayloadType(Identifier id)
+    {
+        MaLiLib.printDebug("PayloadTypeRegister#getPayloadType(): checking for payload type: {}", id.toString());
+        for (PayloadType type : TYPES.keySet())
+        {
+            PayloadCodec codec = TYPES.get(type);
+            if (codec != null && codec.getId() == id)
+            {
+                return type;
+            }
+        }
+        // Not found
+        return null;
+    }
+    /**
      * The init for this method.  This must be called at the first possible moment, so it can behave like it's static
      */
     public void initPayloads()

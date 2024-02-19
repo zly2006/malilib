@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHandler
 {
@@ -105,13 +106,13 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
            }
        }
    }
-    public <P extends CustomPayload> void receiveS2CPlayPayload(PayloadType type, P payload, ClientPlayNetworkHandler networkHandler)
+    public <P extends CustomPayload> void receiveS2CPlayPayload(PayloadType type, P payload, ClientPlayNetworkHandler networkHandler, CallbackInfo ci)
     {
         if (!this.handlers.isEmpty())
         {
             for (IPluginPlayHandler<T> handler : this.handlers.get(type))
             {
-                handler.receiveS2CPlayPayload(type, payload, networkHandler);
+                handler.receiveS2CPlayPayload(type, payload, networkHandler, ci);
             }
         }
     }

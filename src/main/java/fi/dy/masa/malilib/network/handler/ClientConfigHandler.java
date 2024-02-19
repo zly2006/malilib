@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworkin
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public class ClientConfigHandler<T extends CustomPayload> implements IClientConfigHandler
 {
@@ -103,13 +104,13 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
             }
         }
     }
-    public <P extends CustomPayload> void receiveS2CConfigPayload(PayloadType type, P payload, ClientConfigurationNetworkHandler networkHandler)
+    public <P extends CustomPayload> void receiveS2CConfigPayload(PayloadType type, P payload, ClientConfigurationNetworkHandler networkHandler, CallbackInfo ci)
     {
         if (!this.handlers.isEmpty())
         {
             for (IPluginConfigHandler<T> handler : this.handlers.get(type))
             {
-                handler.receiveS2CConfigPayload(type, payload, networkHandler);
+                handler.receiveS2CConfigPayload(type, payload, networkHandler, ci);
             }
         }
     }

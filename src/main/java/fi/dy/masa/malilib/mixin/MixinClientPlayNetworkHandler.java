@@ -3,8 +3,13 @@ package fi.dy.masa.malilib.mixin;
 import javax.annotation.Nullable;
 
 import fi.dy.masa.malilib.MaLiLib;
+//import fi.dy.masa.malilib.network.handler.ClientPlayHandler;
 import fi.dy.masa.malilib.network.packet.PacketUtils_example;
+//import fi.dy.masa.malilib.network.payload.PayloadType;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
+//import fi.dy.masa.malilib.network.payload.channel.*;
+//import net.minecraft.network.packet.CustomPayload;
+import fi.dy.masa.malilib.event.WorldLoadHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -15,18 +20,17 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
-import fi.dy.masa.malilib.event.WorldLoadHandler;
 
-@Mixin(ClientPlayNetworkHandler.class)
-public abstract class MixinClientPlayNetworkHandler
-{
-    @Shadow private ClientWorld world;
+@Mixin(value = ClientPlayNetworkHandler.class, priority = 998)
+public abstract class MixinClientPlayNetworkHandler {
+    @Shadow
+    private ClientWorld world;
     @Unique
-    @Nullable private ClientWorld worldBefore;
+    @Nullable
+    private ClientWorld worldBefore;
 
     @Inject(method = "onGameJoin", at = @At("HEAD"))
-    private void malilib_onPreJoinGameHead(GameJoinS2CPacket packet, CallbackInfo ci)
-    {
+    private void malilib_onPreJoinGameHead(GameJoinS2CPacket packet, CallbackInfo ci) {
         // Need to grab the old world reference at the start of the method,
         // because the next injection point is right after the world has been assigned,
         // since we need the new world reference for the callback.
@@ -34,10 +38,9 @@ public abstract class MixinClientPlayNetworkHandler
     }
 
     @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
-                target = "Lnet/minecraft/client/MinecraftClient;joinWorld(" +
-                         "Lnet/minecraft/client/world/ClientWorld;)V"))
-    private void malilib_onPreGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
-    {
+            target = "Lnet/minecraft/client/MinecraftClient;joinWorld(" +
+                    "Lnet/minecraft/client/world/ClientWorld;)V"))
+    private void malilib_onPreGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
         // Call only in case channels aren't registered.
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.worldBefore, this.world, MinecraftClient.getInstance());
 
@@ -47,8 +50,7 @@ public abstract class MixinClientPlayNetworkHandler
     }
 
     @Inject(method = "onGameJoin", at = @At("RETURN"))
-    private void malilib_onPostGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
-    {
+    private void malilib_onPostGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
         // Register receivers
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, this.world, MinecraftClient.getInstance());
         this.worldBefore = null;
@@ -57,4 +59,75 @@ public abstract class MixinClientPlayNetworkHandler
         PayloadTypeRegister.getInstance().registerAllHandlers();
         MaLiLib.printDebug("malilib_onPostGameJoin()");
     }
+
+    /**
+     * OPTIONAL CODE -- NOT REQUIRED!
+     * This is required for "exposing" Custom Payload Packets that are getting obfuscated behind the Play channel filters,
+     * And it also allows for "OpenToLan" functionality to work, because via the Fabric API, the network handlers are NULL.
+     * If handled this way, you must use ci.cancel() if successfully matched.
+     * Perhaps it's a bug in Fabric?
+     */
+    /*
+    @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
+    private void malilib_onCustomPayload(CustomPayload packet, CallbackInfo ci)
+    {
+        /**
+         * You can't use packet.getData() here anymore, it no longer exists.
+         * You can put this under each Payload Type, though.
+         * But to what end if Fabric API can handle this safely?
+         *
+        if (!MinecraftClient.getInstance().isOnThread())
+        {
+            return;
+        }
+
+        // See if this packet matches one of our registered types
+        PayloadType type = PayloadTypeRegister.getInstance().getPayloadType(packet.getId().id());
+        if (type != null)
+        {
+            switch (type)
+            {
+                case CARPET_HELLO:
+                    CarpetHelloPayload carpetPayload = (CarpetHelloPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, carpetPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    break;
+                case MALILIB_BYTEBUF:
+                    MaLibBufPayload malilibPayload = (MaLibBufPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.MALILIB_BYTEBUF, malilibPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    break;
+                case SERVUX_BLOCKS:
+                    ServuxBlocksPayload blocksPayload = (ServuxBlocksPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_BLOCKS, blocksPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    break;
+                //case SERVUX_BYTEBUF:
+                    //ServuxBytebufPayload servuxPayload = (ServuxBytebufPayload) packet;
+                    //((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_BYTEBUF, servuxPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    //break;
+                case SERVUX_ENTITIES:
+                    ServuxEntitiesPayload entitiesPayload = (ServuxEntitiesPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_ENTITIES, entitiesPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    break;
+                case SERVUX_LITEMATICS:
+                    ServuxLitematicsPayload litematicsPayload = (ServuxLitematicsPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_LITEMATICS, litematicsPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    break;
+                case SERVUX_METADATA:
+                    ServuxMetadataPayload metadataPayload = (ServuxMetadataPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_METADATA, metadataPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    break;
+                case SERVUX_STRUCTURES:
+                    ServuxStructuresPayload structuresPayload = (ServuxStructuresPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_STRUCTURES, structuresPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    break;
+                default:
+                    MaLiLib.logger.error("malilib_onCustomPayload(): unhandled packet received of type: {} // {}", type, packet.getId().id());
+                    break;
+            }
+
+            // According to PacketTypeRegister, we own this, so cancel it.
+            if (ci.isCancellable())
+                ci.cancel();
+        }
+    }
+    */
 }

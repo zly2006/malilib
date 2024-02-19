@@ -16,6 +16,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,10 +29,10 @@ public abstract class CarpetHelloPlayListener_example<T extends CustomPayload> i
         public void receive(CarpetHelloPayload payload, ClientPlayNetworking.Context context)
         {
             ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
-
+            CallbackInfo ci = new CallbackInfo("CarpetHelloPlayListener_example", false);
             if (handler != null)
             {
-                CarpetHelloPlayListener_example.INSTANCE.receiveS2CPlayPayload(PayloadType.CARPET_HELLO, payload, handler);
+                CarpetHelloPlayListener_example.INSTANCE.receiveS2CPlayPayload(PayloadType.CARPET_HELLO, payload, handler, ci);
                 // TODO --> the networkHandler interface must be used for Carpet Server
                 //  because they don't use Fabric API.
             }
@@ -69,13 +70,16 @@ public abstract class CarpetHelloPlayListener_example<T extends CustomPayload> i
     }
 
     @Override
-    public <P extends CustomPayload> void receiveS2CPlayPayload(PayloadType type, P payload, ClientPlayNetworkHandler handler)
+    public <P extends CustomPayload> void receiveS2CPlayPayload(PayloadType type, P payload, ClientPlayNetworkHandler handler, CallbackInfo ci)
     {
         // Store the network handler here if wanted
         MaLiLib.printDebug("CarpetHelloPlayListener_example#receiveS2CPlayPayload(): handling packet via network handler interface.");
 
         CarpetHelloPayload packet = (CarpetHelloPayload) payload;
         ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).decodeS2CNbtCompound(PayloadType.CARPET_HELLO, packet.data());
+
+        if (ci.isCancellable())
+            ci.cancel();
     }
 
     @Override

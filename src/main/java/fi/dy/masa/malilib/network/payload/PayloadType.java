@@ -5,8 +5,8 @@ package fi.dy.masa.malilib.network.payload;
  */
 public enum PayloadType
 {
-    MALILIB_BYTEBUF,
     CARPET_HELLO,
+    MALILIB_BYTEBUF,
     SERVUX_BLOCKS,
     SERVUX_BYTEBUF,
     SERVUX_ENTITIES,

@@ -4,9 +4,9 @@ import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 public interface IPluginConfigHandler<T extends CustomPayload> extends ClientConfigurationNetworking.ConfigurationPayloadHandler<T>
 {
@@ -16,7 +16,7 @@ public interface IPluginConfigHandler<T extends CustomPayload> extends ClientCon
     default void registerConfigHandler(PayloadType type) {}
     default void unregisterConfigHandler(PayloadType type) {}
     default <P extends CustomPayload> void receiveS2CConfigPayload(PayloadType type, P payload, ClientConfigurationNetworking.Context ctx) {}
-    default <P extends CustomPayload> void receiveS2CConfigPayload(PayloadType type, P payload, ClientConfigurationNetworkHandler handler) {}
+    default <P extends CustomPayload> void receiveS2CConfigPayload(PayloadType type, P payload, ClientConfigurationNetworkHandler handler, CallbackInfo ci) {}
     default void decodeS2CNbtCompound(PayloadType type, NbtCompound data) {}
     default void decodeS2CByteBuf(PayloadType type, MaLibByteBuf data) {}
 
