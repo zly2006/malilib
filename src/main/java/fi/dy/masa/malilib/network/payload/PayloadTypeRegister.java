@@ -27,8 +27,7 @@ public class PayloadTypeRegister
     {
         initPayloads();
     }
-    @Nullable
-    public PayloadCodec register(PayloadType type, String key, String namespace, String path)
+    public void register(PayloadType type, String key, String namespace, String path)
     {
         if (!TYPES.containsKey(type))
         {
@@ -36,38 +35,10 @@ public class PayloadTypeRegister
             TYPES.put(type, codec);
             MaLiLib.printDebug("PayloadTypeRegister#register(): registering a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
 
-            return codec;
         }
         else
         {
             MaLiLib.printDebug("PayloadTypeRegister#register(): type {} already exists.", type.toString());
-            return null;
-        }
-    }
-    @Nullable
-    public PayloadCodec register(IPayloadType payloadType)
-    {
-        // Maybe this works as long as the "PayloadType" exists?
-        PayloadType type = payloadType.getType();
-
-        // Basic check for sanity
-        if (!type.exists(type))
-        {
-            MaLiLib.printDebug("PayloadTypeRegister#register(): unhandled type {} given.", type.toString());
-            return null;
-        }
-        if (!TYPES.containsKey(type))
-        {
-            PayloadCodec codec = new PayloadCodec(type, payloadType.getKey(), payloadType.getNamespace(), payloadType.getPath());
-            TYPES.put(type, codec);
-            MaLiLib.printDebug("PayloadTypeRegister#register(): registered a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
-
-            return codec;
-        }
-        else
-        {
-            MaLiLib.printDebug("PayloadTypeRegister#register(): type {} already exists.", type.toString());
-            return null;
         }
     }
 
@@ -138,7 +109,8 @@ public class PayloadTypeRegister
     {
         MaLiLib.printDebug("PayloadTypeRegister#initPayloads(): invoked.");
 
-        // Register the play/config channel codec for every existing PayLoad in our TYPES HashMap<>.
+        // Register the play/config channel codec for every existing PayLoad in our TYPES HashMap<>,
+        // or fail to register the channel, and don't attempt to handle the packets.
         register(PayloadType.CARPET_HELLO,      "carpet_hello",             "carpet",   "hello");
         //register(PayloadType.MALILIB_BYTEBUF,   "malilib_bytebuf",          "malilib",  "bytebuf");
         //register(PayloadType.SERVUX_BLOCKS,     "block_metadata",           "servux",   "blocks");
@@ -147,7 +119,7 @@ public class PayloadTypeRegister
         //register(PayloadType.SERVUX_METADATA,   "metadata_service",         "servux",   "metadata");
         register(PayloadType.SERVUX_STRUCTURES, "structure_bounding_boxes", "servux",   "structures");
 
-        // TODO -- Remove debugging calls
+        // Debugging call
         //listTypes();
     }
 
