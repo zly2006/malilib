@@ -7,6 +7,9 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 
+/**
+ * Used for handling Mainline Carpet Mod's NBT packet channel
+ */
 public record CarpetHelloPayload(NbtCompound data) implements CustomPayload
 {
     public static final Id<CarpetHelloPayload> TYPE = new Id<>(PayloadTypeRegister.INSTANCE.getIdentifier(PayloadType.CARPET_HELLO));
