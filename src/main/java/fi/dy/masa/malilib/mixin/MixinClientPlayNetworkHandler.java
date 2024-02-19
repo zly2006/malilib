@@ -62,10 +62,11 @@ public abstract class MixinClientPlayNetworkHandler {
 
     /**
      * OPTIONAL CODE -- NOT REQUIRED!
-     * This is required for "exposing" Custom Payload Packets that are getting obfuscated behind the Play channel filters,
-     * And it also allows for "OpenToLan" functionality to work, because via the Fabric API, the network handlers are NULL.
+     * This is for "exposing" Custom Payload Packets that are getting obfuscated behind the Play channel,
+     * And it also allows for "OpenToLan" functionality to work, because via the Fabric API,
+     * the network handlers are set to NULL, and fail to function.
      * If handled this way, you must use ci.cancel() if successfully matched.
-     * Perhaps it's a bug in Fabric?
+     * Perhaps it's a bug in the Fabric API for OpenToLan?
      */
     /*
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
