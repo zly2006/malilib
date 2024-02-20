@@ -4,12 +4,13 @@ import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.network.handler.ClientConfigHandler;
 import fi.dy.masa.malilib.network.handler.ClientPlayHandler;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -49,12 +50,21 @@ public class PayloadTypeRegister
         // Never Attempt to "re-register" a channel.  Bad things will happen.
         if (codec == null || codec.isPlayRegistered())
             return;
+
         codec.registerPlayCodec();
 
-        MaLiLib.printDebug("PayloadTypeRegister#registerPlayChannel(): registering Play C2S Channel: {}", id.id().toString());
-        PayloadTypeRegistry.playC2S().register(id, packetCodec);
-        PayloadTypeRegistry.playS2C().register(id, packetCodec);
-        // We need to register the channel bi-directionally for it to work.
+        if (PayloadTypeRegistryImpl.PLAY_S2C.get(id) != null || PayloadTypeRegistryImpl.PLAY_C2S.get(id) != null)
+        {
+            // This just saved Minecraft from crashing, your welcome.
+            MaLiLib.logger.warn("registerPlayChannel(): blocked duplicate Play Channel registration attempt for: {}.", id.id().toString());
+        }
+        else
+        {
+            MaLiLib.printDebug("PayloadTypeRegister#registerPlayChannel(): registering Play C2S Channel: {}", id.id().toString());
+            PayloadTypeRegistry.playC2S().register(id, packetCodec);
+            PayloadTypeRegistry.playS2C().register(id, packetCodec);
+            // We need to register the channel bi-directionally for it to work.
+        }
     }
 
     public <T extends CustomPayload> void registerConfigChannel(PayloadType type, CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> packetCodec)
@@ -66,10 +76,18 @@ public class PayloadTypeRegister
             return;
         codec.registerConfigCodec();
 
-        MaLiLib.printDebug("PayloadTypeRegister#registerConfigChannel(): registering Configuration C2S Channel: {}", id.id().toString());
-        PayloadTypeRegistry.configurationC2S().register(id, packetCodec);
-        PayloadTypeRegistry.configurationS2C().register(id, packetCodec);
-        // We need to register the channel bi-directionally for it to work.
+        if (PayloadTypeRegistryImpl.CONFIGURATION_S2C.get(id) != null || PayloadTypeRegistryImpl.CONFIGURATION_C2S.get(id) != null)
+        {
+            // This just saved Minecraft from crashing, your welcome.
+            MaLiLib.logger.warn("registerConfigChannel(): blocked duplicate Configuration Channel registration attempt for: {}.", id.id().toString());
+        }
+        else
+        {
+            MaLiLib.printDebug("PayloadTypeRegister#registerConfigChannel(): registering Configuration C2S Channel: {}", id.id().toString());
+            PayloadTypeRegistry.configurationC2S().register(id, packetCodec);
+            PayloadTypeRegistry.configurationS2C().register(id, packetCodec);
+            // We need to register the channel bi-directionally for it to work.
+        }
     }
 
     /**
@@ -108,7 +126,7 @@ public class PayloadTypeRegister
     @Nullable
     public PayloadType getPayloadType(Identifier id)
     {
-        MaLiLib.printDebug("PayloadTypeRegister#getPayloadType(): checking for payload type: {}", id.toString());
+        //MaLiLib.printDebug("PayloadTypeRegister#getPayloadType(): checking for payload type: {}", id.toString());
         for (PayloadType type : TYPES.keySet())
         {
             PayloadCodec codec = TYPES.get(type);
@@ -120,6 +138,7 @@ public class PayloadTypeRegister
         // Not found
         return null;
     }
+
     /**
      * The init for this method.  This must be called at the first possible moment, so it can behave like it's static
      */
