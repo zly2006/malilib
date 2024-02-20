@@ -43,31 +43,31 @@ public class ClientCommonHandlerRegister
         //MaLiLib.printDebug("ClientCommonHandlerRegister#getPayload(): type {}", type.toString());
         if (type == PayloadType.CARPET_HELLO)
         {
-            return (CustomPayload.Id<T>) CarpetHelloPayload.TYPE;
+            return (CustomPayload.Id<T>) CarpetS2CHelloPayload.TYPE;
         }
         else if (type == PayloadType.MALILIB_BYTEBUF)
         {
-            return (CustomPayload.Id<T>) MaLibBufPayload.TYPE;
+            return (CustomPayload.Id<T>) MaLibS2CBufPayload.TYPE;
         }
         else if (type == PayloadType.SERVUX_BLOCKS)
         {
-            return (CustomPayload.Id<T>) ServuxBlocksPayload.TYPE;
+            return (CustomPayload.Id<T>) ServuxS2CBlocksPayload.TYPE;
         }
         else if (type == PayloadType.SERVUX_ENTITIES)
         {
-            return (CustomPayload.Id<T>) ServuxEntitiesPayload.TYPE;
+            return (CustomPayload.Id<T>) ServuxS2CEntitiesPayload.TYPE;
         }
         else if (type == PayloadType.SERVUX_LITEMATICS)
         {
-            return (CustomPayload.Id<T>) ServuxMetadataPayload.TYPE;
+            return (CustomPayload.Id<T>) ServuxS2CMetadataPayload.TYPE;
         }
         else if (type == PayloadType.SERVUX_METADATA)
         {
-            return (CustomPayload.Id<T>) ServuxMetadataPayload.TYPE;
+            return (CustomPayload.Id<T>) ServuxS2CMetadataPayload.TYPE;
         }
         else if (type == PayloadType.SERVUX_STRUCTURES)
         {
-            return (CustomPayload.Id<T>) ServuxStructuresPayload.TYPE;
+            return (CustomPayload.Id<T>) ServuxS2CStructuresPayload.TYPE;
         }
         else
         {
@@ -80,31 +80,31 @@ public class ClientCommonHandlerRegister
         //MaLiLib.printDebug("ClientCommonHandlerRegister#getPacketCodec(): type {}", type.toString());
         if (type == PayloadType.CARPET_HELLO)
         {
-            return (PacketCodec<B, T>) CarpetHelloPayload.CODEC;
+            return (PacketCodec<B, T>) CarpetS2CHelloPayload.CODEC;
         }
         else if (type == PayloadType.MALILIB_BYTEBUF)
         {
-            return (PacketCodec<B, T>) MaLibBufPayload.CODEC;
+            return (PacketCodec<B, T>) MaLibS2CBufPayload.CODEC;
         }
         else if (type == PayloadType.SERVUX_BLOCKS)
         {
-            return (PacketCodec<B, T>) ServuxBlocksPayload.CODEC;
+            return (PacketCodec<B, T>) ServuxS2CBlocksPayload.CODEC;
         }
         else if (type == PayloadType.SERVUX_ENTITIES)
         {
-            return (PacketCodec<B, T>) ServuxEntitiesPayload.CODEC;
+            return (PacketCodec<B, T>) ServuxS2CEntitiesPayload.CODEC;
         }
         else if (type == PayloadType.SERVUX_LITEMATICS)
         {
-            return (PacketCodec<B, T>) ServuxLitematicsPayload.CODEC;
+            return (PacketCodec<B, T>) ServuxS2CLitematicsPayload.CODEC;
         }
         else if (type == PayloadType.SERVUX_METADATA)
         {
-            return (PacketCodec<B, T>) ServuxMetadataPayload.CODEC;
+            return (PacketCodec<B, T>) ServuxS2CMetadataPayload.CODEC;
         }
         else if (type == PayloadType.SERVUX_STRUCTURES)
         {
-            return (PacketCodec<B, T>) ServuxStructuresPayload.CODEC;
+            return (PacketCodec<B, T>) ServuxS2CStructuresPayload.CODEC;
         }
         else
         {

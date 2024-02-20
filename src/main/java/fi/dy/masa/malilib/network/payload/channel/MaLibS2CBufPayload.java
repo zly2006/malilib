@@ -10,12 +10,12 @@ import net.minecraft.network.packet.CustomPayload;
 /**
  * Example Payload Type for extending a PacketByteBuf
  */
-public record MaLibBufPayload(MaLibByteBuf byteBuf) implements CustomPayload
+public record MaLibS2CBufPayload(MaLibByteBuf byteBuf) implements CustomPayload
 {
-    public static final Id<MaLibBufPayload> TYPE = new Id<>(PayloadTypeRegister.INSTANCE.getIdentifier(PayloadType.MALILIB_BYTEBUF));
-    public static final PacketCodec<PacketByteBuf, MaLibBufPayload> CODEC = CustomPayload.codecOf(MaLibBufPayload::write, MaLibBufPayload::new);
+    public static final Id<MaLibS2CBufPayload> TYPE = new Id<>(PayloadTypeRegister.INSTANCE.getIdentifier(PayloadType.MALILIB_BYTEBUF));
+    public static final PacketCodec<PacketByteBuf, MaLibS2CBufPayload> CODEC = CustomPayload.codecOf(MaLibS2CBufPayload::write, MaLibS2CBufPayload::new);
 
-    public MaLibBufPayload(PacketByteBuf input)
+    public MaLibS2CBufPayload(PacketByteBuf input)
     {
         this(new MaLibByteBuf(input.readBytes(input.readableBytes())));
     }

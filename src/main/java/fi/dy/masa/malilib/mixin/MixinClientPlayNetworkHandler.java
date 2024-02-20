@@ -3,12 +3,12 @@ package fi.dy.masa.malilib.mixin;
 import javax.annotation.Nullable;
 
 import fi.dy.masa.malilib.MaLiLib;
-//import fi.dy.masa.malilib.network.handler.ClientPlayHandler;
+import fi.dy.masa.malilib.network.handler.ClientPlayHandler;
 import fi.dy.masa.malilib.network.packet.PacketUtils_example;
-//import fi.dy.masa.malilib.network.payload.PayloadType;
+import fi.dy.masa.malilib.network.payload.PayloadType;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
-//import fi.dy.masa.malilib.network.payload.channel.*;
-//import net.minecraft.network.packet.CustomPayload;
+import fi.dy.masa.malilib.network.payload.channel.*;
+import net.minecraft.network.packet.CustomPayload;
 import fi.dy.masa.malilib.event.WorldLoadHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -67,7 +67,6 @@ public abstract class MixinClientPlayNetworkHandler {
      * If handled this way, you must use ci.cancel() if successfully matched.
      * Perhaps it's a bug in the Fabric API for OpenToLan?
      */
-    /*
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
     private void malilib_onCustomPayload(CustomPayload packet, CallbackInfo ci)
     {
@@ -75,7 +74,7 @@ public abstract class MixinClientPlayNetworkHandler {
          * You can't use packet.getData() here anymore, it no longer exists.
          * You can put this under each Payload Type, though.
          * But to what end if Fabric API can handle this safely?
-         *
+         */
         if (!MinecraftClient.getInstance().isOnThread())
         {
             return;
@@ -88,15 +87,15 @@ public abstract class MixinClientPlayNetworkHandler {
             switch (type)
             {
                 case CARPET_HELLO:
-                    CarpetHelloPayload carpetPayload = (CarpetHelloPayload) packet;
+                    CarpetS2CHelloPayload carpetPayload = (CarpetS2CHelloPayload) packet;
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, carpetPayload, (ClientPlayNetworkHandler) (Object) this, ci);
                     break;
                 case MALILIB_BYTEBUF:
-                    MaLibBufPayload malilibPayload = (MaLibBufPayload) packet;
+                    MaLibS2CBufPayload malilibPayload = (MaLibS2CBufPayload) packet;
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.MALILIB_BYTEBUF, malilibPayload, (ClientPlayNetworkHandler) (Object) this, ci);
                     break;
                 case SERVUX_BLOCKS:
-                    ServuxBlocksPayload blocksPayload = (ServuxBlocksPayload) packet;
+                    ServuxS2CBlocksPayload blocksPayload = (ServuxS2CBlocksPayload) packet;
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_BLOCKS, blocksPayload, (ClientPlayNetworkHandler) (Object) this, ci);
                     break;
                 //case SERVUX_BYTEBUF:
@@ -104,19 +103,19 @@ public abstract class MixinClientPlayNetworkHandler {
                     //((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_BYTEBUF, servuxPayload, (ClientPlayNetworkHandler) (Object) this, ci);
                     //break;
                 case SERVUX_ENTITIES:
-                    ServuxEntitiesPayload entitiesPayload = (ServuxEntitiesPayload) packet;
+                    ServuxS2CEntitiesPayload entitiesPayload = (ServuxS2CEntitiesPayload) packet;
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_ENTITIES, entitiesPayload, (ClientPlayNetworkHandler) (Object) this, ci);
                     break;
                 case SERVUX_LITEMATICS:
-                    ServuxLitematicsPayload litematicsPayload = (ServuxLitematicsPayload) packet;
+                    ServuxS2CLitematicsPayload litematicsPayload = (ServuxS2CLitematicsPayload) packet;
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_LITEMATICS, litematicsPayload, (ClientPlayNetworkHandler) (Object) this, ci);
                     break;
                 case SERVUX_METADATA:
-                    ServuxMetadataPayload metadataPayload = (ServuxMetadataPayload) packet;
+                    ServuxS2CMetadataPayload metadataPayload = (ServuxS2CMetadataPayload) packet;
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_METADATA, metadataPayload, (ClientPlayNetworkHandler) (Object) this, ci);
                     break;
                 case SERVUX_STRUCTURES:
-                    ServuxStructuresPayload structuresPayload = (ServuxStructuresPayload) packet;
+                    ServuxS2CStructuresPayload structuresPayload = (ServuxS2CStructuresPayload) packet;
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_STRUCTURES, structuresPayload, (ClientPlayNetworkHandler) (Object) this, ci);
                     break;
                 default:
@@ -129,5 +128,4 @@ public abstract class MixinClientPlayNetworkHandler {
                 ci.cancel();
         }
     }
-    */
 }
