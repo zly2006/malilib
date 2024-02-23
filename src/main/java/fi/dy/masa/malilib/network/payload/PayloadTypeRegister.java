@@ -1,8 +1,11 @@
 package fi.dy.masa.malilib.network.payload;
 
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.handler.config.ClientConfigHandler;
+import fi.dy.masa.malilib.network.handler.config.ServerConfigHandler;
 import fi.dy.masa.malilib.network.handler.play.ClientPlayHandler;
+import fi.dy.masa.malilib.network.handler.play.ServerPlayHandler;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.minecraft.network.PacketByteBuf;
@@ -175,9 +178,19 @@ public class PayloadTypeRegister
         for (PayloadType type : TYPES.keySet())
         {
             if (TYPES.get(type).isPlayRegistered())
-                ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).reset(type);
+            {
+                if (MaLiLibReference.isClient())
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).reset(type);
+                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isIntegrated() || MaLiLibReference.isDedicated())
+                    ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).reset(type);
+            }
             if (TYPES.get(type).isConfigRegistered())
-                ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).reset(type);
+            {
+                if (MaLiLibReference.isClient())
+                    ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).reset(type);
+                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isIntegrated() || MaLiLibReference.isDedicated())
+                    ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).reset(type);
+            }
         }
     }
     /**
@@ -192,9 +205,19 @@ public class PayloadTypeRegister
         for (PayloadType type : TYPES.keySet())
         {
             if (TYPES.get(type).isPlayRegistered())
-                ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayHandler(type);
+            {
+                if (MaLiLibReference.isClient())
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayHandler(type);
+                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isIntegrated() || MaLiLibReference.isDedicated())
+                    ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayHandler(type);
+            }
             if (TYPES.get(type).isConfigRegistered())
-                ((ClientConfigHandler<?>) ClientPlayHandler.getInstance()).registerConfigHandler(type);
+            {
+                if (MaLiLibReference.isClient())
+                    ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).registerConfigHandler(type);
+                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isIntegrated() || MaLiLibReference.isDedicated())
+                    ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).registerConfigHandler(type);
+            }
         }
     }
     // For Debugging only

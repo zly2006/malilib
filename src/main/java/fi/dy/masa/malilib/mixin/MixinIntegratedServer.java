@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.mixin;
 
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,8 +27,11 @@ public class MixinIntegratedServer
     {
         if (cir.getReturnValue())
         {
-            MaLiLib.logger.info("MaLiLib OpenToLan Mode detected.");
+            MaLiLib.logger.info("MaLiLib OpenToLan Mode detected.  Resetting Network API.");
             MaLiLibReference.setOpenToLan(true);
+
+            PayloadTypeRegister.getInstance().resetPayloads();
+            PayloadTypeRegister.getInstance().registerAllHandlers();
         }
     }
 }
