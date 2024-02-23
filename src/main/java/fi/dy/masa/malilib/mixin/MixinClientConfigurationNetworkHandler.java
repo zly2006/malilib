@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinClientConfigurationNetworkHandler
 {
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-    private void malilib_onConfigCustomPayload(CustomPayload packet, CallbackInfo ci)
+    private void malilib_onCustomPayload(CustomPayload packet, CallbackInfo ci)
     {
         if (!MinecraftClient.getInstance().isOnThread())
         {
@@ -62,7 +62,7 @@ public class MixinClientConfigurationNetworkHandler
                     ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.SERVUX_STRUCTURES, structuresPayload, handler, ci);
                     break;
                 default:
-                    MaLiLib.logger.error("malilib_onConfigCustomPayload(): unhandled packet received of type: {} // {}", type, packet.getId().id());
+                    MaLiLib.logger.error("malilib_onCustomPayload(): [CONFIG] unhandled packet received of type: {} // {}", type, packet.getId().id());
                     break;
             }
 

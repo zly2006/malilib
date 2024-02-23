@@ -17,7 +17,7 @@ public class MixinIntegratedServer
     {
         if (cir.getReturnValue())
         {
-            MaLiLib.logger.info("MaLiLib Integrated Server Mode detected.");
+            MaLiLib.printDebug("MaLiLib Integrated Server Mode detected.");
             MaLiLibReference.setIntegrated(true);
         }
     }
@@ -26,7 +26,7 @@ public class MixinIntegratedServer
     {
         if (cir.getReturnValue())
         {
-            MaLiLib.logger.info("MaLiLib OpenToLan Mode detected.  Listening for Clients.");
+            MaLiLib.printDebug("MaLiLib OpenToLan Mode detected.");
             MaLiLibReference.setOpenToLan(true);
         }
     }

@@ -28,7 +28,12 @@ public class MaLiLibReference
     {
         if (toggle)
         {
-            dedicated_server = isServer();
+            if (isServer())
+            {
+                dedicated_server = true;
+            }
+            else
+                dedicated_server = false;
         }
         else
         {

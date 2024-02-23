@@ -70,7 +70,7 @@ public abstract class MixinClientPlayNetworkHandler {
      * Perhaps it's a bug in the Fabric API for OpenToLan?
      */
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-    private void malilib_onPlayCustomPayload(CustomPayload packet, CallbackInfo ci)
+    private void malilib_onCustomPayload(CustomPayload packet, CallbackInfo ci)
     {
         /**
          * You can't use packet.getData() here anymore, it no longer exists.
@@ -118,7 +118,7 @@ public abstract class MixinClientPlayNetworkHandler {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_STRUCTURES, structuresPayload, handler, ci);
                     break;
                 default:
-                    MaLiLib.logger.error("malilib_onPlayCustomPayload(): unhandled packet received of type: {} // {}", type, packet.getId().id());
+                    MaLiLib.logger.error("malilib_onCustomPayload(): [PLAY] unhandled packet received of type: {} // {}", type, packet.getId().id());
                     break;
             }
 

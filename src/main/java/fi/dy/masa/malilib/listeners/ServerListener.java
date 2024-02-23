@@ -1,11 +1,13 @@
 package fi.dy.masa.malilib.listeners;
 
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.interfaces.IServerListener;
 import fi.dy.masa.malilib.network.packet.PacketUtils_example;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.test.ClientDebugSuite;
+import fi.dy.masa.malilib.network.test.ServerDebugSuite;
 import net.minecraft.server.MinecraftServer;
 
 /**
@@ -23,18 +25,24 @@ public class ServerListener implements IServerListener
     public void onServerStarting(MinecraftServer minecraftServer)
     {
         if (minecraftServer.isDedicated())
+        {
             MaLiLibReference.setDedicated(true);
+            MaLiLib.printDebug("MaLiLib Dedicated Server Mode detected.");
+        }
 
         // PayloadTypeRegister is responsible for registering *ALL* of the Payloads
         PacketUtils_example.registerPayloads();
 
         if (MaLiLibReference.isClient())
         {
-            ClientDebugSuite.checkGlobalPlayChannels();
             ClientDebugSuite.checkGlobalConfigChannels();
+            ClientDebugSuite.checkGlobalPlayChannels();
         }
         else
         {
+            ServerDebugSuite.checkGlobalConfigChannels();
+            ServerDebugSuite.checkGlobalPlayChannels();
+
             ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
         }
     }
@@ -45,11 +53,14 @@ public class ServerListener implements IServerListener
 
         if (MaLiLibReference.isClient())
         {
-            ClientDebugSuite.checkGlobalPlayChannels();
             ClientDebugSuite.checkGlobalConfigChannels();
+            ClientDebugSuite.checkGlobalPlayChannels();
         }
         else
         {
+            ServerDebugSuite.checkGlobalConfigChannels();
+            ServerDebugSuite.checkGlobalPlayChannels();
+
             ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
         }
     }
@@ -60,11 +71,14 @@ public class ServerListener implements IServerListener
 
         if (MaLiLibReference.isClient())
         {
-            ClientDebugSuite.checkGlobalPlayChannels();
             ClientDebugSuite.checkGlobalConfigChannels();
+            ClientDebugSuite.checkGlobalPlayChannels();
         }
         else
         {
+            ServerDebugSuite.checkGlobalConfigChannels();
+            ServerDebugSuite.checkGlobalPlayChannels();
+
             ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
         }
     }
@@ -79,12 +93,13 @@ public class ServerListener implements IServerListener
 
         if (MaLiLibReference.isClient())
         {
-            ClientDebugSuite.checkGlobalPlayChannels();
             ClientDebugSuite.checkGlobalConfigChannels();
+            ClientDebugSuite.checkGlobalPlayChannels();
         }
         else
         {
-            // NO-OP
+            ServerDebugSuite.checkGlobalConfigChannels();
+            ServerDebugSuite.checkGlobalPlayChannels();
         }
     }
 }
