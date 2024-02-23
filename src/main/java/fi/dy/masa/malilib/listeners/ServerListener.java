@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.test.ClientDebugSuite;
 import fi.dy.masa.malilib.network.test.ServerDebugSuite;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
 
 /**
  * This should be moved to the downstream mods, this is just an example of how you can launch the Network API
@@ -22,6 +23,7 @@ public class ServerListener implements IServerListener
      * So using the IServerListener is best because it only gets invoked ONCE per a server start / stop.
      */
 
+    @Override
     public void onServerStarting(MinecraftServer minecraftServer)
     {
         if (minecraftServer.isDedicated())
@@ -46,6 +48,8 @@ public class ServerListener implements IServerListener
             ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
         }
     }
+
+    @Override
     public void onServerStarted(MinecraftServer minecraftServer)
     {
         // PayloadTypeRegister is responsible for registering *ALL* of the Handlers
@@ -64,6 +68,24 @@ public class ServerListener implements IServerListener
             ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
         }
     }
+    @Override
+    public void onServerIntegratedSetup(IntegratedServer server)
+    {
+        MaLiLib.logger.info("MaLiLib Integrated Server Mode detected.");
+        MaLiLibReference.setIntegrated(true);
+    }
+
+    @Override
+    public void onServerOpenToLan(IntegratedServer server)
+    {
+        MaLiLib.logger.info("MaLiLib OpenToLan Mode detected.");
+        MaLiLibReference.setOpenToLan(true);
+
+        PayloadTypeRegister.getInstance().resetPayloads();
+        PayloadTypeRegister.getInstance().registerAllHandlers();
+    }
+
+    @Override
     public void onServerStopping(MinecraftServer minecraftServer)
     {
         // This sends a global reset() to all network Handler's.

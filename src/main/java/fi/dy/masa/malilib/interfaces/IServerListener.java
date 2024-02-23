@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.interfaces;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
 
 public interface IServerListener
 {
@@ -15,6 +16,18 @@ public interface IServerListener
      * @param server (The MinecraftServer object)
      */
     default void onServerStarted(MinecraftServer server) {}
+
+    /**
+     * Called when the local MinecraftServer is configured
+     * @param server (The IntegratedServer object)
+     */
+    default void onServerIntegratedSetup(IntegratedServer server) {}
+
+    /**
+     * Called when the local MinecraftServer is configured for "OpenToLan"
+     * @param server (The IntegratedServer object)
+     */
+    default void onServerOpenToLan(IntegratedServer server) {}
 
     /**
      * Called when the local MinecraftServer enters its initial "stopping" state

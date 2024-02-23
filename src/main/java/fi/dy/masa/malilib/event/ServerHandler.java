@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.event;
 
 import fi.dy.masa.malilib.interfaces.IServerListener;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,8 @@ private static final ServerHandler INSTANCE = new ServerHandler();
 private final List<IServerListener> handlers = new ArrayList<>();
 public static IServerManager getInstance() { return INSTANCE; }
     @Override
-    public void registerServerHandler(IServerListener handler) {
+    public void registerServerHandler(IServerListener handler)
+    {
         if (!this.handlers.contains(handler))
         {
             this.handlers.add(handler);
@@ -48,6 +50,26 @@ public static IServerManager getInstance() { return INSTANCE; }
             for (IServerListener handler : this.handlers)
             {
                 handler.onServerStarted(server);
+            }
+        }
+    }
+    public void onServerIntegratedSetup(IntegratedServer server)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IServerListener handler : this.handlers)
+            {
+                handler.onServerIntegratedSetup(server);
+            }
+        }
+    }
+    public void onServerOpenToLan(IntegratedServer server)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IServerListener handler : this.handlers)
+            {
+                handler.onServerOpenToLan(server);
             }
         }
     }
