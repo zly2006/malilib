@@ -18,7 +18,7 @@
 
 	"license": "LGPLv3",
 	"icon": "assets/malilib/icon.png",
-	"environment": "client",
+	"environment": "*",
 	"entrypoints": {
 		"main": [
 			"fi.dy.masa.malilib.MaLiLib"
@@ -33,7 +33,7 @@
 
 	"depends": {
 		"minecraft": ">=1.20.4",
-		"fabric-networking-api-v1": ">=4.0.0",
+		"fabric-networking-api-v1": ">=4.0.2",
 		"fabric-resource-loader-v0": "*"
 	}
 }

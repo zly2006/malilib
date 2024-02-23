@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.mixin;
 
+import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.event.ServerHandler;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,6 +19,10 @@ public abstract class MixinMinecraftServer
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
     private void malilib_onServerStarting(CallbackInfo ci)
     {
+        // Initialize Server Environment from here.
+        if (MaLiLibReference.isServer())
+            ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();
+
         ((ServerHandler) ServerHandler.getInstance()).onServerStarting((MinecraftServer) (Object) this);
     }
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;createMetadata()Lnet/minecraft/server/ServerMetadata;", ordinal = 0), method = "runServer")

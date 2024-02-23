@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.network.handler;
+package fi.dy.masa.malilib.network.handler.play;
 
 import com.google.common.collect.ArrayListMultimap;
 import fi.dy.masa.malilib.network.payload.MaLibByteBuf;

@@ -3,19 +3,21 @@ package fi.dy.masa.malilib.mixin;
 import javax.annotation.Nullable;
 
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.network.handler.ClientPlayHandler;
+import fi.dy.masa.malilib.network.handler.play.ClientPlayHandler;
 import fi.dy.masa.malilib.network.packet.PacketUtils_example;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.payload.channel.*;
-import net.minecraft.network.packet.CustomPayload;
 import fi.dy.masa.malilib.event.WorldLoadHandler;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
@@ -61,14 +63,14 @@ public abstract class MixinClientPlayNetworkHandler {
 
     /**
      * OPTIONAL CODE -- NOT REQUIRED!
-     * This is for "exposing" Custom Payload Packets that are getting obfuscated behind the Play channel,
-     * And it also allows for "OpenToLan" functionality to work, because via the Fabric API,
+     * This is for "exposing" Custom Payload Packets that are getting obfuscated behind the Play channel.
+     * It also allows for "OpenToLan" functionality to work, because via the Fabric API,
      * the network handlers are set to NULL, and fail to function.
      * If handled this way, you must use ci.cancel() if successfully matched.
      * Perhaps it's a bug in the Fabric API for OpenToLan?
      */
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-    private void malilib_onCustomPayload(CustomPayload packet, CallbackInfo ci)
+    private void malilib_onPlayCustomPayload(CustomPayload packet, CallbackInfo ci)
     {
         /**
          * You can't use packet.getData() here anymore, it no longer exists.
@@ -84,42 +86,39 @@ public abstract class MixinClientPlayNetworkHandler {
         PayloadType type = PayloadTypeRegister.getInstance().getPayloadType(packet.getId().id());
         if (type != null)
         {
+            final ClientPlayNetworkHandler handler = (ClientPlayNetworkHandler) (Object) this;
             switch (type)
             {
                 case CARPET_HELLO:
-                    CarpetS2CHelloPayload carpetPayload = (CarpetS2CHelloPayload) packet;
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, carpetPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    CarpetHelloPayload carpetPayload = (CarpetHelloPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, carpetPayload, handler, ci);
                     break;
                 case MALILIB_BYTEBUF:
-                    MaLibS2CBufPayload malilibPayload = (MaLibS2CBufPayload) packet;
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.MALILIB_BYTEBUF, malilibPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    MaLibBufPayload malilibPayload = (MaLibBufPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.MALILIB_BYTEBUF, malilibPayload, handler, ci);
                     break;
                 case SERVUX_BLOCKS:
-                    ServuxS2CBlocksPayload blocksPayload = (ServuxS2CBlocksPayload) packet;
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_BLOCKS, blocksPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    ServuxBlocksPayload blocksPayload = (ServuxBlocksPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_BLOCKS, blocksPayload, handler, ci);
                     break;
-                //case SERVUX_BYTEBUF:
-                    //ServuxBytebufPayload servuxPayload = (ServuxBytebufPayload) packet;
-                    //((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_BYTEBUF, servuxPayload, (ClientPlayNetworkHandler) (Object) this, ci);
-                    //break;
                 case SERVUX_ENTITIES:
-                    ServuxS2CEntitiesPayload entitiesPayload = (ServuxS2CEntitiesPayload) packet;
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_ENTITIES, entitiesPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    ServuxEntitiesPayload entitiesPayload = (ServuxEntitiesPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_ENTITIES, entitiesPayload, handler, ci);
                     break;
                 case SERVUX_LITEMATICS:
-                    ServuxS2CLitematicsPayload litematicsPayload = (ServuxS2CLitematicsPayload) packet;
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_LITEMATICS, litematicsPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    ServuxLitematicsPayload litematicsPayload = (ServuxLitematicsPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_LITEMATICS, litematicsPayload, handler, ci);
                     break;
                 case SERVUX_METADATA:
-                    ServuxS2CMetadataPayload metadataPayload = (ServuxS2CMetadataPayload) packet;
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_METADATA, metadataPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    ServuxMetadataPayload metadataPayload = (ServuxMetadataPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_METADATA, metadataPayload, handler, ci);
                     break;
                 case SERVUX_STRUCTURES:
-                    ServuxS2CStructuresPayload structuresPayload = (ServuxS2CStructuresPayload) packet;
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_STRUCTURES, structuresPayload, (ClientPlayNetworkHandler) (Object) this, ci);
+                    ServuxStructuresPayload structuresPayload = (ServuxStructuresPayload) packet;
+                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_STRUCTURES, structuresPayload, handler, ci);
                     break;
                 default:
-                    MaLiLib.logger.error("malilib_onCustomPayload(): unhandled packet received of type: {} // {}", type, packet.getId().id());
+                    MaLiLib.logger.error("malilib_onPlayCustomPayload(): unhandled packet received of type: {} // {}", type, packet.getId().id());
                     break;
             }
 

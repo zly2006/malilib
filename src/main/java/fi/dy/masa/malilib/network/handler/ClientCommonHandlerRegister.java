@@ -10,7 +10,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 
 /**
- * This probably cannot be made too abstract, because it references items in the static context directly (ie. Specific Payload types)
+ * This probably cannot be made too abstract, because it references items in the static context directly (i.e., Specific Payload types)
  */
 public class ClientCommonHandlerRegister
 {
@@ -43,31 +43,31 @@ public class ClientCommonHandlerRegister
         //MaLiLib.printDebug("ClientCommonHandlerRegister#getPayload(): type {}", type.toString());
         if (type == PayloadType.CARPET_HELLO)
         {
-            return (CustomPayload.Id<T>) CarpetS2CHelloPayload.TYPE;
+            return (CustomPayload.Id<T>) CarpetHelloPayload.TYPE;
         }
         else if (type == PayloadType.MALILIB_BYTEBUF)
         {
-            return (CustomPayload.Id<T>) MaLibS2CBufPayload.TYPE;
+            return (CustomPayload.Id<T>) MaLibBufPayload.TYPE;
         }
         else if (type == PayloadType.SERVUX_BLOCKS)
         {
-            return (CustomPayload.Id<T>) ServuxS2CBlocksPayload.TYPE;
+            return (CustomPayload.Id<T>) ServuxBlocksPayload.TYPE;
         }
         else if (type == PayloadType.SERVUX_ENTITIES)
         {
-            return (CustomPayload.Id<T>) ServuxS2CEntitiesPayload.TYPE;
+            return (CustomPayload.Id<T>) ServuxEntitiesPayload.TYPE;
         }
         else if (type == PayloadType.SERVUX_LITEMATICS)
         {
-            return (CustomPayload.Id<T>) ServuxS2CMetadataPayload.TYPE;
+            return (CustomPayload.Id<T>) ServuxMetadataPayload.TYPE;
         }
         else if (type == PayloadType.SERVUX_METADATA)
         {
-            return (CustomPayload.Id<T>) ServuxS2CMetadataPayload.TYPE;
+            return (CustomPayload.Id<T>) ServuxMetadataPayload.TYPE;
         }
         else if (type == PayloadType.SERVUX_STRUCTURES)
         {
-            return (CustomPayload.Id<T>) ServuxS2CStructuresPayload.TYPE;
+            return (CustomPayload.Id<T>) ServuxStructuresPayload.TYPE;
         }
         else
         {
@@ -80,31 +80,31 @@ public class ClientCommonHandlerRegister
         //MaLiLib.printDebug("ClientCommonHandlerRegister#getPacketCodec(): type {}", type.toString());
         if (type == PayloadType.CARPET_HELLO)
         {
-            return (PacketCodec<B, T>) CarpetS2CHelloPayload.CODEC;
+            return (PacketCodec<B, T>) CarpetHelloPayload.CODEC;
         }
         else if (type == PayloadType.MALILIB_BYTEBUF)
         {
-            return (PacketCodec<B, T>) MaLibS2CBufPayload.CODEC;
+            return (PacketCodec<B, T>) MaLibBufPayload.CODEC;
         }
         else if (type == PayloadType.SERVUX_BLOCKS)
         {
-            return (PacketCodec<B, T>) ServuxS2CBlocksPayload.CODEC;
+            return (PacketCodec<B, T>) ServuxBlocksPayload.CODEC;
         }
         else if (type == PayloadType.SERVUX_ENTITIES)
         {
-            return (PacketCodec<B, T>) ServuxS2CEntitiesPayload.CODEC;
+            return (PacketCodec<B, T>) ServuxEntitiesPayload.CODEC;
         }
         else if (type == PayloadType.SERVUX_LITEMATICS)
         {
-            return (PacketCodec<B, T>) ServuxS2CLitematicsPayload.CODEC;
+            return (PacketCodec<B, T>) ServuxLitematicsPayload.CODEC;
         }
         else if (type == PayloadType.SERVUX_METADATA)
         {
-            return (PacketCodec<B, T>) ServuxS2CMetadataPayload.CODEC;
+            return (PacketCodec<B, T>) ServuxMetadataPayload.CODEC;
         }
         else if (type == PayloadType.SERVUX_STRUCTURES)
         {
-            return (PacketCodec<B, T>) ServuxS2CStructuresPayload.CODEC;
+            return (PacketCodec<B, T>) ServuxStructuresPayload.CODEC;
         }
         else
         {

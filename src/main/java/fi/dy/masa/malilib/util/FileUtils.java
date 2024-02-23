@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
 
+import fi.dy.masa.malilib.MaLiLibReference;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
@@ -18,15 +19,37 @@ import fi.dy.masa.malilib.MaLiLib;
 public class FileUtils
 {
     private static final Set<Character> ILLEGAL_CHARACTERS = ImmutableSet.of( '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' );
+    private static File runDirectory;
+    private static File configDirectory;
 
     public static File getConfigDirectory()
     {
-        return new File(MinecraftClient.getInstance().runDirectory, "config");
+        if (MaLiLibReference.isClient())
+            return new File(MinecraftClient.getInstance().runDirectory, "config");
+        else
+        {
+            if (configDirectory.isDirectory())
+            {
+                return configDirectory;
+            }
+            else
+                return MaLiLibReference.CONFIG_DIR;
+        }
     }
 
     public static File getMinecraftDirectory()
     {
-        return MinecraftClient.getInstance().runDirectory;
+        if (MaLiLibReference.isClient())
+            return MinecraftClient.getInstance().runDirectory;
+        else
+        {
+            if (runDirectory.isDirectory())
+            {
+                return runDirectory;
+            }
+            else
+                return MaLiLibReference.RUN_DIR;
+        }
     }
 
     /**
@@ -155,5 +178,55 @@ public class FileUtils
         }
 
         return null;
+    }
+    public static void setConfigDirectory(File dir)
+    {
+        if (dir == null)
+        {
+            MaLiLib.logger.fatal("setConfigDirectory: dir given is NULL.");
+        }
+        else
+        {
+            if (dir.isDirectory())
+            {
+                configDirectory = dir;
+            }
+            else
+            {
+                if (dir.mkdir())
+                {
+                    MaLiLib.logger.info("setConfigDirectory: dir given has been created.");
+                }
+                else
+                {
+                    MaLiLib.logger.fatal("setConfigDirectory: dir given failed to be created.");
+                }
+            }
+        }
+    }
+    public static void setRunDirectory(File dir)
+    {
+        if (dir == null)
+        {
+            MaLiLib.logger.fatal("setRunDirectory: dir given is NULL.");
+        }
+        else
+        {
+            if (dir.isDirectory())
+            {
+                runDirectory = dir;
+            }
+            else
+            {
+                if (dir.mkdir())
+                {
+                    MaLiLib.logger.info("setRunDirectory: dir given has been created.");
+                }
+                else
+                {
+                    MaLiLib.logger.fatal("setRunDirectory: dir given failed to be created.");
+                }
+            }
+        }
     }
 }

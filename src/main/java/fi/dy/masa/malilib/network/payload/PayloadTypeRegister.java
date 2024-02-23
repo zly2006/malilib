@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.network.payload;
 
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.network.handler.ClientConfigHandler;
-import fi.dy.masa.malilib.network.handler.ClientPlayHandler;
+import fi.dy.masa.malilib.network.handler.config.ClientConfigHandler;
+import fi.dy.masa.malilib.network.handler.play.ClientPlayHandler;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.minecraft.network.PacketByteBuf;

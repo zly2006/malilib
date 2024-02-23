@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.MaLiLib;
  */
 public class PacketUtils_example
 {
-    //static CarpetHelloPlayListener_example<CarpetS2CHelloPayload> CarpetHelloListener = CarpetHelloPlayListener_example.INSTANCE;
+    //static CarpetHelloPlayListener_example<CarpetHelloPayload> CarpetHelloListener = CarpetHelloPlayListener_example.INSTANCE;
     private static boolean payloadsRegistered = false;
     public static void registerPayloads()
     {
