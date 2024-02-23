@@ -51,9 +51,9 @@ public abstract class MixinClientPlayNetworkHandler {
         // Call only in case channels aren't registered.
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.worldBefore, this.world, MinecraftClient.getInstance());
 
-        // TODO For network API Debugging (For when you join a Remote Server)
-        PacketUtils_example.registerPayloads();
-        MaLiLib.printDebug("malilib_onPreGameJoin()");
+        // For network API Debugging (For when you join a Remote Server)
+        //PacketUtils_example.registerPayloads();
+        //MaLiLib.printDebug("malilib_onPreGameJoin()");
     }
 
     @Inject(method = "onGameJoin", at = @At("RETURN"))
@@ -63,7 +63,7 @@ public abstract class MixinClientPlayNetworkHandler {
 
         // For network API handler registration
         PayloadTypeRegister.getInstance().registerAllHandlers();
-        MaLiLib.printDebug("malilib_onPostGameJoin()");
+        //MaLiLib.printDebug("malilib_onPostGameJoin()");
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class MixinClientPlayNetworkHandler {
          * You can put this under each Payload Type, though.
          * But to what end if Fabric API can handle this safely?
          */
-        MaLiLib.printDebug("malilib_onCustomPayload(): [CLIENT-PLAY] invoked for {}", packet.getId().id().toString());
+        //MaLiLib.printDebug("malilib_onCustomPayload(): [CLIENT-PLAY] invoked for {}", packet.getId().id().toString());
         if (!MinecraftClient.getInstance().isOnThread())
         {
             return;
@@ -89,7 +89,7 @@ public abstract class MixinClientPlayNetworkHandler {
         // See if this packet matches one of our registered types
         Identifier id = packet.getId().id();
         PayloadType type = PayloadTypeRegister.getInstance().getPayloadType(id);
-        MaLiLib.printDebug("malilib_onCustomPayload(): [CLIENT-PLAY] type: {} // id: {}", type, id.toString());
+        //MaLiLib.printDebug("malilib_onCustomPayload(): [CLIENT-PLAY] type: {} // id: {}", type, id.toString());
         if (type != null)
         {
             final ClientPlayNetworkHandler handler = (ClientPlayNetworkHandler) (Object) this;
@@ -102,7 +102,7 @@ public abstract class MixinClientPlayNetworkHandler {
                         ci = new CallbackInfo(ci.getId(), false);
                         // Create a Fake Carpet Packet
                         NbtCompound nbt = new NbtCompound();
-                        nbt.putString(PacketType_example.CarpetHello.HI, MaLiLibReference.MOD_ID + "-" + MaLiLibReference.MOD_TYPE + "-" + MaLiLibReference.MC_VERSION + "-" + MaLiLibReference.MOD_VERSION);
+                        nbt.putString(PacketType_example.CarpetHello.HI, MaLiLibReference.MOD_STRING);
                         CarpetHelloPayload fakeCarpetPayload = new CarpetHelloPayload(nbt);
 
                         ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, fakeCarpetPayload, handler, ci);
@@ -141,10 +141,6 @@ public abstract class MixinClientPlayNetworkHandler {
                     MaLiLib.logger.error("malilib_onCustomPayload(): [PLAY] unhandled packet received of type: {} // {}", type, packet.getId().id());
                     break;
             }
-
-            // According to PacketTypeRegister, we own this, so cancel it.
-            //if (ci.isCancellable())
-                //ci.cancel();
         }
     }
 }

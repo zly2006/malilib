@@ -33,7 +33,7 @@ public class MixinClientConfigurationNetworkHandler
         // See if this packet matches one of our registered types
         Identifier id = packet.getId().id();
         PayloadType type = PayloadTypeRegister.getInstance().getPayloadType(id);
-        MaLiLib.printDebug("malilib_onCustomPayload(): [CLIENT-CONFIG] type: {} // id: {}", type, id.toString());
+        //MaLiLib.printDebug("malilib_onCustomPayload(): [CLIENT-CONFIG] type: {} // id: {}", type, id.toString());
 
         if (type != null)
         {
@@ -44,16 +44,17 @@ public class MixinClientConfigurationNetworkHandler
                     // Don't handle Carpet packets if we have Carpet-Client installed
                     if (MaLiLibReference.hasCarpetClient())
                     {
+                        ci = new CallbackInfo(ci.getId(), false);
+
                         // Create a Fake Carpet Packet
                         NbtCompound nbt = new NbtCompound();
-                        nbt.putString(PacketType_example.CarpetHello.HI, MaLiLibReference.MOD_ID+"-"+MaLiLibReference.MOD_TYPE+"-"+MaLiLibReference.MC_VERSION+"-"+MaLiLibReference.MOD_VERSION);
+                        nbt.putString(PacketType_example.CarpetHello.HI, MaLiLibReference.MOD_STRING);
                         CarpetHelloPayload fakeCarpetPayload = new CarpetHelloPayload(nbt);
 
                         ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.CARPET_HELLO, fakeCarpetPayload, handler, ci);
                     }
                     else
                     {
-                        ci = new CallbackInfo(ci.getId(), false);
                         CarpetHelloPayload realCarpetPayload = (CarpetHelloPayload) packet;
 
                         ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.CARPET_HELLO, realCarpetPayload, handler, ci);
@@ -87,10 +88,6 @@ public class MixinClientConfigurationNetworkHandler
                     MaLiLib.logger.error("malilib_onCustomPayload(): [CONFIG] unhandled packet received of type: {} // {}", type, packet.getId().id());
                     break;
             }
-
-            // According to PacketTypeRegister, we own this, so cancel it.
-            //if (ci.isCancellable())
-                //ci.cancel();
         }
     }
 }

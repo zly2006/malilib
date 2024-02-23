@@ -36,7 +36,7 @@ public abstract class CarpetHelloPlayListener_example<T extends CustomPayload> i
             if (handler != null)
             {
                 CarpetHelloPlayListener_example.INSTANCE.receiveS2CPlayPayload(PayloadType.CARPET_HELLO, payload, handler, ci);
-                // TODO --> the networkHandler interface must be used for Carpet Server
+                // networkHandler interface must be used for Carpet Server
                 //  because they don't use Fabric API.
             }
             else
@@ -92,7 +92,10 @@ public abstract class CarpetHelloPlayListener_example<T extends CustomPayload> i
         if (!this.carpetRegister)
         {
             String carpetVersion = data.getString(PacketType_example.CarpetHello.HI);
-            MaLiLib.printDebug("CarpetHelloPlayListener_example#decodeS2CNbtCompound(): received Carpet Hello packet. (Carpet Server {})", carpetVersion);
+            if (carpetVersion.contains("malilib"))
+                MaLiLib.printDebug("CarpetHelloPlayListener_example#decodeS2CNbtCompound(): received [FAKE] Carpet Hello packet. (Carpet Server {})", carpetVersion);
+            else
+                MaLiLib.printDebug("CarpetHelloPlayListener_example#decodeS2CNbtCompound(): received [REAL] Carpet Hello packet. (Carpet Server {})", carpetVersion);
 
             // We have a Carpet server.
             this.carpetRegister = true;
@@ -102,8 +105,8 @@ public abstract class CarpetHelloPlayListener_example<T extends CustomPayload> i
             // Respond to Carpet's HI packet.  Set to false if you don't want to participate.
             if (this.carpetRespond && !MaLiLibReference.hasCarpetClient())
             {
-                // TODO --> Say HELLO back to Mr Gnembon's mod :),
-                //  We can fully implement various Carpet Hello packets from here on out directly.
+                //  We can fully implement various Carpet Hello packets from here on out directly,
+                //  after handling the "CarpetRules" packet, if wanted.
                 NbtCompound nbt = new NbtCompound();
                 nbt.putString(PacketType_example.CarpetHello.HELLO, MaLiLibReference.MOD_ID + "-" + MaLiLibReference.MOD_VERSION);
                 CarpetHelloPlayListener_example.INSTANCE.encodeC2SNbtCompound(type, nbt);
@@ -111,11 +114,12 @@ public abstract class CarpetHelloPlayListener_example<T extends CustomPayload> i
         }
         else
         {
-            // TODO --> Handle additional Carpet Packets
+            // Handle additional Carpet Packets ?
             if (!MaLiLibReference.hasCarpetClient())
                 MaLiLib.printDebug("CarpetHelloPlayListener_example#decodeS2CNbtCompound(): received unhandled Carpet Hello packet. (size: {})", data.getSizeInBytes());
-            else
-                MaLiLib.printDebug("CarpetHelloPlayListener_example#decodeS2CNbtCompound(): ignoring Carpet Hello packet. (size: {}) (Carpet Client is present)", data.getSizeInBytes());
+            // Ignore
+            //else
+                //MaLiLib.printDebug("CarpetHelloPlayListener_example#decodeS2CNbtCompound(): ignoring Carpet Hello packet. (size: {}) (Carpet Client is present)", data.getSizeInBytes());
         }
     }
 
@@ -125,8 +129,7 @@ public abstract class CarpetHelloPlayListener_example<T extends CustomPayload> i
         // Encode Payload
         CarpetHelloPayload newPayload = new CarpetHelloPayload(data);
 
-        // TODO --> Try the NetworkHandler method first for carpet servers
-        //  should we store it somewhere?
+        // NetworkHandler method first for carpet servers
         ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
         if (handler != null)
             CarpetHelloPlayListener_example.INSTANCE.sendC2SPlayPayload(type, newPayload, handler);
@@ -173,7 +176,7 @@ public abstract class CarpetHelloPlayListener_example<T extends CustomPayload> i
         {
             MaLiLib.printDebug("CarpetHelloPlayListener_example#registerPlayPayload(): received for type {}", type.toString());
 
-            // FIXME Don't actually register carpet:hello --> This will Break CarpetClient from working (if installed)
+            // Don't register carpet:hello --> This will Break CarpetClient from working (if installed)
             if (MaLiLibReference.hasCarpetClient())
             {
                 // Fake register it.
@@ -199,9 +202,9 @@ public abstract class CarpetHelloPlayListener_example<T extends CustomPayload> i
         }
         if (codec.isPlayRegistered())
         {
-            MaLiLib.printDebug("CarpetHelloPlayListener_example#registerPlayHandler(): received for type {}", type.toString());
+            //MaLiLib.printDebug("CarpetHelloPlayListener_example#registerPlayHandler(): received for type {}", type.toString());
 
-            // FIXME Don't actually register carpet:hello --> This will Break CarpetClient from working!
+            // Don't register carpet:hello --> This will Break CarpetClient from working!
             if (!MaLiLibReference.hasCarpetClient())
                 ClientCommonHandlerRegister.getInstance().registerPlayHandler((CustomPayload.Id<T>) CarpetHelloPayload.TYPE, this);
             if (this.registered.containsKey(type))
@@ -224,9 +227,9 @@ public abstract class CarpetHelloPlayListener_example<T extends CustomPayload> i
         }
         if (codec.isPlayRegistered())
         {
-            MaLiLib.printDebug("CarpetHelloPlayListener_example#unregisterPlayHandler(): received for type {}", type.toString());
+            //MaLiLib.printDebug("CarpetHelloPlayListener_example#unregisterPlayHandler(): received for type {}", type.toString());
 
-            // FIXME Don't actually register carpet:hello --> This will Break CarpetClient from working!
+            // Don't register carpet:hello --> This will Break CarpetClient from working!
             if (!MaLiLibReference.hasCarpetClient())
                 ClientCommonHandlerRegister.getInstance().unregisterPlayHandler((CustomPayload.Id<T>) CarpetHelloPayload.TYPE);
             if (this.registered.containsKey(type))

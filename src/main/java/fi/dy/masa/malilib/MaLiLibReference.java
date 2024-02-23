@@ -16,6 +16,7 @@ public class MaLiLibReference
     public static final File RUN_DIR = FabricLoader.getInstance().getGameDir().toFile();
     public static final File CONFIG_DIR = FabricLoader.getInstance().getConfigDir().toFile();
     public static final String MC_VERSION = MinecraftVersion.CURRENT.getName();
+    public static final String MOD_STRING = MOD_ID+"-"+MOD_TYPE+"-"+MC_VERSION+"-"+MOD_VERSION;
     private static boolean dedicated_server = false;
     private static boolean integrated_server = false;
     private static boolean open_to_lan = false;

@@ -17,14 +17,15 @@ public class MaLiLibInitHandler implements IInitializationHandler
     @Override
     public void registerModHandlers()
     {
-        // Set Directories for Server Compatibility
+        // Set Directories for Multi-Environment Compatibility
         FileUtils.setRunDirectory(MaLiLibReference.RUN_DIR);
         FileUtils.setConfigDirectory(MaLiLibReference.CONFIG_DIR);
+
         ConfigManager.getInstance().registerConfigHandler(MaLiLibReference.MOD_ID, new MaLiLibConfigs());
 
         if (MaLiLibReference.isClient())
         {
-            MaLiLib.logger.info("{}-{}-{}-{} --> Initializing CLIENT environment", MaLiLibReference.MOD_ID, MaLiLibReference.MOD_TYPE, MaLiLibReference.MC_VERSION, MaLiLibReference.MOD_VERSION);
+            MaLiLib.logger.info("{} --> Initializing CLIENT environment", MaLiLibReference.MOD_STRING);
             MaLiLib.getCarpetClient();
 
             InputEventHandler.getKeybindManager().registerKeybindProvider(MaLiLibInputHandler.getInstance());
@@ -33,14 +34,15 @@ public class MaLiLibInitHandler implements IInitializationHandler
         }
         if (MaLiLibReference.isServer())
         {
-            MaLiLib.logger.info("{}-{}-{}-{} --> Initializing SERVER environment", MaLiLibReference.MOD_ID, MaLiLibReference.MOD_TYPE, MaLiLibReference.MC_VERSION, MaLiLibReference.MOD_VERSION);
+            MaLiLib.logger.info("{} --> Initializing SERVER environment", MaLiLibReference.MOD_STRING);
         }
+
         // Used to register Payloads / MaLiLib Networking API under MinecraftServer status events
         ServerListener serverListener = new ServerListener();
         ServerHandler.getInstance().registerServerHandler(serverListener);
 
-        // Example code.
-        PacketUtils_example.registerPayloads();
+        // Example code using Carpet Hello packets.
+        //PacketUtils_example.registerPayloads();
     }
 
     private static class CallbackOpenConfigGui implements IHotkeyCallback

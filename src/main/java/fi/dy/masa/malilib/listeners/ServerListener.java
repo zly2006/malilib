@@ -27,7 +27,7 @@ public class ServerListener implements IServerListener
         if (minecraftServer.isDedicated())
         {
             MaLiLibReference.setDedicated(true);
-            MaLiLib.printDebug("MaLiLib Dedicated Server Mode detected.");
+            MaLiLib.logger.info("MaLiLib Dedicated Server Mode detected.");
         }
 
         // PayloadTypeRegister is responsible for registering *ALL* of the Payloads
@@ -35,13 +35,13 @@ public class ServerListener implements IServerListener
 
         if (MaLiLibReference.isClient())
         {
-            ClientDebugSuite.checkGlobalConfigChannels();
-            ClientDebugSuite.checkGlobalPlayChannels();
+            //ClientDebugSuite.checkGlobalConfigChannels();
+            //ClientDebugSuite.checkGlobalPlayChannels();
         }
         else
         {
-            ServerDebugSuite.checkGlobalConfigChannels();
-            ServerDebugSuite.checkGlobalPlayChannels();
+            //ServerDebugSuite.checkGlobalConfigChannels();
+            //ServerDebugSuite.checkGlobalPlayChannels();
 
             ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
         }
@@ -71,13 +71,13 @@ public class ServerListener implements IServerListener
 
         if (MaLiLibReference.isClient())
         {
-            ClientDebugSuite.checkGlobalConfigChannels();
-            ClientDebugSuite.checkGlobalPlayChannels();
+            //ClientDebugSuite.checkGlobalConfigChannels();
+            //ClientDebugSuite.checkGlobalPlayChannels();
         }
         else
         {
-            ServerDebugSuite.checkGlobalConfigChannels();
-            ServerDebugSuite.checkGlobalPlayChannels();
+            //ServerDebugSuite.checkGlobalConfigChannels();
+            //ServerDebugSuite.checkGlobalPlayChannels();
 
             ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
         }
@@ -93,13 +93,13 @@ public class ServerListener implements IServerListener
 
         if (MaLiLibReference.isClient())
         {
-            ClientDebugSuite.checkGlobalConfigChannels();
-            ClientDebugSuite.checkGlobalPlayChannels();
+            //ClientDebugSuite.checkGlobalConfigChannels();
+            //ClientDebugSuite.checkGlobalPlayChannels();
         }
         else
         {
-            ServerDebugSuite.checkGlobalConfigChannels();
-            ServerDebugSuite.checkGlobalPlayChannels();
+            //ServerDebugSuite.checkGlobalConfigChannels();
+            //ServerDebugSuite.checkGlobalPlayChannels();
         }
     }
 }

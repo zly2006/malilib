@@ -37,7 +37,7 @@ public class MixinServerCommonNetworkHandler
             CustomPayload thisPayload = packet.payload();
             Identifier id = thisPayload.getId().id();
             PayloadType type = PayloadTypeRegister.getInstance().getPayloadType(id);
-            MaLiLib.printDebug("malilib_onCustomPayload(): [SERVER-PLAY] type {} // id: {}", type, id.toString());
+            //MaLiLib.printDebug("malilib_onCustomPayload(): [SERVER-PLAY] type {} // id: {}", type, id.toString());
 
             if (type != null)
             {
@@ -77,13 +77,9 @@ public class MixinServerCommonNetworkHandler
                         ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).receiveC2SPlayPayload(PayloadType.SERVUX_STRUCTURES, structuresPayload, playHandler, ci);
                         break;
                     default:
-                        MaLiLib.logger.error("servux_onCustomPayload(): [PLAY] unhandled packet received of type: {} // {}", type, thisPayload.getId().id());
+                        MaLiLib.logger.error("malilib_onCustomPayload(): [PLAY] unhandled packet received of type: {} // {}", type, thisPayload.getId().id());
                         break;
                 }
-
-                // According to PacketTypeRegister, we own this, so cancel it.
-                //if (ci.isCancellable())
-                    //ci.cancel();
             }
         }
         else if (thisObj instanceof ServerConfigurationNetworkHandler configHandler)
@@ -91,7 +87,7 @@ public class MixinServerCommonNetworkHandler
             CustomPayload thisPayload = packet.payload();
             Identifier id = thisPayload.getId().id();
             PayloadType type = PayloadTypeRegister.getInstance().getPayloadType(id);
-            MaLiLib.printDebug("malilib_onCustomPayload(): [SERVER-CONFIG] type {} // id: {}", type, id.toString());
+            //MaLiLib.printDebug("malilib_onCustomPayload(): [SERVER-CONFIG] type {} // id: {}", type, id.toString());
 
             if (type != null)
             {
@@ -131,13 +127,9 @@ public class MixinServerCommonNetworkHandler
                         ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).receiveC2SConfigPayload(PayloadType.SERVUX_STRUCTURES, structuresPayload, configHandler, ci);
                         break;
                     default:
-                        MaLiLib.logger.error("servux_onCustomPayload(): [CONFIG] unhandled packet received of type: {} // {}", type, thisPayload.getId().id());
+                        MaLiLib.logger.error("malilib_onCustomPayload(): [CONFIG] unhandled packet received of type: {} // {}", type, thisPayload.getId().id());
                         break;
                 }
-
-                // According to PacketTypeRegister, we own this, so cancel it.
-                //if (ci.isCancellable())
-                    //ci.cancel();
             }
         }
     }
