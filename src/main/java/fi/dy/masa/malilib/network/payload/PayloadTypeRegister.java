@@ -126,13 +126,17 @@ public class PayloadTypeRegister
     @Nullable
     public PayloadType getPayloadType(Identifier id)
     {
-        //MaLiLib.printDebug("PayloadTypeRegister#getPayloadType(): checking for payload type: {}", id.toString());
+        MaLiLib.printDebug("PayloadTypeRegister#getPayloadType(): checking for payload type: {}", id.toString());
         for (PayloadType type : TYPES.keySet())
         {
             PayloadCodec codec = TYPES.get(type);
-            if (codec != null && codec.getId() == id)
+            if (codec != null)
             {
-                return type;
+                MaLiLib.printDebug("PayloadTypeRegister#getPayloadType(): codec type: {} // id: {}", codec.getType(), codec.getId().toString());
+                if (codec.getId().equals(id))
+                {
+                    return type;
+                }
             }
         }
         // Not found
@@ -157,7 +161,7 @@ public class PayloadTypeRegister
         register(PayloadType.SERVUX_STRUCTURES, "structure_bounding_boxes", "servux",   "structures");
 
         // Debugging call
-        //listTypes();
+        listTypes();
     }
 
     /**
@@ -166,6 +170,8 @@ public class PayloadTypeRegister
     public void resetPayloads()
     {
         MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): sending reset() to all registered Payload types.");
+        listTypes();
+
         for (PayloadType type : TYPES.keySet())
         {
             if (TYPES.get(type).isPlayRegistered())
@@ -181,6 +187,8 @@ public class PayloadTypeRegister
     public void registerAllHandlers()
     {
         MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): sending registerHandlers() to all registered Payload types.");
+        listTypes();
+
         for (PayloadType type : TYPES.keySet())
         {
             if (TYPES.get(type).isPlayRegistered())

@@ -3,13 +3,17 @@ package fi.dy.masa.malilib.mixin;
 import javax.annotation.Nullable;
 
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.handler.play.ClientPlayHandler;
+import fi.dy.masa.malilib.network.packet.PacketType_example;
 import fi.dy.masa.malilib.network.packet.PacketUtils_example;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.payload.channel.*;
 import fi.dy.masa.malilib.event.WorldLoadHandler;
 
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,6 +41,7 @@ public abstract class MixinClientPlayNetworkHandler {
         // because the next injection point is right after the world has been assigned,
         // since we need the new world reference for the callback.
         this.worldBefore = this.world;
+        PayloadTypeRegister.getInstance().resetPayloads();
     }
 
     @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
@@ -62,11 +67,9 @@ public abstract class MixinClientPlayNetworkHandler {
     }
 
     /**
-     * OPTIONAL CODE -- NOT REQUIRED!
      * This is for "exposing" Custom Payload Packets that are getting obfuscated behind the Play channel.
      * It also allows for "OpenToLan" functionality to work, because via the Fabric API,
      * the network handlers are set to NULL, and fail to function.
-     * If handled this way, you must use ci.cancel() if successfully matched.
      * Perhaps it's a bug in the Fabric API for OpenToLan?
      */
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
@@ -77,21 +80,38 @@ public abstract class MixinClientPlayNetworkHandler {
          * You can put this under each Payload Type, though.
          * But to what end if Fabric API can handle this safely?
          */
+        MaLiLib.printDebug("malilib_onCustomPayload(): [CLIENT-PLAY] invoked for {}", packet.getId().id().toString());
         if (!MinecraftClient.getInstance().isOnThread())
         {
             return;
         }
 
         // See if this packet matches one of our registered types
-        PayloadType type = PayloadTypeRegister.getInstance().getPayloadType(packet.getId().id());
+        Identifier id = packet.getId().id();
+        PayloadType type = PayloadTypeRegister.getInstance().getPayloadType(id);
+        MaLiLib.printDebug("malilib_onCustomPayload(): [CLIENT-PLAY] type: {} // id: {}", type, id.toString());
         if (type != null)
         {
             final ClientPlayNetworkHandler handler = (ClientPlayNetworkHandler) (Object) this;
             switch (type)
             {
                 case CARPET_HELLO:
-                    CarpetHelloPayload carpetPayload = (CarpetHelloPayload) packet;
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, carpetPayload, handler, ci);
+                    // Don't handle Carpet packets if we have Carpet-Client installed
+                    if (MaLiLibReference.hasCarpetClient())
+                    {
+                        ci = new CallbackInfo(ci.getId(), false);
+                        // Create a Fake Carpet Packet
+                        NbtCompound nbt = new NbtCompound();
+                        nbt.putString(PacketType_example.CarpetHello.HI, MaLiLibReference.MOD_ID + "-" + MaLiLibReference.MOD_TYPE + "-" + MaLiLibReference.MC_VERSION + "-" + MaLiLibReference.MOD_VERSION);
+                        CarpetHelloPayload fakeCarpetPayload = new CarpetHelloPayload(nbt);
+
+                        ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, fakeCarpetPayload, handler, ci);
+                    }
+                    else
+                    {
+                        CarpetHelloPayload realCarpetPayload = (CarpetHelloPayload) packet;
+                        ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, realCarpetPayload, handler, ci);
+                    }
                     break;
                 case MALILIB_BYTEBUF:
                     MaLibBufPayload malilibPayload = (MaLibBufPayload) packet;
@@ -123,8 +143,8 @@ public abstract class MixinClientPlayNetworkHandler {
             }
 
             // According to PacketTypeRegister, we own this, so cancel it.
-            if (ci.isCancellable())
-                ci.cancel();
+            //if (ci.isCancellable())
+                //ci.cancel();
         }
     }
 }

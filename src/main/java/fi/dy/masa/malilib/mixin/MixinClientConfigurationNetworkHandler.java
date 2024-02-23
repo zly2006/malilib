@@ -1,15 +1,19 @@
 package fi.dy.masa.malilib.mixin;
 
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.handler.config.ClientConfigHandler;
+import fi.dy.masa.malilib.network.packet.PacketType_example;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.payload.channel.*;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
 
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,15 +31,33 @@ public class MixinClientConfigurationNetworkHandler
         }
 
         // See if this packet matches one of our registered types
-        PayloadType type = PayloadTypeRegister.getInstance().getPayloadType(packet.getId().id());
+        Identifier id = packet.getId().id();
+        PayloadType type = PayloadTypeRegister.getInstance().getPayloadType(id);
+        MaLiLib.printDebug("malilib_onCustomPayload(): [CLIENT-CONFIG] type: {} // id: {}", type, id.toString());
+
         if (type != null)
         {
             final ClientConfigurationNetworkHandler handler = (ClientConfigurationNetworkHandler) (Object) this;
             switch (type)
             {
                 case CARPET_HELLO:
-                    CarpetHelloPayload carpetPayload = (CarpetHelloPayload) packet;
-                    ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.CARPET_HELLO, carpetPayload, handler, ci);
+                    // Don't handle Carpet packets if we have Carpet-Client installed
+                    if (MaLiLibReference.hasCarpetClient())
+                    {
+                        // Create a Fake Carpet Packet
+                        NbtCompound nbt = new NbtCompound();
+                        nbt.putString(PacketType_example.CarpetHello.HI, MaLiLibReference.MOD_ID+"-"+MaLiLibReference.MOD_TYPE+"-"+MaLiLibReference.MC_VERSION+"-"+MaLiLibReference.MOD_VERSION);
+                        CarpetHelloPayload fakeCarpetPayload = new CarpetHelloPayload(nbt);
+
+                        ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.CARPET_HELLO, fakeCarpetPayload, handler, ci);
+                    }
+                    else
+                    {
+                        ci = new CallbackInfo(ci.getId(), false);
+                        CarpetHelloPayload realCarpetPayload = (CarpetHelloPayload) packet;
+
+                        ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.CARPET_HELLO, realCarpetPayload, handler, ci);
+                    }
                     break;
                 case MALILIB_BYTEBUF:
                     MaLibBufPayload malilibPayload = (MaLibBufPayload) packet;
@@ -67,8 +89,8 @@ public class MixinClientConfigurationNetworkHandler
             }
 
             // According to PacketTypeRegister, we own this, so cancel it.
-            if (ci.isCancellable())
-                ci.cancel();
+            //if (ci.isCancellable())
+                //ci.cancel();
         }
     }
 }

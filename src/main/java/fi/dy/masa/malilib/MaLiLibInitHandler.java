@@ -25,6 +25,7 @@ public class MaLiLibInitHandler implements IInitializationHandler
         if (MaLiLibReference.isClient())
         {
             MaLiLib.logger.info("{}-{}-{}-{} --> Initializing CLIENT environment", MaLiLibReference.MOD_ID, MaLiLibReference.MOD_TYPE, MaLiLibReference.MC_VERSION, MaLiLibReference.MOD_VERSION);
+            MaLiLib.getCarpetClient();
 
             InputEventHandler.getKeybindManager().registerKeybindProvider(MaLiLibInputHandler.getInstance());
 

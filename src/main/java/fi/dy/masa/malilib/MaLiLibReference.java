@@ -19,21 +19,18 @@ public class MaLiLibReference
     private static boolean dedicated_server = false;
     private static boolean integrated_server = false;
     private static boolean open_to_lan = false;
+    private static boolean hasCarpetClient = false;
     public static boolean isClient() { return MOD_ENVIRONMENT == EnvType.CLIENT; }
     public static boolean isServer() { return MOD_ENVIRONMENT == EnvType.SERVER; }
     public static boolean isDedicated() { return dedicated_server; }
     public static boolean isIntegrated() { return integrated_server; }
     public static boolean isOpenToLan() { return open_to_lan; }
+    public static boolean hasCarpetClient() { return hasCarpetClient; }
     public static void setDedicated(boolean toggle)
     {
         if (toggle)
         {
-            if (isServer())
-            {
-                dedicated_server = true;
-            }
-            else
-                dedicated_server = false;
+            dedicated_server = isServer();
         }
         else
         {
@@ -88,4 +85,13 @@ public class MaLiLibReference
         }
     }
     // For keeping networking API separated for basic sanity checks.
+    public static void setCarpetClient(boolean toggle)
+    {
+        if (toggle)
+        {
+            hasCarpetClient = isClient();
+        }
+        else
+            hasCarpetClient = false;
+    }
 }

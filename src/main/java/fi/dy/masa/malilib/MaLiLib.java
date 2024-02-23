@@ -26,6 +26,14 @@ public class MaLiLib implements ModInitializer
 
         return "?";
     }
+    public static void getCarpetClient()
+    {
+        for (net.fabricmc.loader.api.ModContainer container : net.fabricmc.loader.api.FabricLoader.getInstance().getAllMods())
+        {
+            if (container.getMetadata().getId().equals("carpet"))
+                MaLiLibReference.setCarpetClient(true);
+        }
+    }
     public static void printDebug(String key, Object... args)
     {
         if (MaLiLibConfigs.Debug.NETWORK_DEBUG.getBooleanValue())
