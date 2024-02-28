@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.class_9334;
 import net.minecraft.item.map.MapId;
 import net.minecraft.util.math.*;
 import org.jetbrains.annotations.NotNull;
@@ -1034,8 +1035,12 @@ public class RenderUtils
             int x2 = x1 + dimensions;
             int z = 300;
 
-            MapId mapId = FilledMapItem.getMapId(stack);
-            MapState mapState = FilledMapItem.getMapState(mapId, mc().world);
+            //MapId mapId = FilledMapItem.getMapId(stack);
+            MapState mapState = FilledMapItem.getMapState(stack, mc().world);
+
+            // FIXME --> method_57824() aka DataComponenetHolder.get() via Mojang Mappings,
+            //  and class_9334 is "DataComponents" which identifies the CODEC type
+            MapId mapId = (MapId) stack.method_57824(class_9334.MAP_ID);
 
             Identifier bgTexture = mapState == null ? TEXTURE_MAP_BACKGROUND : TEXTURE_MAP_BACKGROUND_CHECKERBOARD;
             bindTexture(bgTexture);
@@ -1076,7 +1081,10 @@ public class RenderUtils
 
     public static void renderShulkerBoxPreview(ItemStack stack, int baseX, int baseY, boolean useBgColors, DrawContext drawContext)
     {
-        if (stack.hasNbt())
+        // FIXME --> New method "DataComponents" replaces NbtCompound
+        //  --> Loom needs to rename these yet, method_57353() == getComponents() under Mojang Mappings
+        if (stack.method_57353() != null)
+        //if (stack.hasNbt())
         {
             DefaultedList<ItemStack> items = InventoryUtils.getStoredItems(stack, -1);
 
