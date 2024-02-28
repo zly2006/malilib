@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.mixin;
 
 import javax.annotation.Nullable;
 
-import fi.dy.masa.malilib.MaLiLib;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -23,8 +22,6 @@ public abstract class MixinMinecraftClient
 {
     @Shadow
     public ClientWorld world;
-
-    //@Shadow public abstract boolean isInSingleplayer();
 
     @Unique
     private ClientWorld worldBefore;
@@ -53,7 +50,6 @@ public abstract class MixinMinecraftClient
             this.worldBefore = this.world;
             ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.world, worldClientIn, (MinecraftClient)(Object) this);
         }
-        //MaLiLib.printDebug("malilib_onLoadWorldPre()");
     }
 
     @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;)V", at = @At("RETURN"))
@@ -64,7 +60,6 @@ public abstract class MixinMinecraftClient
             ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, worldClientIn, (MinecraftClient)(Object) this);
             this.worldBefore = null;
         }
-        //MaLiLib.printDebug("malilib_onLoadWorldPost()");
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("HEAD"))
@@ -72,8 +67,6 @@ public abstract class MixinMinecraftClient
     {
         this.worldBefore = this.world;
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.worldBefore, null, (MinecraftClient)(Object) this);
-
-        //MaLiLib.printDebug("malilib_onDisconnectPre()");
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("RETURN"))
@@ -81,7 +74,5 @@ public abstract class MixinMinecraftClient
     {
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, null, (MinecraftClient)(Object) this);
         this.worldBefore = null;
-
-        //MaLiLib.printDebug("malilib_onDisconnectPost()");
     }
 }

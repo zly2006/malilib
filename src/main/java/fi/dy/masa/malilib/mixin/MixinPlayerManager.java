@@ -18,6 +18,7 @@ public abstract class MixinPlayerManager
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void malilib_eventOnPlayerJoin(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci)
     {
+        // Handles Player Joins via IPlayer Interface (For Servers)
         ((PlayerHandler) PlayerHandler.getInstance()).onPlayerJoin(player);
     }
     @Inject(method = "remove", at = @At("HEAD"))
