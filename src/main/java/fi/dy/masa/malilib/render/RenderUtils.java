@@ -10,7 +10,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.class_9334;
 import net.minecraft.item.map.MapId;
 import net.minecraft.util.math.*;
-import org.jetbrains.annotations.NotNull;
 import org.joml.*;
 
 import net.minecraft.block.BlockState;
@@ -1265,7 +1264,7 @@ public class RenderUtils
         */
     }
 
-    @NotNull
+    @Nullable
     private static MinecraftClient mc()
     {
         return MinecraftClient.getInstance();
