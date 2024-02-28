@@ -306,7 +306,7 @@ public class InventoryUtils
         // FIXME --> class_9323 == DataComponentMap class via Mojang Mappings
         class_9323 data = stackShulkerBox.method_57353();
 
-        data.method_57832(class_9334.BLOCK_ENTITY_DATA);
+        //data.method_57832(class_9334.BLOCK_ENTITY_DATA);
 
         //if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         if (data != null && data.method_57832(class_9334.BLOCK_ENTITY_DATA))
