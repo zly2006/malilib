@@ -294,28 +294,11 @@ public class InventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stackShulkerBox)
     {
-        //NbtCompound nbt = stackShulkerBox.getNbt();
         ComponentMap data = stackShulkerBox.getComponents();
 
-        //if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         if (data != null && data.contains(DataComponentTypes.CONTAINER))
         {
             ContainerComponent itemContainer = data.get(DataComponentTypes.CONTAINER);
-
-            /*
-            //NbtCompound tag = nbt.getCompound("BlockEntityTag");
-
-            if (!customTag.method_57458())
-            {
-                NbtCompound tag = customTag.method_57461();
-
-                if (tag.contains("Items", Constants.NBT.TAG_LIST))
-                {
-                    NbtList tagList = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
-                    return tagList.size() > 0;
-                }
-            }
-             */
 
             if (itemContainer != null)
                 return itemContainer.stream().findAny().isPresent();
@@ -355,53 +338,6 @@ public class InventoryUtils
         else
             return EMPTY_LIST;
     }
-
-        /*
-        //NbtCompound nbt = stackIn.getNbt();
-
-        ComponentMap data = stackIn.method_57353();
-
-        //if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
-
-        if (data != null && data.contains(DataComponentTypes.BLOCK_ENTITY_DATA))
-        {
-            //NbtCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
-
-            class_9279 customTag = data.method_57829(DataComponentTypes.BLOCK_ENTITY_DATA);
-
-            if (!customTag.method_57458())
-            {
-                NbtCompound tagBlockEntity = customTag.method_57461();
-
-                if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
-                {
-                    DefaultedList<ItemStack> items = DefaultedList.of();
-                    NbtList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
-                    final int count = tagList.size();
-
-                    for (int i = 0; i < count; ++i)
-                    {
-                        //ItemStack stack = ItemStack.fromNbt(tagList.getCompound(i));
-
-                        //customTag
-                        tagList.getCompound(i);
-                        ItemStack stack = ItemStack.method_57353();
-
-                        if (!stack.isEmpty())
-                        {
-                            items.add(stack);
-                        }
-                    }
-
-                    return items;
-                }
-            }
-            else
-                return DefaultedList.of();
-        }
-
-        return DefaultedList.of();
-                 */
 
     /**
      * Returns the list of items currently stored in the given Shulker Box
