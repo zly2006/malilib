@@ -1,12 +1,9 @@
 package fi.dy.masa.malilib.util;
 
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
-import net.minecraft.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -15,6 +12,8 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.component.*;
+import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
@@ -32,8 +31,7 @@ import net.minecraft.world.World;
 
 public class InventoryUtils
 {
-    //public static final ImmutableSet<String> DAMAGE_KEY = ImmutableSet.of("Damage");
-    public static final Set<class_9331<?>> DAMAGE_KEY = Set.of(class_9334.DAMAGE);
+    public static final Set<DataComponentType<Integer>> DAMAGE_KEY = Set.of(DataComponentTypes.DAMAGE);
     private static final DefaultedList<ItemStack> EMPTY_LIST = DefaultedList.of();
 
     /**
@@ -41,7 +39,6 @@ public class InventoryUtils
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
-        //return ItemStack.canCombine(stack1, stack2);
         return ItemStack.areItemsAndNbtEqual(stack1, stack2);
     }
 
@@ -56,12 +53,8 @@ public class InventoryUtils
             return false;
         }
 
-        //NbtCompound tag1 = stack1.getNbt();
-        //NbtCompound tag2 = stack2.getNbt();
-
-        // FIXME --> class_9323 == DataComponentMap class via Mojang Mappings
-        class_9323 tag1 = stack1.method_57353();
-        class_9323 tag2 = stack2.method_57353();
+        ComponentMap tag1 = stack1.getComponents();
+        ComponentMap tag2 = stack2.getComponents();
 
         if (tag1 == null || tag2 == null)
         {
@@ -73,31 +66,31 @@ public class InventoryUtils
             return Objects.equals(tag1, tag2);
         }
 
-        return areNbtEqualIgnoreKeys(tag1, tag2, DAMAGE_KEY);
-        //return areNbtEqualIgnoreKeys(tag1, tag2, Set.of(class_9334.DAMAGE));
+        return areNbtEqualIgnoreKeys(tag1, tag2, DataComponentTypes.DAMAGE, DAMAGE_KEY);
     }
 
-    public static boolean areNbtEqualIgnoreKeys(class_9323 tag1, class_9323 tag2, Set<class_9331<?>> ignoredKeys)
+    public static <T> boolean areNbtEqualIgnoreKeys(ComponentMap tag1, ComponentMap tag2, DataComponentType<T> type, Set<DataComponentType<T>> ignoredKeys)
     {
-        //Set<String> keys1 = tag1.getKeys();
-        //Set<String> keys2 = tag2.getKeys();
+        Set<DataComponentType<?>> keys1;
+        Set<DataComponentType<?>> keys2;
 
-        // FIXME class_9331 == DataComponentType via Mojang Mappings
-        Set<class_9331<?>> keys1 = tag1.method_57831();
-        Set<class_9331<?>> keys2 = tag2.method_57831();
+        keys1 = tag1.getTypes();
+        keys2 = tag1.getTypes();
 
-        keys1.removeAll(ignoredKeys);
-        keys2.removeAll(ignoredKeys);
+        if (ignoredKeys != null)
+        {
+            keys1.removeAll(ignoredKeys);
+            keys2.removeAll(ignoredKeys);
+        }
 
         if (!Objects.equals(keys1, keys2))
         {
             return false;
         }
 
-        for (class_9331<?> key : keys1)
+        for (DataComponentType<?> key : keys1)
         {
-            // FIXME method_57829 == get()
-            if (!Objects.equals(tag1.method_57829(key), tag2.method_57829(key)))
+            if (!Objects.equals(tag1.get(key), tag2.get(key)))
             {
                 return false;
             }
@@ -302,15 +295,12 @@ public class InventoryUtils
     public static boolean shulkerBoxHasItems(ItemStack stackShulkerBox)
     {
         //NbtCompound nbt = stackShulkerBox.getNbt();
-
-        // FIXME --> class_9323 == DataComponentMap class via Mojang Mappings
-        class_9323 data = stackShulkerBox.method_57353();
+        ComponentMap data = stackShulkerBox.getComponents();
 
         //if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
-        if (data != null && data.method_57832(class_9334.CONTAINER))
+        if (data != null && data.contains(DataComponentTypes.CONTAINER))
         {
-            // FIXME class_9288 == ItemContainerContents class via Mojang Mappings
-            class_9288 itemContainer = data.method_57829(class_9334.CONTAINER);
+            ContainerComponent itemContainer = data.get(DataComponentTypes.CONTAINER);
 
             /*
             //NbtCompound tag = nbt.getCompound("BlockEntityTag");
@@ -328,7 +318,7 @@ public class InventoryUtils
              */
 
             if (itemContainer != null)
-                return itemContainer.method_57489().findAny().isPresent();
+                return itemContainer.stream().findAny().isPresent();
             else
                 return false;
         }
@@ -345,17 +335,17 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn)
     {
-        class_9323 data = stackIn.method_57353();
+        ComponentMap data = stackIn.getComponents();
 
-        if (data != null && data.method_57832(class_9334.CONTAINER))
+        if (data != null && data.contains(DataComponentTypes.CONTAINER))
         {
-            class_9288 itemContainer = data.method_57829(class_9334.CONTAINER);
+            ContainerComponent itemContainer = data.get(DataComponentTypes.CONTAINER);
 
             if (itemContainer != null)
             {
                 DefaultedList<ItemStack> items = EMPTY_LIST;
 
-                itemContainer.method_57492(items);
+                itemContainer.copyTo(items);
 
                 return items;
             }
@@ -369,19 +359,16 @@ public class InventoryUtils
         /*
         //NbtCompound nbt = stackIn.getNbt();
 
-        // FIXME --> class_9323 == DataComponentMap class via Mojang Mappings
-        class_9323 data = stackIn.method_57353();
+        ComponentMap data = stackIn.method_57353();
 
         //if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
 
-        if (data != null && data.method_57832(class_9334.BLOCK_ENTITY_DATA))
+        if (data != null && data.contains(DataComponentTypes.BLOCK_ENTITY_DATA))
         {
             //NbtCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
-            // FIXME class_9279 == CustomData class via Mojang Mappings
-            class_9279 customTag = data.method_57829(class_9334.BLOCK_ENTITY_DATA);
+            class_9279 customTag = data.method_57829(DataComponentTypes.BLOCK_ENTITY_DATA);
 
-            // FIXME method_57458() is .isEmpty() call via Mojang Mappings
             if (!customTag.method_57458())
             {
                 NbtCompound tagBlockEntity = customTag.method_57461();
@@ -426,24 +413,31 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn, int slotCount)
     {
-        class_9323 data = stackIn.method_57353();
+        ComponentMap data = stackIn.getComponents();
 
-        if (data != null && data.method_57832(class_9334.CONTAINER))
+        if (data != null && data.contains(DataComponentTypes.CONTAINER))
         {
-            class_9288 itemContainer = data.method_57829(class_9334.CONTAINER);
+            ContainerComponent itemContainer = data.get(DataComponentTypes.CONTAINER);
 
             if (itemContainer != null)
             {
                 DefaultedList<ItemStack> items = EMPTY_LIST;
+
                 //final long count = itemContainer.method_57489().count();
-                int count = 0;
-                int maxSlot = -1;
+                //int count = 0;
+                //int maxSlot = -1;
+
                 Iterator<ItemStack> iter = itemContainer.iterator();
 
                 if (slotCount <= 0)
                 {
-                    // We'll default to 27 since this is the size of most shulker boxes.
-                    for (int i = 0; i < 27; i++)
+                    Item itemIn = stackIn.getItem();
+                    if (itemIn instanceof BlockItem && ((BlockItem) itemIn).getBlock() instanceof ShulkerBoxBlock)
+                        slotCount = ShulkerBoxBlockEntity.INVENTORY_SIZE;
+                    else
+                        slotCount = 27;
+
+                    for (int i = 0; i < slotCount; i++)
                     {
                         if (iter.hasNext())
                         {

@@ -51,9 +51,7 @@ public class ItemType
 
         if (this.checkNBT())
         {
-            // FIXME --> New method "DataComponents" replaces NbtCompound
-            //  --> Loom needs to rename these yet, method_57353() == getComponents() under Mojang Mappings
-            result = prime * result + (this.stack.method_57353() != null ? this.stack.method_57353().hashCode() : 0);
+            result = prime * result + (this.stack.getComponents() != null ? this.stack.getComponents().hashCode() : 0);
         }
 
         return result;
@@ -82,9 +80,7 @@ public class ItemType
                 return false;
             }
 
-            // FIXME --> New method "DataComponents" replaces NbtCompound
-            //  --> Loom needs to rename these yet, method_57353() == getComponents() under Mojang Mappings
-            return !this.checkNBT() || Objects.equals(this.stack.method_57353(), other.stack.method_57353());
+            return !this.checkNBT() || Objects.equals(this.stack.getComponents(), other.stack.getComponents());
         }
     }
 
@@ -93,10 +89,8 @@ public class ItemType
     {
         if (this.checkNBT())
         {
-            // FIXME --> New method "DataComponents" replaces NbtCompound
-            //  --> Loom needs to rename these yet, method_57353() == getComponents() under Mojang Mappings
             Identifier rl = Registries.ITEM.getId(this.stack.getItem());
-            return rl + " " + this.stack.method_57353();
+            return rl + " " + this.stack.getComponents();
         }
         else
         {
