@@ -1077,6 +1077,56 @@ public class RenderUtils
         }
     }
 
+    public static void renderBundlePreview(ItemStack stack, int baseX, int baseY, Color4f bg, DrawContext drawContext)
+    {
+        if (stack.getComponents() != ComponentMap.EMPTY)
+        {
+            int occupancy = InventoryUtils.bundleCountItems(stack);
+            if (occupancy < 1)
+            {
+                // Occupants is the total number of items up to 64, but items.size() is the number of slots.
+                return;
+            }
+
+            DefaultedList<ItemStack> items = InventoryUtils.getBundleItems(stack);
+
+            if (items.isEmpty())
+            {
+                return;
+            }
+
+            InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
+            InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
+
+            int screenWidth = GuiUtils.getScaledWindowWidth();
+            int screenHeight = GuiUtils.getScaledWindowHeight();
+            int height = props.height + 18;
+            int x = MathHelper.clamp(baseX + 8     , 0, screenWidth - props.width);
+            int y = MathHelper.clamp(baseY - height, 0, screenHeight - height);
+
+            color(bg.r, bg.g, bg.b, 1f);
+
+            disableDiffuseLighting();
+
+            // RenderSystem's 'modelViewStack' was changed to a Matrix4fStack method
+            Matrix4fStack matrix4fStack = RenderSystem.getModelViewStack();
+            matrix4fStack.pushMatrix();
+            matrix4fStack.translate(0, 0, 500);
+            RenderSystem.applyModelViewMatrix();
+
+            InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc());
+
+            enableDiffuseLightingGui3D();
+
+            Inventory inv = InventoryUtils.getAsInventory(items);
+            InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, items.size(), mc(), drawContext);
+
+            matrix4fStack.popMatrix();
+            RenderSystem.applyModelViewMatrix();
+
+            items.clear();
+        }
+    }
     public static void renderShulkerBoxPreview(ItemStack stack, int baseX, int baseY, boolean useBgColors, DrawContext drawContext)
     {
         if (stack.getComponents() != ComponentMap.EMPTY)
@@ -1123,6 +1173,8 @@ public class RenderUtils
 
             matrix4fStack.popMatrix();
             RenderSystem.applyModelViewMatrix();
+
+            items.clear();
         }
     }
 

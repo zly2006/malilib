@@ -13,6 +13,7 @@ import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.*;
+import net.minecraft.component.type.BundleContentsComponent;
 import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.DoubleInventory;
@@ -465,6 +466,69 @@ public class InventoryUtils
         return EMPTY_LIST;
 
          */
+
+    public boolean bundleHasItems(ItemStack stack)
+    {
+        ComponentMap data = stack.getComponents();
+
+        if (data != null && data.contains(DataComponentTypes.BUNDLE_CONTENTS))
+        {
+            BundleContentsComponent bundleContainer = data.get(DataComponentTypes.BUNDLE_CONTENTS);
+
+            if (bundleContainer != null)
+                return bundleContainer.stream().findAny().isPresent();
+            else
+                return false;
+        }
+
+        return false;
+    }
+
+    public static int bundleCountItems(ItemStack stack)
+    {
+        ComponentMap data = stack.getComponents();
+
+        if (data != null && data.contains(DataComponentTypes.BUNDLE_CONTENTS))
+        {
+            BundleContentsComponent bundleContainer = data.get(DataComponentTypes.BUNDLE_CONTENTS);
+
+            if (bundleContainer != null)
+                return bundleContainer.getOccupancy();
+            else
+                return -1;
+        }
+
+        return -1;
+    }
+
+    public static DefaultedList<ItemStack> getBundleItems(ItemStack stackIn)
+    {
+        ComponentMap data = stackIn.getComponents();
+
+        if (data != null && data.contains(DataComponentTypes.BUNDLE_CONTENTS))
+        {
+            BundleContentsComponent bundleContainer = data.getOrDefault(DataComponentTypes.BUNDLE_CONTENTS, BundleContentsComponent.DEFAULT);
+
+            if (bundleContainer != null)
+            {
+                int maxSlots = bundleContainer.size();
+                DefaultedList<ItemStack> items = EMPTY_LIST;
+
+                for (int i = 0; i < maxSlots; i++)
+                {
+
+                    ItemStack slot = bundleContainer.get(i);
+
+                    if (!slot.isEmpty())
+                        items.add(slot);
+                }
+
+                return items;
+            }
+            return EMPTY_LIST;
+        }
+        return EMPTY_LIST;
+    }
 
     /**
      * Returns a map of the stored item counts in the given Shulker Box
