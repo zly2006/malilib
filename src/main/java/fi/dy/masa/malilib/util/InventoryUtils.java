@@ -20,8 +20,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -306,17 +304,15 @@ public class InventoryUtils
         // FIXME --> class_9323 == DataComponentMap class via Mojang Mappings
         class_9323 data = stackShulkerBox.method_57353();
 
-        //data.method_57832(class_9334.BLOCK_ENTITY_DATA);
-
         //if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
-        if (data != null && data.method_57832(class_9334.BLOCK_ENTITY_DATA))
+        if (data != null && data.method_57832(class_9334.CONTAINER))
         {
+            // FIXME class_9288 == ItemContainerContents class via Mojang Mappings
+            class_9288 itemContainer = data.method_57829(class_9334.CONTAINER);
+
+            /*
             //NbtCompound tag = nbt.getCompound("BlockEntityTag");
 
-            // FIXME class_9279 == CustomData class via Mojang Mappings
-            class_9279 customTag = data.method_57829(class_9334.BLOCK_ENTITY_DATA);
-
-            // FIXME method_57458() is .isEmpty() call via Mojang Mappings
             if (!customTag.method_57458())
             {
                 NbtCompound tag = customTag.method_57461();
@@ -327,6 +323,10 @@ public class InventoryUtils
                     return tagList.size() > 0;
                 }
             }
+             */
+
+            if (itemContainer != null)
+                return itemContainer.method_57489().findAny().isPresent();
             else
                 return false;
         }
@@ -343,15 +343,22 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn)
     {
-        class_9288 itemContents = stackIn.method_57379(class_9334.CONTAINER, class_9288.field_49334);
+        class_9323 data = stackIn.method_57353();
 
-        if (itemContents != null)
+        if (data != null && data.method_57832(class_9334.CONTAINER))
         {
-            DefaultedList<ItemStack> items = DefaultedList.of();
+            class_9288 itemContainer = data.method_57829(class_9334.CONTAINER);
 
-            itemContents.method_57492(items);
+            if (itemContainer != null)
+            {
+                DefaultedList<ItemStack> items = EMPTY_LIST;
 
-            return items;
+                itemContainer.method_57492(items);
+
+                return items;
+            }
+            else
+                return EMPTY_LIST;
         }
         else
             return EMPTY_LIST;
@@ -417,25 +424,29 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn, int slotCount)
     {
-        class_9288 itemContents = stackIn.method_57379(class_9334.CONTAINER, class_9288.field_49334);
+        class_9323 data = stackIn.method_57353();
 
-        if (itemContents != null)
+        if (data != null && data.method_57832(class_9334.CONTAINER))
         {
-            DefaultedList<ItemStack> items = DefaultedList.ofSize(slotCount, ItemStack.EMPTY);
+            class_9288 itemContainer = data.method_57829(class_9334.CONTAINER);
 
-            //itemContents.method_57492(items);
-
-            Iterator<ItemStack> iter = itemContents.iterator();
-
-            for (int i = 0; i < slotCount; i++)
+            if (itemContainer != null)
             {
-                if (iter.hasNext())
-                {
-                    items.add(iter.next());
-                }
-            }
+                DefaultedList<ItemStack> items = DefaultedList.ofSize(slotCount, ItemStack.EMPTY);
+                Iterator<ItemStack> iter = itemContainer.iterator();
 
-            return items;
+                for (int i = 0; i < slotCount; i++)
+                {
+                    if (iter.hasNext())
+                    {
+                        items.add(iter.next());
+                    }
+                }
+
+                return items;
+            }
+            else
+                return EMPTY_LIST;
         }
         else
             return EMPTY_LIST;
