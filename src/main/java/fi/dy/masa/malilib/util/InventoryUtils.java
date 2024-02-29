@@ -432,7 +432,7 @@ public class InventoryUtils
 
             if (itemContainer != null)
             {
-                DefaultedList<ItemStack> items = DefaultedList.ofSize(slotCount, ItemStack.EMPTY);
+                DefaultedList<ItemStack> items = EMPTY_LIST;
                 Iterator<ItemStack> iter = itemContainer.iterator();
 
                 for (int i = 0; i < slotCount; i++)
