@@ -12,6 +12,7 @@ import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,6 +20,7 @@ import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
@@ -433,17 +435,48 @@ public class InventoryUtils
             if (itemContainer != null)
             {
                 DefaultedList<ItemStack> items = EMPTY_LIST;
+                //final long count = itemContainer.method_57489().count();
+                int count = 0;
+                int maxSlot = -1;
                 Iterator<ItemStack> iter = itemContainer.iterator();
 
-                for (int i = 0; i < slotCount; i++)
+                if (slotCount <= 0)
                 {
-                    if (iter.hasNext())
+                    // We'll default to 27 since this is the size of most shulker boxes.
+                    for (int i = 0; i < 27; i++)
                     {
-                        items.add(iter.next());
+                        if (iter.hasNext())
+                        {
+                            items.add(iter.next());
+                        }
+                        else
+                        {
+                            items.add(ItemStack.EMPTY);
+                        }
                     }
-                }
 
-                return items;
+                    return items;
+                }
+                // FIXME Slot handling seems to have been removed,
+                //  so we'll use it to define the "size" ...
+                else if (slotCount < 54)
+                {
+                    for (int i = 0; i < slotCount; i++)
+                    {
+                        if (iter.hasNext())
+                        {
+                            items.add(iter.next());
+                        }
+                        else
+                        {
+                            items.add(ItemStack.EMPTY);
+                        }
+                    }
+
+                    return items;
+                }
+                else
+                    return EMPTY_LIST;
             }
             else
                 return EMPTY_LIST;
