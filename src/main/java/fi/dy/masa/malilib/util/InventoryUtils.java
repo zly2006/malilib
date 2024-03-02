@@ -467,7 +467,7 @@ public class InventoryUtils
 
          */
 
-    public boolean bundleHasItems(ItemStack stack)
+    public static boolean bundleHasItems(ItemStack stack)
     {
         ComponentMap data = stack.getComponents();
 
