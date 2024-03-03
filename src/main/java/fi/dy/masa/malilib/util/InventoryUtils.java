@@ -45,11 +45,27 @@ public class InventoryUtils
     private static final Pattern PATTERN_ITEM_BASE = Pattern.compile("^(?<name>(?:[a-z0-9\\._-]+:)[a-z0-9\\._-]+)$");
 
     /**
-     * @return true if the stacks are identical otherwise, but ignoring the stack size
+     * @return true if the stacks are identical otherwise
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
+        return areStacksAndNbtEqual(stack1, stack2);
+    }
+
+    /**
+     * @return true if the stacks are identical otherwise
+     */
+    public static boolean areStacksAndNbtEqual(ItemStack stack1, ItemStack stack2)
+    {
         return ItemStack.areItemsAndComponentsEqual(stack1, stack2);
+    }
+
+    /**
+     * @return true if the stacks are identical otherwise, but ignoring the Components
+     */
+    public static boolean areStacksEqualIgnoreNbt(ItemStack stack1, ItemStack stack2)
+    {
+        return ItemStack.areItemsEqual(stack1, stack2);
     }
 
     /**
@@ -208,7 +224,7 @@ public class InventoryUtils
         boolean isCreative = player.isCreative();
 
         // Already holding the requested item
-        if (areStacksEqual(stackReference, player.getMainHandStack()))
+        if (areStacksEqualIgnoreNbt(stackReference, player.getMainHandStack()))
         {
             return false;
         }
