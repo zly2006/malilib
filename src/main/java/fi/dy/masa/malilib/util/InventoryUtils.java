@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.util;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import fi.dy.masa.malilib.MaLiLib;
@@ -27,6 +28,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.PlayerScreenHandler;
@@ -45,7 +47,7 @@ public class InventoryUtils
     private static final Pattern PATTERN_ITEM_BASE = Pattern.compile("^(?<name>(?:[a-z0-9\\._-]+:)[a-z0-9\\._-]+)$");
 
     /**
-     * @return true if the stacks are identical otherwise
+     * @return true if the stacks are identical, including their "Components"
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
@@ -53,7 +55,7 @@ public class InventoryUtils
     }
 
     /**
-     * @return true if the stacks are identical otherwise
+     * @return true if the stacks are identical, including their "Components"
      */
     public static boolean areStacksAndNbtEqual(ItemStack stack1, ItemStack stack2)
     {
@@ -61,7 +63,7 @@ public class InventoryUtils
     }
 
     /**
-     * @return true if the stacks are identical otherwise, but ignoring the Components
+     * @return true if the stacks are identical, but ignoring the Components
      */
     public static boolean areStacksEqualIgnoreNbt(ItemStack stack1, ItemStack stack2)
     {
@@ -69,7 +71,7 @@ public class InventoryUtils
     }
 
     /**
-     * @return true if the stacks are identical otherwise, but ignoring the stack size,
+     * @return true if the stacks are identical, but ignoring the stack size,
      * and if the item is damageable, then ignoring the damage too.
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
@@ -95,13 +97,22 @@ public class InventoryUtils
         return areNbtEqualIgnoreKeys(tag1, tag2, DataComponentTypes.DAMAGE, DAMAGE_KEY);
     }
 
-    public static <T> boolean areNbtEqualIgnoreKeys(ComponentMap tag1, ComponentMap tag2, DataComponentType<T> type, Set<DataComponentType<T>> ignoredKeys)
+    /**
+     * Uses new ComponentMap to compare values
+     * @param tag1 (ComponentMap 1)
+     * @param tag2 (ComponentMap 2)
+     * @param type (DataComponentType) [OPTIONAL]
+     * @param ignoredKeys (keys to ignore) [OPTIONAL]
+     * @return (return value)
+     * @param <T> DataComponentType extendable
+     */
+    public static <T> boolean areNbtEqualIgnoreKeys(@Nonnull ComponentMap tag1, @Nonnull ComponentMap tag2, @Nullable DataComponentType<T> type, @Nullable Set<DataComponentType<T>> ignoredKeys)
     {
         Set<DataComponentType<?>> keys1;
         Set<DataComponentType<?>> keys2;
 
         keys1 = tag1.getTypes();
-        keys2 = tag1.getTypes();
+        keys2 = tag2.getTypes();
 
         if (ignoredKeys != null)
         {
@@ -114,7 +125,51 @@ public class InventoryUtils
             return false;
         }
 
-        for (DataComponentType<?> key : keys1)
+        if (type == null)
+        {
+            for (DataComponentType<?> key : keys1)
+            {
+                if (!Objects.equals(tag1.get(key), tag2.get(key)))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        else
+        {
+            return Objects.equals(tag1.get(type), tag2.get(type));
+        }
+    }
+
+    /**
+     * Same as above, but still intended to compare NbtCompounds
+     * @param tag1 (NbtCompound tag1)
+     * @param tag2 (NbtCompound tag2)
+     * @param ignoredKeys (Keys to ignore) [OPTIONAL]
+     * @return (result)
+     */
+    public static boolean areNbtEqualIgnoreKeys(@Nonnull NbtCompound tag1, @Nonnull NbtCompound tag2, @Nullable Set<String> ignoredKeys)
+    {
+        Set<String> keys1;
+        Set<String> keys2;
+
+        keys1 = tag1.getKeys();
+        keys2 = tag2.getKeys();
+
+        if (ignoredKeys != null)
+        {
+            keys1.removeAll(ignoredKeys);
+            keys2.removeAll(ignoredKeys);
+        }
+
+        if (!Objects.equals(keys1, keys2))
+        {
+            return false;
+        }
+
+        for (String key : keys1)
         {
             if (!Objects.equals(tag1.get(key), tag2.get(key)))
             {
