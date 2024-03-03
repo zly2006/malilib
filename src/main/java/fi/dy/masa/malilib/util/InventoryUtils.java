@@ -1,7 +1,11 @@
 package fi.dy.masa.malilib.util;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+
+import fi.dy.masa.malilib.MaLiLib;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import net.minecraft.block.BlockState;
@@ -22,10 +26,14 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -34,6 +42,7 @@ public class InventoryUtils
 {
     public static final Set<DataComponentType<Integer>> DAMAGE_KEY = Set.of(DataComponentTypes.DAMAGE);
     private static final DefaultedList<ItemStack> EMPTY_LIST = DefaultedList.of();
+    private static final Pattern PATTERN_ITEM_BASE = Pattern.compile("^(?<name>(?:[a-z0-9\\._-]+:)[a-z0-9\\._-]+)$");
 
     /**
      * @return true if the stacks are identical otherwise, but ignoring the stack size
@@ -604,5 +613,99 @@ public class InventoryUtils
         }
 
         return inv;
+    }
+
+    /**
+     * Creates an ItemStack via a String
+     * @param itemNameIn (String containing the item name)
+     * @return (The ItemStack object or ItemStack.EMPTY, aka Air)
+     */
+    public static ItemStack getItemStackFromString(String itemNameIn)
+    {
+        return getItemStackFromString(itemNameIn, -1, ComponentMap.EMPTY);
+    }
+
+    /**
+     * Creates an ItemStack via a String
+     * @param itemNameIn (String containing the item name)
+     * @param data (ComponentMap data to import)
+     * @return (The ItemStack object or ItemStack.EMPTY, aka Air)
+     */
+    public static ItemStack getItemStackFromString(String itemNameIn, ComponentMap data)
+    {
+        return getItemStackFromString(itemNameIn, -1, data);
+    }
+
+    /**
+     * Creates an ItemStack via a String
+     * @param itemNameIn (String containing the item name)
+     * @param count (How many in this stack)
+     * @return (The ItemStack object or ItemStack.EMPTY, aka Air)
+     */
+    public static ItemStack getItemStackFromString(String itemNameIn, int count)
+    {
+        return getItemStackFromString(itemNameIn, count, ComponentMap.EMPTY);
+    }
+
+    /**
+     * Creates an ItemStack via a String
+     * @param itemNameIn (String containing the item name)
+     * @param count (How many in this stack)
+     * @param data (ComponentMap data to import)
+     * @return (The ItemStack object or ItemStack.EMPTY, aka Air)
+     */
+    public static ItemStack getItemStackFromString(String itemNameIn, int count, ComponentMap data)
+    {
+        if (itemNameIn.isEmpty() || itemNameIn.equals("empty") || itemNameIn.equals("minecraft:air"))
+        {
+            return ItemStack.EMPTY;
+        }
+        else
+        {
+            Matcher matcherBase = PATTERN_ITEM_BASE.matcher(itemNameIn);
+            String itemName;
+
+            if (matcherBase.matches())
+            {
+                itemName = matcherBase.group("name");
+
+                if (itemName != null)
+                {
+                    Identifier itemId = new Identifier(itemName);
+                    Item item = Registries.ITEM.get(itemId);
+                    RegistryEntry<Item> itemEntry = RegistryEntry.of(item);
+
+                    MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): id {}, item {}, entry {}", itemId.toString(), item.toString(), itemEntry.toString());
+
+                    if (item != Items.AIR && itemEntry.hasKeyAndValue())
+                    {
+                        if (count < 0 && data.isEmpty())
+                        {
+                            return new ItemStack(itemEntry);
+                        }
+                        else if (data.isEmpty())
+                        {
+                            return new ItemStack(itemEntry, count);
+                        }
+                        else if (count < 0)
+                        {
+                            ItemStack result = new ItemStack(itemEntry);
+                            result.applyComponentsFrom(data);
+
+                            return result;
+                        }
+                        else
+                        {
+                            ItemStack result = new ItemStack(itemEntry, count);
+                            result.applyComponentsFrom(data);
+
+                            return result;
+                        }
+                    }
+                }
+            }
+        }
+
+        return ItemStack.EMPTY;
     }
 }
