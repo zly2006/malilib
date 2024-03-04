@@ -1094,6 +1094,14 @@ public class RenderUtils
             {
                 return;
             }
+            if (items.size() > 27)
+            {
+                // Disable this if the Slots in the Bundle are too much for the screen to logically display
+                //  The Double-Chest (54) Type also doesn't look very good either,
+                //  but I would assume most use cases are less than 27 different items.
+                items.clear();
+                return;
+            }
 
             InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
             InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
