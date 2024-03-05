@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.network.handler.play;
+package fi.dy.masa.malilib.network.handler.client;
 
 import com.google.common.collect.ArrayListMultimap;
 import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHandler
 {
     private static final ClientPlayHandler<CustomPayload> INSTANCE = new ClientPlayHandler<>();
-    private final ArrayListMultimap<PayloadType, IPluginPlayHandler<T>> handlers = ArrayListMultimap.create();
+    private final ArrayListMultimap<PayloadType, IPluginClientPlayHandler<T>> handlers = ArrayListMultimap.create();
     public static IClientPlayHandler getInstance()
     {
         return INSTANCE;
@@ -22,7 +22,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
 
     @Override
     @SuppressWarnings("unchecked")
-    public <P extends CustomPayload> void registerClientPlayHandler(IPluginPlayHandler<P> handler)
+    public <P extends CustomPayload> void registerClientPlayHandler(IPluginClientPlayHandler<P> handler)
     {
         PayloadType type = handler.getPayloadType();
 
@@ -30,7 +30,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
         {
             if (!this.handlers.containsEntry(type, handler))
             {
-                this.handlers.put(type, (IPluginPlayHandler<T>) handler);
+                this.handlers.put(type, (IPluginClientPlayHandler<T>) handler);
                 handler.registerPlayPayload(type);
                 //handler.registerConfigPayload(type);
                 // Don't register Receivers until Server/World fully joined.
@@ -39,7 +39,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
     }
 
     @Override
-    public <P extends CustomPayload> void unregisterClientPlayHandler(IPluginPlayHandler<P> handler)
+    public <P extends CustomPayload> void unregisterClientPlayHandler(IPluginClientPlayHandler<P> handler)
     {
         PayloadType type = handler.getPayloadType();
 
@@ -60,7 +60,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginPlayHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
             {
                 handler.reset(type);
             }
@@ -70,7 +70,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
    {
        if (!this.handlers.isEmpty())
        {
-           for (IPluginPlayHandler<T> handler : this.handlers.get(type))
+           for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
            {
                handler.registerPlayPayload(type);
            }
@@ -80,7 +80,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginPlayHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
             {
                 handler.registerPlayHandler(type);
             }
@@ -90,7 +90,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginPlayHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
             {
                 handler.unregisterPlayHandler(type);
             }
@@ -100,7 +100,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
    {
        if (!this.handlers.isEmpty())
        {
-           for (IPluginPlayHandler<T> handler : this.handlers.get(type))
+           for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
            {
                handler.receiveS2CPlayPayload(type, payload, ctx);
            }
@@ -110,7 +110,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginPlayHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
             {
                 handler.receiveS2CPlayPayload(type, payload, networkHandler, ci);
             }
@@ -120,7 +120,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
    {
        if (!this.handlers.isEmpty())
        {
-           for (IPluginPlayHandler<T> handler : this.handlers.get(type))
+           for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
            {
                handler.decodeS2CNbtCompound(type, data);
            }
@@ -130,7 +130,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginPlayHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
             {
                 handler.decodeS2CByteBuf(type, data);
             }

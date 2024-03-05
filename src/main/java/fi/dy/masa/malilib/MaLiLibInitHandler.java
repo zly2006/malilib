@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
 import fi.dy.masa.malilib.listeners.ServerListener;
-import fi.dy.masa.malilib.network.packet.PacketUtils_example;
+import fi.dy.masa.malilib.network.packet_example.PacketListenerRegister;
 import fi.dy.masa.malilib.util.FileUtils;
 
 public class MaLiLibInitHandler implements IInitializationHandler
@@ -18,8 +18,8 @@ public class MaLiLibInitHandler implements IInitializationHandler
     public void registerModHandlers()
     {
         // Set Directories for Multi-Environment Compatibility
-        FileUtils.setRunDirectory(MaLiLibReference.RUN_DIR);
-        FileUtils.setConfigDirectory(MaLiLibReference.CONFIG_DIR);
+        FileUtils.setRunDirectory(MaLiLibReference.DEFAULT_RUN_DIR);
+        FileUtils.setConfigDirectory(MaLiLibReference.DEFAULT_CONFIG_DIR);
 
         ConfigManager.getInstance().registerConfigHandler(MaLiLibReference.MOD_ID, new MaLiLibConfigs());
 
@@ -37,12 +37,11 @@ public class MaLiLibInitHandler implements IInitializationHandler
             MaLiLib.logger.info("{} --> Initializing SERVER environment", MaLiLibReference.MOD_STRING);
         }
 
-        // Used to register Payloads / MaLiLib Networking API under MinecraftServer status events
         ServerListener serverListener = new ServerListener();
         ServerHandler.getInstance().registerServerHandler(serverListener);
 
         // Example code using Carpet Hello packets.
-        //PacketUtils_example.registerPayloads();
+        PacketListenerRegister.registerListeners();
     }
 
     private static class CallbackOpenConfigGui implements IHotkeyCallback

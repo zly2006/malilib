@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.network.handler.config;
+package fi.dy.masa.malilib.network.handler.server;
 
 import net.minecraft.network.packet.CustomPayload;
 

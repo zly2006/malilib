@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.network.handler.config;
+package fi.dy.masa.malilib.network.handler.client;
 
 import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
 import fi.dy.masa.malilib.network.payload.PayloadType;
@@ -8,7 +8,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-public interface IPluginConfigHandler<T extends CustomPayload> extends ClientConfigurationNetworking.ConfigurationPayloadHandler<T>
+public interface IPluginClientConfigHandler<T extends CustomPayload> extends ClientConfigurationNetworking.ConfigurationPayloadHandler<T>
 {
     PayloadType getPayloadType();
     default void reset(PayloadType type) {}

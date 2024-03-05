@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.network.handler;
 
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 import fi.dy.masa.malilib.network.payload.channel.*;
 import io.netty.buffer.ByteBuf;
@@ -9,9 +10,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 
-/**
- * This probably cannot be made too abstract, because it references items in the static context directly (ie. Specific Payload types)
- */
 public class ServerCommonHandlerRegister
 {
     public static final ServerCommonHandlerRegister INSTANCE = new ServerCommonHandlerRegister();
@@ -19,23 +17,51 @@ public class ServerCommonHandlerRegister
 
     public <T extends CustomPayload> void registerPlayHandler(CustomPayload.Id<T> type, ServerPlayNetworking.PlayPayloadHandler<T> handler)
     {
-        MaLiLib.printDebug("ServerCommonHandlerRegister#registerPlayHandler(): for type {}", type.id().toString());
-        ServerPlayNetworking.registerGlobalReceiver(type, handler);
+        if (MaLiLibReference.isServer() || MaLiLibReference.isDedicated() || MaLiLibReference.isOpenToLan())
+        {
+            MaLiLib.printDebug("ServerCommonHandlerRegister#registerPlayHandler(): for type {}", type.id().toString());
+            ServerPlayNetworking.registerGlobalReceiver(type, handler);
+        }
+        else
+        {
+            MaLiLib.logger.error("ServerCommonHandlerRegister#registerPlayHandler(): blocked registerGlobalReceiver() from a non-SERVER Environment.");
+        }
     }
     public <T extends CustomPayload> void unregisterPlayHandler(CustomPayload.Id<T> type)
     {
-        MaLiLib.printDebug("ServerCommonHandlerRegister#unregisterPlayHandler(): for type {}", type.id().toString());
-        ServerPlayNetworking.unregisterGlobalReceiver(type.id());
+        if (MaLiLibReference.isServer() || MaLiLibReference.isDedicated() || MaLiLibReference.isOpenToLan())
+        {
+            MaLiLib.printDebug("ServerCommonHandlerRegister#unregisterPlayHandler(): for type {}", type.id().toString());
+            ServerPlayNetworking.unregisterGlobalReceiver(type.id());
+        }
+        else
+        {
+            MaLiLib.logger.error("ServerCommonHandlerRegister#unregisterPlayHandler(): blocked unregisterGlobalReceiver() from a non-SERVER Environment.");
+        }
     }
     public <T extends CustomPayload> void registerConfigHandler(CustomPayload.Id<T> type, ServerConfigurationNetworking.ConfigurationPacketHandler<T> handler)
     {
-        MaLiLib.printDebug("ServerCommonHandlerRegister#registerConfigHandler(): for type {}", type.id().toString());
-        ServerConfigurationNetworking.registerGlobalReceiver(type, handler);
+        if (MaLiLibReference.isServer() || MaLiLibReference.isDedicated() || MaLiLibReference.isOpenToLan())
+        {
+            MaLiLib.printDebug("ServerCommonHandlerRegister#registerConfigHandler(): for type {}", type.id().toString());
+            ServerConfigurationNetworking.registerGlobalReceiver(type, handler);
+        }
+        else
+        {
+            MaLiLib.logger.error("ServerCommonHandlerRegister#registerConfigHandler(): blocked registerGlobalReceiver() from a non-SERVER Environment.");
+        }
     }
     public <T extends CustomPayload> void unregisterConfigHandler(CustomPayload.Id<T> type)
     {
-        MaLiLib.printDebug("ServerCommonHandlerRegister#unregisterConfigHandler(): for type {}", type.id().toString());
-        ServerConfigurationNetworking.unregisterGlobalReceiver(type.id());
+        if (MaLiLibReference.isServer() || MaLiLibReference.isDedicated() || MaLiLibReference.isOpenToLan())
+        {
+            MaLiLib.printDebug("ServerCommonHandlerRegister#unregisterConfigHandler(): for type {}", type.id().toString());
+            ServerConfigurationNetworking.unregisterGlobalReceiver(type.id());
+        }
+        else
+        {
+            MaLiLib.logger.error("ServerCommonHandlerRegister#unregisterConfigHandler(): blocked unregisterGlobalReceiver() from a non-SERVER Environment.");
+        }
     }
     @SuppressWarnings("unchecked")
     public <T extends CustomPayload> CustomPayload.Id<T> getPayloadType(PayloadType type)

@@ -18,7 +18,7 @@ import net.minecraft.client.render.WorldRenderer;
 import fi.dy.masa.malilib.event.RenderEventHandler;
 
 /**
- * The "MatrixStack" parameter was removed from WorldRenderer in favor of using a Matrix4f
+ * The "MatrixStack" parameter was removed from WorldRenderer in favor of using Matrix4f
  */
 @Mixin(WorldRenderer.class)
 public abstract class MixinWorldRenderer
@@ -28,7 +28,7 @@ public abstract class MixinWorldRenderer
     @Inject(method = "render",
             at = @At(value = "INVOKE", ordinal = 1,
                      target = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/LightmapTextureManager;FDDD)V"))
-    private void onRenderWorldLastNormal(
+    private void malilib$onRenderWorldLastNormal(
             float tickDelta, long limitTime, boolean renderBlockOutline,
             Camera camera,
             GameRenderer gameRenderer,
@@ -47,7 +47,7 @@ public abstract class MixinWorldRenderer
                                      target = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/LightmapTextureManager;FDDD)V")),
             at = @At(value = "INVOKE",
                     target = "Lnet/minecraft/client/gl/PostEffectProcessor;render(F)V"))
-    private void onRenderWorldLastFabulous(
+    private void malilib$onRenderWorldLastFabulous(
             float tickDelta, long limitTime, boolean renderBlockOutline,
             Camera camera,
             GameRenderer gameRenderer,

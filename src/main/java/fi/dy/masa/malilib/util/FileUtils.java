@@ -33,7 +33,7 @@ public class FileUtils
                 return configDirectory;
             }
             else
-                return MaLiLibReference.CONFIG_DIR;
+                return MaLiLibReference.DEFAULT_CONFIG_DIR;
         }
     }
 
@@ -48,7 +48,7 @@ public class FileUtils
                 return runDirectory;
             }
             else
-                return MaLiLibReference.RUN_DIR;
+                return MaLiLibReference.DEFAULT_RUN_DIR;
         }
     }
 

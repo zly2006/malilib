@@ -11,12 +11,17 @@ public class MaLiLibReference
     public static final String MOD_ID = "malilib";
     public static final String MOD_NAME = "MaLiLib";
     public static final String MOD_VERSION = MaLiLib.getModVersionString(MOD_ID);
-    public static final String MOD_TYPE = "fabric";
-    public static final EnvType MOD_ENVIRONMENT = FabricLoader.getInstance().getEnvironmentType();
-    public static final File RUN_DIR = FabricLoader.getInstance().getGameDir().toFile();
-    public static final File CONFIG_DIR = FabricLoader.getInstance().getConfigDir().toFile();
     public static final String MC_VERSION = MinecraftVersion.CURRENT.getName();
+    public static final String MOD_TYPE = "fabric";
     public static final String MOD_STRING = MOD_ID+"-"+MOD_TYPE+"-"+MC_VERSION+"-"+MOD_VERSION;
+    public static final EnvType MOD_ENVIRONMENT = FabricLoader.getInstance().getEnvironmentType();
+    public static final File DEFAULT_RUN_DIR = FabricLoader.getInstance().getGameDir().toFile();
+    public static final File DEFAULT_CONFIG_DIR = FabricLoader.getInstance().getConfigDir().toFile();
+    /**
+     * There is probably a "cleaner" way to manage this data,
+     * Many parts of the new Network API depend upon these being set correctly,
+     * and this helps MaLiLib maintain it's Multi-Environment status correctly.
+     */
     private static boolean dedicated_server = false;
     private static boolean integrated_server = false;
     private static boolean open_to_lan = false;

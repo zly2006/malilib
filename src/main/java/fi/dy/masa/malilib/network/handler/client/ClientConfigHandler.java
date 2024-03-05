@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.network.handler.config;
+package fi.dy.masa.malilib.network.handler.client;
 
 import com.google.common.collect.ArrayListMultimap;
 import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ClientConfigHandler<T extends CustomPayload> implements IClientConfigHandler
 {
     private static final ClientConfigHandler<CustomPayload> INSTANCE = new ClientConfigHandler<>();
-    private final ArrayListMultimap<PayloadType, IPluginConfigHandler<T>> handlers = ArrayListMultimap.create();
+    private final ArrayListMultimap<PayloadType, IPluginClientConfigHandler<T>> handlers = ArrayListMultimap.create();
     public static IClientConfigHandler getInstance()
     {
         return INSTANCE;
@@ -22,7 +22,7 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
 
     @Override
     @SuppressWarnings("unchecked")
-    public <P extends CustomPayload> void registerClientConfigHandler(IPluginConfigHandler<P> handler)
+    public <P extends CustomPayload> void registerClientConfigHandler(IPluginClientConfigHandler<P> handler)
     {
         PayloadType type = handler.getPayloadType();
 
@@ -30,7 +30,7 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
         {
             if (!this.handlers.containsEntry(type, handler))
             {
-                this.handlers.put(type, (IPluginConfigHandler<T>) handler);
+                this.handlers.put(type, (IPluginClientConfigHandler<T>) handler);
                 handler.registerConfigPayload(type);
                 // Don't register Receivers until Server/World fully joined.
             }
@@ -38,7 +38,7 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
     }
 
     @Override
-    public <P extends CustomPayload> void unregisterClientConfigHandler(IPluginConfigHandler<P> handler)
+    public <P extends CustomPayload> void unregisterClientConfigHandler(IPluginClientConfigHandler<P> handler)
     {
         PayloadType type = handler.getPayloadType();
 
@@ -58,7 +58,7 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginConfigHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientConfigHandler<T> handler : this.handlers.get(type))
             {
                 handler.reset(type);
             }
@@ -68,7 +68,7 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginConfigHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientConfigHandler<T> handler : this.handlers.get(type))
             {
                 handler.registerConfigPayload(type);
             }
@@ -78,7 +78,7 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginConfigHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientConfigHandler<T> handler : this.handlers.get(type))
             {
                 handler.registerConfigHandler(type);
             }
@@ -88,7 +88,7 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginConfigHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientConfigHandler<T> handler : this.handlers.get(type))
             {
                 handler.unregisterConfigHandler(type);
             }
@@ -98,7 +98,7 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginConfigHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientConfigHandler<T> handler : this.handlers.get(type))
             {
                 handler.receiveS2CConfigPayload(type, payload, ctx);
             }
@@ -108,7 +108,7 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginConfigHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientConfigHandler<T> handler : this.handlers.get(type))
             {
                 handler.receiveS2CConfigPayload(type, payload, networkHandler, ci);
             }
@@ -118,7 +118,7 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
    {
        if (!this.handlers.isEmpty())
        {
-           for (IPluginConfigHandler<T> handler : this.handlers.get(type))
+           for (IPluginClientConfigHandler<T> handler : this.handlers.get(type))
            {
                handler.decodeS2CNbtCompound(type, data);
            }
@@ -128,7 +128,7 @@ public class ClientConfigHandler<T extends CustomPayload> implements IClientConf
     {
         if (!this.handlers.isEmpty())
         {
-            for (IPluginConfigHandler<T> handler : this.handlers.get(type))
+            for (IPluginClientConfigHandler<T> handler : this.handlers.get(type))
             {
                 handler.decodeS2CByteBuf(type, data);
             }

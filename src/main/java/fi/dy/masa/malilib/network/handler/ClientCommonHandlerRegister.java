@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.network.handler;
 
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 import fi.dy.masa.malilib.network.payload.channel.*;
 import io.netty.buffer.ByteBuf;
@@ -19,23 +20,51 @@ public class ClientCommonHandlerRegister
 
     public <T extends CustomPayload> void registerPlayHandler(CustomPayload.Id<T> type, ClientPlayNetworking.PlayPayloadHandler<T> handler)
     {
-        MaLiLib.printDebug("ClientCommonHandlerRegister#registerPlayHandler(): for type {}", type.id().toString());
-        ClientPlayNetworking.registerGlobalReceiver(type, handler);
+        if (MaLiLibReference.isClient())
+        {
+            MaLiLib.printDebug("ClientCommonHandlerRegister#registerPlayHandler(): for type {}", type.id().toString());
+            ClientPlayNetworking.registerGlobalReceiver(type, handler);
+        }
+        else
+        {
+            MaLiLib.logger.error("ClientCommonHandlerRegister#registerPlayHandler(): Blocked registerGlobalReceiver due to not being in a CLIENT environment.");
+        }
     }
     public <T extends CustomPayload> void unregisterPlayHandler(CustomPayload.Id<T> type)
     {
-        MaLiLib.printDebug("ClientCommonHandlerRegister#unregisterPlayHandler(): for type {}", type.id().toString());
-        ClientPlayNetworking.unregisterGlobalReceiver(type.id());
+        if (MaLiLibReference.isClient())
+        {
+            MaLiLib.printDebug("ClientCommonHandlerRegister#unregisterPlayHandler(): for type {}", type.id().toString());
+            ClientPlayNetworking.unregisterGlobalReceiver(type.id());
+        }
+        else
+        {
+            MaLiLib.logger.error("ClientCommonHandlerRegister#unregisterPlayHandler(): Blocked unregisterGlobalReceiver due to not being in a CLIENT environment.");
+        }
     }
     public <T extends CustomPayload> void registerConfigHandler(CustomPayload.Id<T> type, ClientConfigurationNetworking.ConfigurationPayloadHandler<T> handler)
     {
-        MaLiLib.printDebug("ClientCommonHandlerRegister#registerConfigHandler(): for type {}", type.id().toString());
-        ClientConfigurationNetworking.registerGlobalReceiver(type, handler);
+        if (MaLiLibReference.isClient())
+        {
+            MaLiLib.printDebug("ClientCommonHandlerRegister#registerConfigHandler(): for type {}", type.id().toString());
+            ClientConfigurationNetworking.registerGlobalReceiver(type, handler);
+        }
+        else
+        {
+            MaLiLib.logger.error("ClientCommonHandlerRegister#registerConfigHandler(): Blocked registerGlobalReceiver due to not being in a CLIENT environment.");
+        }
     }
     public <T extends CustomPayload> void unregisterConfigHandler(CustomPayload.Id<T> type)
     {
-        MaLiLib.printDebug("ClientCommonHandlerRegister#unregisterConfigHandler(): for type {}", type.id().toString());
-        ClientConfigurationNetworking.unregisterGlobalReceiver(type);
+        if (MaLiLibReference.isClient())
+        {
+            MaLiLib.printDebug("ClientCommonHandlerRegister#unregisterConfigHandler(): for type {}", type.id().toString());
+            ClientConfigurationNetworking.unregisterGlobalReceiver(type);
+        }
+        else
+        {
+            MaLiLib.logger.error("ClientCommonHandlerRegister#unregisterConfigHandler(): Blocked unregisterGlobalReceiver due to not being in a CLIENT environment.");
+        }
     }
     @SuppressWarnings("unchecked")
     public <T extends CustomPayload> CustomPayload.Id<T> getPayloadType(PayloadType type)
