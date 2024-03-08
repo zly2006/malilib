@@ -176,7 +176,7 @@ public class PayloadTypeRegister
         register(PayloadType.SERVUX_STRUCTURES, "structure_bounding_boxes", "servux",   "structures");
 
         // Debugging call
-        listTypes();
+        //listTypes();
     }
 
     /**
@@ -185,7 +185,7 @@ public class PayloadTypeRegister
     public void resetPayloads()
     {
         MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): sending reset() to all registered Payload types.");
-        listTypes();
+        //listTypes();
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -193,12 +193,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Play Client Reset.");
+                    MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Play Client Reset for type {}", type.toString());
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).reset(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isIntegrated() || MaLiLibReference.isDedicated())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Play Server Reset.");
+                    MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Play Server Reset for type {}", type.toString());
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).reset(type);
                 }
             }
@@ -206,12 +206,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Config Client Reset.");
+                    MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Config Client Reset for type {}", type.toString());
                     ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).reset(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isIntegrated() || MaLiLibReference.isDedicated())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Config Server Reset.");
+                    MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Config Server Reset for type {}", type.toString());
                     ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).reset(type);
                 }
             }
@@ -221,7 +221,7 @@ public class PayloadTypeRegister
     public void verifyAllPayloads()
     {
         MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): sending registerPayloads() to all registered listeners.");
-        listTypes();
+        //listTypes();
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -229,12 +229,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Play Client Payloads.");
+                    MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Play Client Payloads for type {}", type.toString());
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayPayload(type);
                 }
-                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isIntegrated() || MaLiLibReference.isDedicated())
+                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Play Server Payloads.");
+                    MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Play Server Payloads for type {}", type.toString());
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayPayload(type);
                 }
             }
@@ -242,12 +242,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Play Client Payloads.");
+                    MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Config Client Payloads for type {}", type.toString());
                     ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).registerConfigPayload(type);
                 }
-                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isIntegrated() || MaLiLibReference.isDedicated())
+                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Play Server Payloads.");
+                    MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Config Server Payloads for type {}", type.toString());
                     ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).registerConfigPayload(type);
                 }
             }
@@ -260,7 +260,7 @@ public class PayloadTypeRegister
     public void registerAllHandlers()
     {
         MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): sending registerHandlers() to all registered Payload types.");
-        listTypes();
+        //listTypes();
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -268,12 +268,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Play Client Handlers.");
+                    MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Play Client Handlers for type {}", type.toString());
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayHandler(type);
                 }
-                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isIntegrated() || MaLiLibReference.isDedicated())
+                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Play Server Handlers.");
+                    MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Play Server Handlers for type {}", type.toString());
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayHandler(type);
                 }
             }
@@ -281,12 +281,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Config Client Handlers.");
+                    MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Config Client Handlers for type {}", type.toString());
                     ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).registerConfigHandler(type);
                 }
-                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isIntegrated() || MaLiLibReference.isDedicated())
+                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Config Server Handlers.");
+                    MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Config Server Handlers for type {}", type.toString());
                     ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).registerConfigHandler(type);
                 }
             }

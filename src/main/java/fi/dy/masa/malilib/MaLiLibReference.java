@@ -34,70 +34,53 @@ public class MaLiLibReference
     public static boolean hasCarpetClient() { return hasCarpetClient; }
     public static void setDedicated(boolean toggle)
     {
-        if (toggle)
+        if (toggle && isServer())
         {
-            dedicated_server = isServer();
+            dedicated_server = true;
+            integrated_server = false;
+            open_to_lan = false;
         }
         else
         {
             dedicated_server = false;
         }
-        integrated_server = false;
-        open_to_lan = false;
     }
     public static void setIntegrated(boolean toggle)
     {
-        if (toggle)
+        if (toggle && isClient())
         {
-            if (isClient())
-            {
-                integrated_server = true;
-            }
-            else
-            {
-                integrated_server = false;
-                open_to_lan = false;
-            }
+            integrated_server = true;
+            open_to_lan = false;
             dedicated_server = false;
         }
         else
         {
-            dedicated_server = false;
             integrated_server = false;
-            open_to_lan = false;
         }
     }
     public static void setOpenToLan(boolean toggle)
     {
-        if (toggle)
+        if (toggle && isClient())
         {
-            if (isClient())
-            {
-                open_to_lan = true;
-                integrated_server = true;
-            }
-            else
-            {
-                open_to_lan = false;
-                integrated_server = false;
-            }
+            open_to_lan = true;
+            integrated_server = true;
             dedicated_server = false;
         }
         else
         {
-            dedicated_server = false;
-            integrated_server = false;
             open_to_lan = false;
         }
     }
     // For keeping networking API separated for basic sanity checks.
     public static void setCarpetClient(boolean toggle)
     {
-        if (toggle)
+        if (toggle && isClient())
         {
-            hasCarpetClient = isClient();
+            hasCarpetClient = true;
         }
         else
+        {
             hasCarpetClient = false;
+        }
     }
 }
