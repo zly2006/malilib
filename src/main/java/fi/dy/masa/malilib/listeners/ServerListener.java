@@ -6,10 +6,9 @@ import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.interfaces.IServerListener;
 import fi.dy.masa.malilib.network.packet_example.PacketListenerRegister;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
-import fi.dy.masa.malilib.network.test.ClientDebugSuite;
-import fi.dy.masa.malilib.network.test.ServerDebugSuite;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
+import java.net.*;
 
 /**
  * This could be used on downstream mods, this is critical for the Network API.
@@ -32,7 +31,7 @@ public class ServerListener implements IServerListener
             MaLiLibReference.setIntegrated(true);
             MaLiLibReference.setOpenToLan(false);
             MaLiLibReference.setDedicated(false);
-            MaLiLib.printDebug("[{}] Single Player Mode detected", MaLiLibReference.MOD_ID);
+            MaLiLib.printDebug("[{}] Single Player/Integrated Server Mode detected", MaLiLibReference.MOD_ID);
         }
         else if (server.isDedicated())
         {
@@ -49,22 +48,29 @@ public class ServerListener implements IServerListener
     }
 
     @Override
-    public void onServerStarted(MinecraftServer minecraftServer)
+    public void onServerStarted(MinecraftServer server)
     {
         PayloadTypeRegister.getInstance().verifyAllPayloads();
         PayloadTypeRegister.getInstance().registerAllHandlers();
 
-        if (MaLiLibReference.isClient())
+        if (!MaLiLibReference.isClient())
         {
-            ClientDebugSuite.checkGlobalConfigChannels();
-            ClientDebugSuite.checkGlobalPlayChannels();
-        }
-        else
-        {
-            ServerDebugSuite.checkGlobalConfigChannels();
-            ServerDebugSuite.checkGlobalPlayChannels();
-
             ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
+        }
+        if (MaLiLibReference.isDedicated())
+        {
+            InetAddress localIpAddr;
+            String ipPortString;
+            try
+            {
+                localIpAddr = InetAddress.getLocalHost();
+                ipPortString = "["+localIpAddr.getHostName()+"] "+localIpAddr.getHostAddress() +":"+ server.getServerPort();
+            }
+            catch (UnknownHostException e)
+            {
+                ipPortString = "localhost:"+ server.getServerPort();
+            }
+            MaLiLib.printDebug("[{}] Dedicated server listening for connections on {}", MaLiLibReference.MOD_ID, ipPortString);
         }
     }
 
@@ -80,11 +86,23 @@ public class ServerListener implements IServerListener
     @Override
     public void onServerOpenToLan(IntegratedServer server)
     {
-        MaLiLib.printDebug("[{}] OpenToLan Mode detected [Serving on localhost:{}]", MaLiLibReference.MOD_ID, server.getServerPort());
+        InetAddress localIpAddr;
+        String ipPortString;
+        try
+        {
+            localIpAddr = InetAddress.getLocalHost();
+            ipPortString = "["+localIpAddr.getHostName()+"] "+localIpAddr.getHostAddress() +":"+ server.getServerPort();
+        }
+        catch (UnknownHostException e)
+        {
+            ipPortString = "localhost:"+ server.getServerPort();
+        }
+        MaLiLib.printDebug("[{}] OpenToLan server listening for connections on {}", MaLiLibReference.MOD_ID, ipPortString);
         MaLiLibReference.setIntegrated(true);
         MaLiLibReference.setOpenToLan(true);
         MaLiLibReference.setDedicated(false);
 
+        // This is to register all Server-Side Network API for OpenToLan functionality
         PayloadTypeRegister.getInstance().resetPayloads();
         PayloadTypeRegister.getInstance().verifyAllPayloads();
         PayloadTypeRegister.getInstance().registerAllHandlers();
@@ -94,7 +112,6 @@ public class ServerListener implements IServerListener
     public void onServerStopping(MinecraftServer minecraftServer)
     {
         MaLiLib.printDebug("[{}] server is stopping", MaLiLibReference.MOD_ID);
-
         PayloadTypeRegister.getInstance().resetPayloads();
 
         if (!MaLiLibReference.isClient())
