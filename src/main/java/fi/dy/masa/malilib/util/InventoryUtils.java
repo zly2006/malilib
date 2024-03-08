@@ -44,7 +44,7 @@ public class InventoryUtils
 {
     public static final Set<DataComponentType<Integer>> DAMAGE_KEY = Set.of(DataComponentTypes.DAMAGE);
     private static final DefaultedList<ItemStack> EMPTY_LIST = DefaultedList.of();
-    private static final Pattern PATTERN_ITEM_BASE = Pattern.compile("^(?<name>(?:[a-z0-9\\._-]+:)[a-z0-9\\._-]+)$");
+    public static final Pattern PATTERN_ITEM_BASE = Pattern.compile("^(?<name>(?:[a-z0-9\\._-]+:)[a-z0-9\\._-]+)$");
 
     /**
      * @return true if the stacks are identical, including their "Components"
