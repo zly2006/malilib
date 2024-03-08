@@ -29,6 +29,7 @@ public class ServerListener implements IServerListener
     {
         if (server.isSingleplayer())
         {
+            MaLiLibReference.setIntegrated(true);
             MaLiLibReference.setOpenToLan(false);
             MaLiLibReference.setDedicated(false);
             MaLiLib.printDebug("[{}] Single Player Mode detected", MaLiLibReference.MOD_ID);
@@ -50,6 +51,7 @@ public class ServerListener implements IServerListener
     @Override
     public void onServerStarted(MinecraftServer minecraftServer)
     {
+        PayloadTypeRegister.getInstance().verifyAllPayloads();
         PayloadTypeRegister.getInstance().registerAllHandlers();
 
         if (MaLiLibReference.isClient())
@@ -84,6 +86,7 @@ public class ServerListener implements IServerListener
         MaLiLibReference.setDedicated(false);
 
         PayloadTypeRegister.getInstance().resetPayloads();
+        PayloadTypeRegister.getInstance().verifyAllPayloads();
         PayloadTypeRegister.getInstance().registerAllHandlers();
     }
 

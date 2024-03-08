@@ -40,6 +40,8 @@ public class ServerCommonNetworkListener implements IServerCommonNetworkBase
 
         if (handler instanceof ServerConfigurationNetworkHandler configHandler)
         {
+            MaLiLib.printDebug("ServerCommonNetworkListener(): [CONFIG] received packet of type {} via networkHandler [{}]", type, id.toString());
+
             switch (type)
             {
                 case CARPET_HELLO:
@@ -82,6 +84,8 @@ public class ServerCommonNetworkListener implements IServerCommonNetworkBase
         }
         else if (handler instanceof ServerPlayNetworkHandler playHandler)
         {
+            MaLiLib.printDebug("ServerCommonNetworkListener(): [PLAY] received packet of type {} via networkHandler [{}]", type, id.toString());
+
             switch (type)
             {
                 case CARPET_HELLO:

@@ -35,6 +35,7 @@ public abstract class MixinClientPlayNetworkHandler
         // since we need the new world reference for the callback.
         this.worldBefore = this.world;
         PayloadTypeRegister.getInstance().resetPayloads();
+        PayloadTypeRegister.getInstance().verifyAllPayloads();
     }
 
     @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
