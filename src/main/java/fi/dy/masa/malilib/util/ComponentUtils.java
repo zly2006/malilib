@@ -26,6 +26,12 @@ import java.util.*;
 
 /**
  * This file is meant to be a new central place for managing Component <-> NBT data
+ * *** A WORK IN PROGRESS ***
+ * -
+ * These tend to be annoying, because for 24w09a and below, the NBT was the same.
+ * Now, for 24w10a (And beyond) they are all stored IN LOWER CASE!
+ * (i.e. "Slot" becomes "slot") So, in order to maintain this for backwards compatibility;
+ * *all* of the possible NBT values need to be managed.
  */
 public class ComponentUtils
 {
@@ -97,6 +103,9 @@ public class ComponentUtils
         return compResult.build();
     }
 
+    /**
+     * I would assume there is a better way to do this, but I couldn't find it
+     */
     private AttributeModifierSlot getAttribModSlot(String attribSlot)
     {
         if (AttributeModifierSlot.ANY.asString().equals(attribSlot))
