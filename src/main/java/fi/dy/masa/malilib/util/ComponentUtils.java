@@ -3,12 +3,12 @@ package fi.dy.masa.malilib.util;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.serialization.DataResult;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
+import net.minecraft.block.entity.BannerPattern;
 import net.minecraft.block.entity.BeehiveBlockEntity;
-import net.minecraft.component.Component;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.DataComponentType;
-import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.*;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
 import net.minecraft.component.type.NbtComponent;
@@ -17,10 +17,15 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryEntryLookup;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.collection.DefaultedList;
@@ -48,6 +53,7 @@ public class ComponentUtils
     {
         ComponentMap.Builder compResult = ComponentMap.builder();
 
+        // Standard Weapons / Armor types
         if (nbt.contains("AttributeModifiers", 9))
         {
             AttributeModifiersComponent.Builder attribs = AttributeModifiersComponent.builder();
@@ -92,6 +98,14 @@ public class ComponentUtils
             AttributeModifiersComponent attribResult = attribs.build();
             compResult.add(DataComponentTypes.ATTRIBUTE_MODIFIERS, attribResult);
         }
+        // BlockEntityTag, pre 24w09a
+        if (nbt.contains("BlockEntityTag"))
+        {
+            NbtCompound beTag = nbt.getCompound("BlockEntityTag");
+            // Handle
+            compResult.add(DataComponentTypes.BLOCK_ENTITY_DATA, NbtComponent.of(beTag));
+            nbt.remove("BlockEntityTag");
+        }
 
         return compResult.build();
     }
@@ -128,14 +142,17 @@ public class ComponentUtils
             for (int i = 0; i < itemList.size(); i++)
             {
                 NbtCompound itemNbt = itemList.getCompound(i);
+
                 int itemSlot = itemNbt.getByte("Slot") & 255;
                 if (itemSlot >= 0 && itemSlot < itemInv.size())
                 {
+                    ComponentMap.Builder itemResult = ComponentMap.builder();
                     byte itemCount = itemNbt.getByte("Count");
+
                     if (itemNbt.contains("tag"))
                     {
                         NbtCompound itemTag = itemNbt.getCompound("tag").copy();
-                        ProfileComponent skullProfile;
+                        ProfileComponent skullProfile = null;
 
                         // The only "Item" class that uses this is PlayerHeadItem.
                         if (itemTag.contains("SkullOwner", 10))
@@ -162,19 +179,24 @@ public class ComponentUtils
                             skullProfile = getSkullProfileFromProfile(skullOwner);
                         }
 
+                        if (skullProfile != null)
+                        {
+                            itemResult.add(DataComponentTypes.PROFILE, skullProfile);
+                        }
                         itemNbt.remove("tag");
                     }
                     if (itemNbt.contains("id"))
                     {
                         String itemId = itemNbt.getString("id");
+                        ItemStack stack;
 
                         if (itemCount > 0)
                         {
-                            itemInv.set(itemSlot, InventoryUtils.getItemStackFromString(itemId, itemCount));
+                            stack = InventoryUtils.getItemStackFromString(itemId, itemCount);
                         }
                         else
                         {
-                            itemInv.set(itemSlot, InventoryUtils.getItemStackFromString(itemId));
+                            stack = InventoryUtils.getItemStackFromString(itemId);
                         }
                         if (itemNbt.contains("components"))
                         {
@@ -192,12 +214,27 @@ public class ComponentUtils
                                     {
                                         Identifier compId = new Identifier(compName);
                                         DataComponentType<?> compType = Registries.DATA_COMPONENT_TYPE.get(compId);
-                                        //NbtComponent nbtComponent = NbtComponent.of(compNbt.getCompound(key));
-                                        // How to convert the Component from the type?
+                                        NbtElement compElement = compNbt.get(key);
+
+                                        if (compType != null)
+                                        {
+                                            try
+                                            {
+                                                DataResult<?> dataResult = Objects.requireNonNull(compType.getCodec()).parse(NbtOps.INSTANCE, compElement);
+                                                //itemResult.add(compType, Optional.of(dataResult));
+                                                // Doesn't work?  So how do we load Components from an NbtCompound ?
+                                            }
+                                            catch (Exception ignored)
+                                            {
+                                                MaLiLib.logger.error("fromBlockEntityNBT(): error parsing component entry for key {} of type {} with element {}", key, compType.toString(), compElement);
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
+                        stack.applyComponentsFrom(itemResult.build());
+                        itemInv.add(stack);
                     }
                     else
                     {
@@ -205,8 +242,24 @@ public class ComponentUtils
                     }
                 }
             }
+
         }
-        // 24w09a- BeeHiveBlock Bees format
+        // BannerItems, pre 24w09a
+        if (nbt.contains("Patterns"))
+        {
+            NbtList patternList = nbt.getList("Patterns", 10);
+
+            for (int i = 0; i < patternList.size() && i < 6; i++)
+            {
+                NbtCompound patternComp = patternList.getCompound(i);
+                DyeColor dyeColor = DyeColor.byId(patternComp.getInt("Color"));
+                String bannerPattern = patternComp.getString("Pattern");
+
+                RegistryEntry<BannerPattern> patternReg;
+                //Optional<RegistryEntry.Reference<BannerPattern>> optional = RegistryEntryLookup<BannerPattern>.getOptional(pattern);
+            }
+        }
+        // BeeHiveBlock, pre 24w09a
         if (nbt.contains("Bees"))
         {
             NbtList beeNbtList = nbt.getList("Bees", 10);
@@ -231,7 +284,7 @@ public class ComponentUtils
             nbt.remove("Bees");
             compResult.add(DataComponentTypes.BEES, beeList);
         }
-        // 24w10a+ BeeHiveBlock Bees format
+        // BeeHiveBlock, post 24w10a
         else if (nbt.contains("bees"))
         {
             List<BeehiveBlockEntity.BeeData> beeList = new ArrayList<>();
@@ -265,7 +318,7 @@ public class ComponentUtils
             }
             nbt.remove("bees");
         }
-        // 24w09a- BeeHiveBlock entity data
+        // BeeHiveBlock entity data, pre 24w09a
         if (nbt.contains("FlowerPos"))
         {
             // The FlowerPos isn't used in the ComponentData, but it is part of the Beehive Block Entity Data.
@@ -278,7 +331,7 @@ public class ComponentUtils
                 flowerPos = new BlockPos(flowerArray[0], flowerArray[1], flowerArray[2]);
             }
         }
-        // 24w10a+ BeeHiveBlock Entity Data
+        // BeeHiveBlock Entity Data, post 24w10a
         if (nbt.contains("flower_pos"))
         {
             // The FlowerPos isn't used in the ComponentData, but it is part of the Beehive Block Entity Data.

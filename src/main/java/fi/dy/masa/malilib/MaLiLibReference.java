@@ -3,6 +3,7 @@ package fi.dy.masa.malilib;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.MinecraftVersion;
+import net.minecraft.registry.DynamicRegistryManager;
 
 import java.io.File;
 
@@ -32,6 +33,7 @@ public class MaLiLibReference
     public static boolean isIntegrated() { return integrated_server; }
     public static boolean isOpenToLan() { return open_to_lan; }
     public static boolean hasCarpetClient() { return hasCarpetClient; }
+    private static DynamicRegistryManager registryManager = DynamicRegistryManager.EMPTY;
     public static void setDedicated(boolean toggle)
     {
         if (toggle && isServer())
@@ -81,6 +83,17 @@ public class MaLiLibReference
         else
         {
             hasCarpetClient = false;
+        }
+    }
+    public static DynamicRegistryManager getRegistryManager()
+    {
+        return registryManager;
+    }
+    public static void setRegistryManager(DynamicRegistryManager manager)
+    {
+        if (manager != DynamicRegistryManager.EMPTY)
+        {
+            registryManager = manager;
         }
     }
 }
