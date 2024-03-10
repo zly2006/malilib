@@ -113,13 +113,13 @@ public class ComponentUtils
                 }
                 else
                 {
-                    MaLiLib.logger.error("fromBlockEntityNBT() received nbt for invalid blockType id: {}", blockId.toString());
+                    MaLiLib.logger.warn("fromBlockEntityNBT() received nbt for invalid blockType id: {}", blockId.toString());
                     return null;
                 }
             }
             else
             {
-                MaLiLib.logger.error("fromBlockEntityNBT() received nbt for invalid blockId: {}", entityTypeString);
+                MaLiLib.logger.warn("fromBlockEntityNBT() received nbt for invalid blockId: {}", entityTypeString);
                 return null;
             }
 
@@ -956,7 +956,7 @@ public class ComponentUtils
             case "pig" -> key = BannerPatterns.PIGLIN;
             default ->
             {
-                MaLiLib.logger.error("getBannerPatternEntryByIdPre1205(): invalid banner pattern of id {}", patternId);
+                MaLiLib.logger.warn("getBannerPatternEntryByIdPre1205(): invalid banner pattern of id {}", patternId);
                 return null;
             }
         }
@@ -1000,8 +1000,6 @@ public class ComponentUtils
                             String value = propNbt.getString("value");
                             String propName = propNbt.getString("name");
 
-                            PropertyMap newMap;
-
                             if (propNbt.contains("signature", 8))
                             {
                                 skullProfile.getProperties().put(key, new Property(propName, value, propNbt.getString("signature")));
@@ -1024,7 +1022,7 @@ public class ComponentUtils
         }
         else
         {
-            MaLiLib.logger.error("getSkullProfileFromProfile() failed to retrieve GameProfile from post-24w09a type data (name or id is empty)");
+            MaLiLib.logger.warn("getSkullProfileFromProfile() failed to retrieve GameProfile from post-24w09a type data (name or id is empty)");
         }
 
         return null;
@@ -1086,7 +1084,7 @@ public class ComponentUtils
         }
         else
         {
-            MaLiLib.logger.error("getSkullProfileFromNBT() failed to retrieve GameProfile from pre-24w09a type data (name or id is empty)");
+            MaLiLib.logger.warn("getSkullProfileFromNBT() failed to retrieve GameProfile from pre-24w09a type data (name or id is empty)");
         }
 
         return null;
