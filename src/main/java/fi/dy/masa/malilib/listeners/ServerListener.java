@@ -4,7 +4,6 @@ import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.interfaces.IServerListener;
-import fi.dy.masa.malilib.network.packet_example.PacketListenerRegister;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
@@ -39,7 +38,7 @@ public class ServerListener implements IServerListener
             MaLiLib.printDebug("[{}] Dedicated Server Mode detected", MaLiLibReference.MOD_ID);
         }
 
-        PacketListenerRegister.registerListeners();
+        //PacketListenerRegister.registerListeners();
 
         if (!MaLiLibReference.isClient())
         {

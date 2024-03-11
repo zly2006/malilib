@@ -166,8 +166,10 @@ public class PayloadTypeRegister
     {
         //MaLiLib.printDebug("PayloadTypeRegister#initPayloads(): invoked.");
 
+        // Do not register Carpet Hello, unless for debugging purposes.
+        //register(PayloadType.CARPET_HELLO,      "carpet_hello",             "carpet",   "hello");
+
         // TODO Uncomment these to enable channel registration, or to create new Payloads
-        register(PayloadType.CARPET_HELLO,      "carpet_hello",             "carpet",   "hello");
         //register(PayloadType.MALILIB_BYTEBUF,   "malilib_bytebuf",          "malilib",  "bytebuf");
         //register(PayloadType.SERVUX_BLOCKS,     "block_metadata",           "servux",   "blocks");
         //register(PayloadType.SERVUX_ENTITIES,   "entity_provider",          "servux",   "entities");

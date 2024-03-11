@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
 import fi.dy.masa.malilib.listeners.ServerListener;
-import fi.dy.masa.malilib.network.packet_example.PacketListenerRegister;
 import fi.dy.masa.malilib.util.FileUtils;
 
 public class MaLiLibInitHandler implements IInitializationHandler
@@ -41,7 +40,7 @@ public class MaLiLibInitHandler implements IInitializationHandler
         ServerHandler.getInstance().registerServerHandler(serverListener);
 
         // Example code using Carpet Hello packets.
-        PacketListenerRegister.registerListeners();
+        //PacketListenerRegister.registerListeners();
     }
 
     private static class CallbackOpenConfigGui implements IHotkeyCallback

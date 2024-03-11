@@ -44,9 +44,9 @@ public class ServerCommonNetworkListener implements IServerCommonNetworkBase
 
             switch (type)
             {
-                case CARPET_HELLO:
+                //case CARPET_HELLO:
                     // Don't handle Server-Side Carpet packets.  This *WILL* break Carpet Mod from working if we did.
-                    return;
+                    //return;
                 case MALILIB_BYTEBUF:
                     MaLibBufPayload servuxPayload = (MaLibBufPayload) thisPayload;
                     NetworkThreadUtils.forceMainThread(packet, configHandler, server);
@@ -88,9 +88,9 @@ public class ServerCommonNetworkListener implements IServerCommonNetworkBase
 
             switch (type)
             {
-                case CARPET_HELLO:
+                //case CARPET_HELLO:
                     // Don't handle Server-Side Carpet packets.  This *WILL* break Carpet Mod from working if we did.
-                    return;
+                    //return;
                 case MALILIB_BYTEBUF:
                     MaLibBufPayload servuxPayload = (MaLibBufPayload) thisPayload;
                     NetworkThreadUtils.forceMainThread(packet, playHandler, playHandler.player.getServerWorld());

@@ -1,16 +1,13 @@
 package fi.dy.masa.malilib.network.handler.client;
 
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.handler.IClientCommonNetworkBase;
-import fi.dy.masa.malilib.network.packet_example.PacketType;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.payload.channel.*;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.client.network.ClientConfigurationNetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -44,6 +41,7 @@ public class ClientCommonNetworkListener implements IClientCommonNetworkBase
 
             switch (type)
             {
+                /*
                 case CARPET_HELLO:
                     // Don't handle Carpet packets if we have Carpet-Client installed
                     if (MaLiLibReference.hasCarpetClient())
@@ -64,6 +62,7 @@ public class ClientCommonNetworkListener implements IClientCommonNetworkBase
                         ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.CARPET_HELLO, realCarpetPayload, configHandler, ci);
                     }
                     break;
+                 */
                 case MALILIB_BYTEBUF:
                     MaLibBufPayload malilibPayload = (MaLibBufPayload) packet;
                     //NetworkThreadUtils.forceMainThread(packet, configHandler, mc);
@@ -105,18 +104,18 @@ public class ClientCommonNetworkListener implements IClientCommonNetworkBase
 
             switch (type)
             {
+                /*
                 case CARPET_HELLO:
                     // Don't handle Carpet packets if we have Carpet-Client installed
                     if (MaLiLibReference.hasCarpetClient())
                     {
-                        ci = new CallbackInfo(ci.getId(), false);
                         // Create a Fake Carpet Packet
                         NbtCompound nbt = new NbtCompound();
                         nbt.putString(PacketType.CarpetHello.HI, MaLiLibReference.MOD_STRING);
                         CarpetHelloPayload fakeCarpetPayload = new CarpetHelloPayload(nbt);
 
                         //NetworkThreadUtils.forceMainThread(packet, playHandler, mc);
-                        ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, fakeCarpetPayload, playHandler, ci);
+                        ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, fakeCarpetPayload, playHandler, new CallbackInfo(CarpetHelloPayload.KEY, false));
                     }
                     else
                     {
@@ -125,6 +124,7 @@ public class ClientCommonNetworkListener implements IClientCommonNetworkBase
                         ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, realCarpetPayload, playHandler, ci);
                     }
                     break;
+                 */
                 case MALILIB_BYTEBUF:
                     MaLibBufPayload malilibPayload = (MaLibBufPayload) packet;
                     //NetworkThreadUtils.forceMainThread(packet, playHandler, mc);

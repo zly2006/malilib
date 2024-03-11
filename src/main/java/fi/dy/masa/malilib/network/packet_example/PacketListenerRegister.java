@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.MaLiLibReference;
 /**
  * Example for PacketListeners for downstream mods, so I'm using a basic Carpet Hello Handler here
  */
+@Deprecated
 public class PacketListenerRegister
 {
     //static CarpetHelloPlayListener<CarpetHelloPayload> CarpetHelloListener = CarpetHelloPlayListener.INSTANCE;
