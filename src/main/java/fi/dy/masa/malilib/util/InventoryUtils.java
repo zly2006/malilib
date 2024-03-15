@@ -190,6 +190,7 @@ public class InventoryUtils
     {
         MinecraftClient mc = MinecraftClient.getInstance();
         assert mc.interactionManager != null;
+        //MaLiLib.printDebug("swapSlots(): syncId {}, slotNum {}, hotbarSlot {}, swap", container.syncId, slotNum, hotbarSlot);
         mc.interactionManager.clickSlot(container.syncId, slotNum, hotbarSlot, SlotActionType.SWAP, mc.player);
     }
 
@@ -299,6 +300,7 @@ public class InventoryUtils
             {
                 int currentHotbarSlot = player.getInventory().selectedSlot;
                 assert mc.interactionManager != null;
+                //MaLiLib.printDebug("swapItemToMainHand(): syncId {}, slot {}, currentHotbarSLot {}, swap", player.playerScreenHandler.syncId, slot, currentHotbarSlot);
                 mc.interactionManager.clickSlot(player.playerScreenHandler.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
                 return true;
             }
