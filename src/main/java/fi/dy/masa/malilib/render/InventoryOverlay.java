@@ -250,7 +250,7 @@ public class InventoryOverlay
         {
             return InventoryRenderType.HOPPER;
         }
-        else if (inv.getClass() == SimpleInventory.class) // FIXME
+        else if (inv instanceof SimpleInventory)  // FIXME --> does this fix it ?
         {
             return InventoryRenderType.HORSE;
         }
@@ -509,8 +509,7 @@ public class InventoryOverlay
         {
             if (i == 0)
             {
-                // FIXME getFormatting() ?
-                lines.add(stack.getRarity().method_58413() + list.get(i).getString());
+                lines.add(stack.getRarity().getFormatting() + list.get(i).getString());
             }
             else
             {
