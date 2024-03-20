@@ -509,7 +509,8 @@ public class InventoryOverlay
         {
             if (i == 0)
             {
-                lines.add(stack.getRarity().formatting + list.get(i).getString());
+                // FIXME getFormatting() ?
+                lines.add(stack.getRarity().method_58413() + list.get(i).getString());
             }
             else
             {
