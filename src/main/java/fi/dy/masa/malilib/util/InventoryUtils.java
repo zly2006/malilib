@@ -39,6 +39,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.math.Fraction;
 
 public class InventoryUtils
 {
@@ -566,7 +567,7 @@ public class InventoryUtils
         return false;
     }
 
-    public static int bundleCountItems(ItemStack stack)
+    public static Fraction bundleCountItems(ItemStack stack)
     {
         ComponentMap data = stack.getComponents();
 
@@ -577,10 +578,10 @@ public class InventoryUtils
             if (bundleContainer != null)
                 return bundleContainer.getOccupancy();
             else
-                return -1;
+                return Fraction.ZERO;
         }
 
-        return -1;
+        return Fraction.ZERO;
     }
 
     public static DefaultedList<ItemStack> getBundleItems(ItemStack stackIn)

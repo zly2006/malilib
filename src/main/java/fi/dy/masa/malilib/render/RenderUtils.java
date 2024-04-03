@@ -4,6 +4,7 @@ import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -12,6 +13,7 @@ import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.MapIdComponent;
 import net.minecraft.util.math.*;
+import org.apache.commons.lang3.math.Fraction;
 import org.joml.*;
 
 import net.minecraft.block.BlockState;
@@ -1081,8 +1083,8 @@ public class RenderUtils
     {
         if (stack.getComponents() != ComponentMap.EMPTY)
         {
-            int occupancy = InventoryUtils.bundleCountItems(stack);
-            if (occupancy < 1)
+            Fraction occupancy = InventoryUtils.bundleCountItems(stack);
+            if (Objects.equals(occupancy, Fraction.ZERO))
             {
                 // Occupants is the total number of items up to 64, but items.size() is the number of slots.
                 return;
