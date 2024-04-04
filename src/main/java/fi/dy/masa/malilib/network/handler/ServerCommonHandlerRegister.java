@@ -27,6 +27,7 @@ public class ServerCommonHandlerRegister
             MaLiLib.logger.error("ServerCommonHandlerRegister#registerPlayHandler(): blocked registerGlobalReceiver() from a non-SERVER Environment.");
         }
     }
+
     public <T extends CustomPayload> void unregisterPlayHandler(CustomPayload.Id<T> type)
     {
         if (MaLiLibReference.isServer() || MaLiLibReference.isDedicated() || MaLiLibReference.isOpenToLan())
@@ -39,6 +40,7 @@ public class ServerCommonHandlerRegister
             MaLiLib.logger.error("ServerCommonHandlerRegister#unregisterPlayHandler(): blocked unregisterGlobalReceiver() from a non-SERVER Environment.");
         }
     }
+
     public <T extends CustomPayload> void registerConfigHandler(CustomPayload.Id<T> type, ServerConfigurationNetworking.ConfigurationPacketHandler<T> handler)
     {
         if (MaLiLibReference.isServer() || MaLiLibReference.isDedicated() || MaLiLibReference.isOpenToLan())
@@ -51,6 +53,7 @@ public class ServerCommonHandlerRegister
             MaLiLib.logger.error("ServerCommonHandlerRegister#registerConfigHandler(): blocked registerGlobalReceiver() from a non-SERVER Environment.");
         }
     }
+
     public <T extends CustomPayload> void unregisterConfigHandler(CustomPayload.Id<T> type)
     {
         if (MaLiLibReference.isServer() || MaLiLibReference.isDedicated() || MaLiLibReference.isOpenToLan())
@@ -63,6 +66,8 @@ public class ServerCommonHandlerRegister
             MaLiLib.logger.error("ServerCommonHandlerRegister#unregisterConfigHandler(): blocked unregisterGlobalReceiver() from a non-SERVER Environment.");
         }
     }
+
+    // TODO --> An entry here needs to exist for every MaLiLib Payload type
     @SuppressWarnings("unchecked")
     public <T extends CustomPayload> CustomPayload.Id<T> getPayloadType(PayloadType type)
     {
@@ -100,6 +105,7 @@ public class ServerCommonHandlerRegister
             return null;
         }
     }
+
     @SuppressWarnings("unchecked")
     public <B extends ByteBuf, T extends CustomPayload> PacketCodec<B, T> getPacketCodec(PayloadType type)
     {

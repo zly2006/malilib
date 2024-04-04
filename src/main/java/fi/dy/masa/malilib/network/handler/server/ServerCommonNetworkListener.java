@@ -44,6 +44,7 @@ public class ServerCommonNetworkListener implements IServerCommonNetworkBase
 
             switch (type)
             {
+                // TODO --> Entries need to exist here for every MaLiLib type Payload
                 //case CARPET_HELLO:
                     // Don't handle Server-Side Carpet packets.  This *WILL* break Carpet Mod from working if we did.
                     //return;
@@ -88,6 +89,7 @@ public class ServerCommonNetworkListener implements IServerCommonNetworkBase
 
             switch (type)
             {
+                // TODO --> Entries need to exist here for every MaLiLib type Payload
                 //case CARPET_HELLO:
                     // Don't handle Server-Side Carpet packets.  This *WILL* break Carpet Mod from working if we did.
                     //return;

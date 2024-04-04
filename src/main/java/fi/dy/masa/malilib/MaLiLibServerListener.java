@@ -1,7 +1,5 @@
-package fi.dy.masa.malilib.listeners;
+package fi.dy.masa.malilib;
 
-import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.interfaces.IServerListener;
 import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
@@ -12,7 +10,7 @@ import java.net.*;
 /**
  * This could be used on downstream mods, this is critical for the Network API.
  */
-public class ServerListener implements IServerListener
+public class MaLiLibServerListener implements IServerListener
 {
     /**
      * This interface for IntegratedServers() works much more reliably than invoking a WorldLoadHandler

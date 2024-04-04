@@ -41,6 +41,7 @@ public class ClientCommonNetworkListener implements IClientCommonNetworkBase
 
             switch (type)
             {
+                // TODO --> Entries need to exist here for every MaLiLib type Payload
                 /*
                 case CARPET_HELLO:
                     // Don't handle Carpet packets if we have Carpet-Client installed
@@ -104,6 +105,7 @@ public class ClientCommonNetworkListener implements IClientCommonNetworkBase
 
             switch (type)
             {
+                // TODO --> Entries need to exist here for every MaLiLib type Payload
                 /*
                 case CARPET_HELLO:
                     // Don't handle Carpet packets if we have Carpet-Client installed

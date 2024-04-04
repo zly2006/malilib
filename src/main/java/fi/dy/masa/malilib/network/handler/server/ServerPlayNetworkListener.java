@@ -39,7 +39,7 @@ public class ServerPlayNetworkListener implements IServerCommonNetworkBase
             return;
         }
 
-        // Minecraft broke the original method used under 24w11a, and "probably" hid the Config Channel.
+        // Minecraft broke the original method used under 24w11a, and "probably" hid the Config Channel?
 
         /*
         if (handler instanceof ServerConfigurationNetworkHandler configHandler)
@@ -93,6 +93,7 @@ public class ServerPlayNetworkListener implements IServerCommonNetworkBase
 
             switch (type)
             {
+                // TODO --> Entries need to exist here for every MaLiLib type Payload
                 //case CARPET_HELLO:
                     // Don't handle Server-Side Carpet packets.  This *WILL* break Carpet Mod from working if we did.
                     //return;
