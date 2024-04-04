@@ -8,8 +8,11 @@ import net.minecraft.util.Identifier;
 import java.util.Iterator;
 import java.util.Set;
 
-public class ServerDebugSuite {
-    public static void checkGlobalPlayChannels() {
+@Deprecated
+public class ServerDebugSuite
+{
+    public static void checkGlobalPlayChannels()
+    {
         MaLiLib.printDebug("ServerDebugSuite#checkGlobalPlayChannels(): Start.");
         Set<Identifier> channels = ServerPlayNetworking.getGlobalReceivers();
         Iterator<Identifier> iterator = channels.iterator();
@@ -22,7 +25,9 @@ public class ServerDebugSuite {
         }
         MaLiLib.printDebug("ServerDebugSuite#checkGlobalPlayChannels(): END. Total Channels: "+i);
     }
-    public static void checkGlobalConfigChannels() {
+
+    public static void checkGlobalConfigChannels()
+    {
         MaLiLib.printDebug("ServerDebugSuite#checkGlobalConfigChannels(): Start.");
         Set<Identifier> channels = ServerConfigurationNetworking.getGlobalReceivers();
         Iterator<Identifier> iterator = channels.iterator();

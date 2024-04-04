@@ -25,6 +25,7 @@ public class MixinIntegratedServer
             ((ServerHandler) ServerHandler.getInstance()).onServerIntegratedSetup(this.client.getServer());
         }
     }
+
     @Inject(method = "openToLan", at = @At("RETURN"))
     private void malilib$checkOpenToLan(GameMode gameMode, boolean cheatsAllowed, int port, CallbackInfoReturnable<Boolean> cir)
     {

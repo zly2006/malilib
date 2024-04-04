@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.interfaces;
 
 import java.util.function.Supplier;
-
 import org.joml.Matrix4f;
 
 import net.minecraft.client.gui.DrawContext;

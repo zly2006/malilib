@@ -8,7 +8,6 @@ import fi.dy.masa.malilib.hotkeys.IHotkeyCallback;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
-import fi.dy.masa.malilib.listeners.ServerListener;
 import fi.dy.masa.malilib.util.FileUtils;
 
 public class MaLiLibInitHandler implements IInitializationHandler
@@ -36,8 +35,8 @@ public class MaLiLibInitHandler implements IInitializationHandler
             MaLiLib.logger.info("{} --> Initializing SERVER environment", MaLiLibReference.MOD_STRING);
         }
 
-        ServerListener serverListener = new ServerListener();
-        ServerHandler.getInstance().registerServerHandler(serverListener);
+        MaLiLibServerListener maLiLibServerListener = new MaLiLibServerListener();
+        ServerHandler.getInstance().registerServerHandler(maLiLibServerListener);
 
         // Example code using Carpet Hello packets.
         //PacketListenerRegister.registerListeners();

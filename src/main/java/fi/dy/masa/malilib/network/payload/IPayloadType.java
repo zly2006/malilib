@@ -4,7 +4,7 @@ import net.minecraft.util.Identifier;
 
 /**
  * Provides an interface to the PayloadCodec class for getting various data on Payload / Channels
- * that have been registered with PayloadTypeRegister
+ * that have been registered with PayloadManager
  */
 public interface IPayloadType
 {

@@ -502,9 +502,6 @@ public class InventoryOverlay
 
     public static void renderStackToolTip(int x, int y, ItemStack stack, MinecraftClient mc, DrawContext drawContext)
     {
-        // FIXME
-        //List<Text> list = stack.getTooltip(mc.player, mc.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.BASIC);
-
         Item.TooltipContext ctx = Item.TooltipContext.DEFAULT;      // In case this needs to change later
         List<Text> list = stack.getTooltip(ctx, mc.player, mc.options.advancedItemTooltips ? TooltipType.ADVANCED : TooltipType.BASIC);
         List<String> lines = new ArrayList<>();

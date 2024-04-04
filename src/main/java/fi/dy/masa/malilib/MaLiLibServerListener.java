@@ -1,18 +1,17 @@
-package fi.dy.masa.malilib.listeners;
+package fi.dy.masa.malilib;
 
-import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.interfaces.IServerListener;
-import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
+import fi.dy.masa.malilib.network.payload.PayloadManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
 import java.net.*;
 
 /**
- * This could be used on downstream mods, this is critical for the Network API.
+ * This could be used on downstream mods, such as ServUX.
+ * This is critical for the Network API to function properly at the correct timings.
  */
-public class ServerListener implements IServerListener
+public class MaLiLibServerListener implements IServerListener
 {
     /**
      * This interface for IntegratedServers() works much more reliably than invoking a WorldLoadHandler
@@ -38,8 +37,6 @@ public class ServerListener implements IServerListener
             MaLiLib.printDebug("[{}] Dedicated Server Mode detected", MaLiLibReference.MOD_ID);
         }
 
-        //PacketListenerRegister.registerListeners();
-
         if (!MaLiLibReference.isClient())
         {
             ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
@@ -49,8 +46,8 @@ public class ServerListener implements IServerListener
     @Override
     public void onServerStarted(MinecraftServer server)
     {
-        PayloadTypeRegister.getInstance().verifyAllPayloads();
-        PayloadTypeRegister.getInstance().registerAllHandlers();
+        PayloadManager.getInstance().verifyAllPayloads();
+        PayloadManager.getInstance().registerAllHandlers();
 
         if (!MaLiLibReference.isClient())
         {
@@ -102,16 +99,16 @@ public class ServerListener implements IServerListener
         MaLiLibReference.setDedicated(false);
 
         // This is to register all Server-Side Network API for OpenToLan functionality
-        PayloadTypeRegister.getInstance().resetPayloads();
-        PayloadTypeRegister.getInstance().verifyAllPayloads();
-        PayloadTypeRegister.getInstance().registerAllHandlers();
+        PayloadManager.getInstance().resetPayloads();
+        PayloadManager.getInstance().verifyAllPayloads();
+        PayloadManager.getInstance().registerAllHandlers();
     }
 
     @Override
     public void onServerStopping(MinecraftServer minecraftServer)
     {
         MaLiLib.printDebug("[{}] server is stopping", MaLiLibReference.MOD_ID);
-        PayloadTypeRegister.getInstance().resetPayloads();
+        PayloadManager.getInstance().resetPayloads();
 
         if (!MaLiLibReference.isClient())
         {

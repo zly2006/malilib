@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.network.payload.channel;
 
 import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
+import fi.dy.masa.malilib.network.payload.PayloadManager;
 import fi.dy.masa.malilib.network.payload.PayloadType;
-import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -12,7 +12,7 @@ import net.minecraft.network.packet.CustomPayload;
  */
 public record MaLibBufPayload(MaLibByteBuf byteBuf) implements CustomPayload
 {
-    public static final Id<MaLibBufPayload> TYPE = new Id<>(PayloadTypeRegister.INSTANCE.getIdentifier(PayloadType.MALILIB_BYTEBUF));
+    public static final Id<MaLibBufPayload> TYPE = new Id<>(PayloadManager.INSTANCE.getIdentifier(PayloadType.MALILIB_BYTEBUF));
     public static final PacketCodec<PacketByteBuf, MaLibBufPayload> CODEC = CustomPayload.codecOf(MaLibBufPayload::write, MaLibBufPayload::new);
 
     public MaLibBufPayload(PacketByteBuf input)

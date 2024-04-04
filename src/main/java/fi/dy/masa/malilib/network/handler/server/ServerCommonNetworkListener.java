@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.network.handler.server;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.network.handler.IServerCommonNetworkBase;
 import fi.dy.masa.malilib.network.payload.PayloadType;
-import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
+import fi.dy.masa.malilib.network.payload.PayloadManager;
 import fi.dy.masa.malilib.network.payload.channel.*;
 import net.minecraft.network.NetworkThreadUtils;
 import net.minecraft.network.packet.CustomPayload;
@@ -31,7 +31,7 @@ public class ServerCommonNetworkListener implements IServerCommonNetworkBase
     {
         CustomPayload thisPayload = packet.payload();
         Identifier id = thisPayload.getId().id();
-        PayloadType type = PayloadTypeRegister.getInstance().getPayloadType(id);
+        PayloadType type = PayloadManager.getInstance().getPayloadType(id);
 
         if (type == null)
         {
@@ -44,6 +44,7 @@ public class ServerCommonNetworkListener implements IServerCommonNetworkBase
 
             switch (type)
             {
+                // TODO --> Entries need to exist here for every MaLiLib type Payload
                 //case CARPET_HELLO:
                     // Don't handle Server-Side Carpet packets.  This *WILL* break Carpet Mod from working if we did.
                     //return;
@@ -88,6 +89,7 @@ public class ServerCommonNetworkListener implements IServerCommonNetworkBase
 
             switch (type)
             {
+                // TODO --> Entries need to exist here for every MaLiLib type Payload
                 //case CARPET_HELLO:
                     // Don't handle Server-Side Carpet packets.  This *WILL* break Carpet Mod from working if we did.
                     //return;

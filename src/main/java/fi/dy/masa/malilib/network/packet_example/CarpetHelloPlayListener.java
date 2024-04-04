@@ -6,8 +6,8 @@ import fi.dy.masa.malilib.network.handler.ClientCommonHandlerRegister;
 import fi.dy.masa.malilib.network.handler.client.ClientPlayHandler;
 import fi.dy.masa.malilib.network.handler.client.IPluginClientPlayHandler;
 import fi.dy.masa.malilib.network.payload.PayloadCodec;
+import fi.dy.masa.malilib.network.payload.PayloadManager;
 import fi.dy.masa.malilib.network.payload.PayloadType;
-import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
 import fi.dy.masa.malilib.network.payload.channel.CarpetHelloPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
@@ -169,7 +169,7 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
     @Override
     public void registerPlayPayload(PayloadType type)
     {
-        PayloadCodec codec = PayloadTypeRegister.getInstance().getPayloadCodec(type);
+        PayloadCodec codec = PayloadManager.getInstance().getPayloadCodec(type);
 
         if (codec == null)
         {
@@ -186,7 +186,7 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
             else
             {
                 // Real register it.
-                PayloadTypeRegister.getInstance().registerPlayChannel(type, ClientCommonHandlerRegister.getInstance().getPayloadType(type), ClientCommonHandlerRegister.getInstance().getPacketCodec(type));
+                PayloadManager.getInstance().registerPlayChannel(type, ClientCommonHandlerRegister.getInstance().getPayloadType(type), ClientCommonHandlerRegister.getInstance().getPacketCodec(type));
             }
         }
     }
@@ -194,7 +194,7 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
     @SuppressWarnings("unchecked")
     public void registerPlayHandler(PayloadType type)
     {
-        PayloadCodec codec = PayloadTypeRegister.getInstance().getPayloadCodec(type);
+        PayloadCodec codec = PayloadManager.getInstance().getPayloadCodec(type);
 
         if (codec == null)
         {
@@ -216,7 +216,7 @@ public abstract class CarpetHelloPlayListener<T extends CustomPayload> implement
     @SuppressWarnings("unchecked")
     public void unregisterPlayHandler(PayloadType type)
     {
-        PayloadCodec codec = PayloadTypeRegister.getInstance().getPayloadCodec(type);
+        PayloadCodec codec = PayloadManager.getInstance().getPayloadCodec(type);
 
         if (codec == null)
         {

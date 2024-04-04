@@ -21,13 +21,13 @@ import java.util.*;
  * From here, we Map the payload CODEC and TYPE into a HashMap; for our own reference by the Payloads based on their PacketType.
  * This was done in an attempt to make the remaining functions more abstract.
  */
-public class PayloadTypeRegister
+public class PayloadManager
 {
-    public static final PayloadTypeRegister INSTANCE = new PayloadTypeRegister();
-    public static PayloadTypeRegister getInstance() { return INSTANCE; }
+    public static final PayloadManager INSTANCE = new PayloadManager();
+    public static PayloadManager getInstance() { return INSTANCE; }
     private final Map<PayloadType, PayloadCodec> TYPES = new HashMap<>();
 
-    public PayloadTypeRegister()
+    public PayloadManager()
     {
         initPayloads();
     }
@@ -38,12 +38,12 @@ public class PayloadTypeRegister
         {
             PayloadCodec codec = new PayloadCodec(type, key, namespace, path);
             TYPES.put(type, codec);
-            MaLiLib.printDebug("PayloadTypeRegister#register(): registering a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
+            MaLiLib.printDebug("PayloadManager#register(): registering a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
 
         }
         else
         {
-            MaLiLib.logger.warn("PayloadTypeRegister#register(): type {} already exists.", type.toString());
+            MaLiLib.logger.warn("PayloadManager#register(): type {} already exists.", type.toString());
         }
     }
 
@@ -54,7 +54,7 @@ public class PayloadTypeRegister
     {
         PayloadCodec codec = getPayloadCodec(type);
 
-        // Never Attempt to "re-register" a channel.  Bad things will happen.
+        // Never Attempt to "re-register" a channel or bad things will happen.  Kittens harmed, etc.
         if (codec == null || codec.isPlayRegistered())
             return;
 
@@ -64,11 +64,11 @@ public class PayloadTypeRegister
         if (PayloadTypeRegistryImpl.PLAY_S2C.get(id) != null || PayloadTypeRegistryImpl.PLAY_C2S.get(id) != null)
         {
             // This just saved Minecraft from crashing, your welcome.
-            MaLiLib.logger.warn("registerPlayChannel(): blocked duplicate Play Channel registration attempt for: {}.", id.id().toString());
+            MaLiLib.logger.error("registerPlayChannel(): blocked duplicate Play Channel registration attempt for: {}.", id.id().toString());
         }
         else
         {
-            MaLiLib.printDebug("PayloadTypeRegister#registerPlayChannel(): [Fabric-API] registering Play C2S Channel: {}", id.id().toString());
+            MaLiLib.printDebug("PayloadManager#registerPlayChannel(): [Fabric-API] registering Play C2S Channel: {}", id.id().toString());
             PayloadTypeRegistry.playC2S().register(id, packetCodec);
             PayloadTypeRegistry.playS2C().register(id, packetCodec);
             // We need to register the channel bi-directionally for it to work.
@@ -82,7 +82,7 @@ public class PayloadTypeRegister
     {
         PayloadCodec codec = getPayloadCodec(type);
 
-        // Never Attempt to "re-register" a channel.  Bad things will happen.
+        // Never Attempt to "re-register" a channel or bad things will happen.  Kittens harmed, etc.
         if (codec == null || codec.isConfigRegistered())
             return;
         codec.registerConfigCodec();
@@ -91,11 +91,11 @@ public class PayloadTypeRegister
         if (PayloadTypeRegistryImpl.CONFIGURATION_S2C.get(id) != null || PayloadTypeRegistryImpl.CONFIGURATION_C2S.get(id) != null)
         {
             // This just saved Minecraft from crashing, your welcome.
-            MaLiLib.logger.warn("registerConfigChannel(): blocked duplicate Configuration Channel registration attempt for: {}.", id.id().toString());
+            MaLiLib.logger.error("registerConfigChannel(): blocked duplicate Configuration Channel registration attempt for: {}.", id.id().toString());
         }
         else
         {
-            MaLiLib.printDebug("PayloadTypeRegister#registerConfigChannel(): [Fabric-API] registering Configuration C2S Channel: {}", id.id().toString());
+            MaLiLib.printDebug("PayloadManager#registerConfigChannel(): [Fabric-API] registering Configuration C2S Channel: {}", id.id().toString());
             PayloadTypeRegistry.configurationC2S().register(id, packetCodec);
             PayloadTypeRegistry.configurationS2C().register(id, packetCodec);
             // We need to register the channel bi-directionally for it to work.
@@ -108,7 +108,7 @@ public class PayloadTypeRegister
     @Nullable
     public PayloadCodec getPayloadCodec(PayloadType type)
     {
-        //MaLiLib.printDebug("PayloadTypeRegister#getPayloadCodec(): type: {}", type.toString());
+        //MaLiLib.printDebug("PayloadManager#getPayloadCodec(): type: {}", type.toString());
         return TYPES.getOrDefault(type, null);
     }
 
@@ -118,7 +118,7 @@ public class PayloadTypeRegister
     @Nullable
     public Identifier getIdentifier(PayloadType type)
     {
-        //MaLiLib.printDebug("PayloadTypeRegister#getIdentifier(): type: {}", type.toString());
+        //MaLiLib.printDebug("PayloadManager#getIdentifier(): type: {}", type.toString());
         return TYPES.getOrDefault(type, null).getId();
     }
 
@@ -129,7 +129,7 @@ public class PayloadTypeRegister
     @Nullable
     public String getKey(PayloadType type)
     {
-        //MaLiLib.printDebug("PayloadTypeRegister#getKey(): type: {}", type.toString());
+        //MaLiLib.printDebug("PayloadManager#getKey(): type: {}", type.toString());
         return TYPES.getOrDefault(type, null).getKey();
     }
 
@@ -164,7 +164,7 @@ public class PayloadTypeRegister
      */
     public void initPayloads()
     {
-        //MaLiLib.printDebug("PayloadTypeRegister#initPayloads(): invoked.");
+        //MaLiLib.printDebug("PayloadManager#initPayloads(): invoked.");
 
         // Do not register Carpet Hello, unless for debugging purposes.
         //register(PayloadType.CARPET_HELLO,      "carpet_hello",             "carpet",   "hello");
@@ -186,7 +186,7 @@ public class PayloadTypeRegister
      */
     public void resetPayloads()
     {
-        MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): sending reset() to all registered Payload types.");
+        MaLiLib.printDebug("PayloadManager#resetPayloads(): sending reset() to all registered Payload listeners.");
         //listTypes();
 
         for (PayloadType type : TYPES.keySet())
@@ -195,12 +195,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Play Client Reset for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#resetPayloads(): Play Client Reset for type {}", type.toString());
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).reset(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Play Server Reset for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#resetPayloads(): Play Server Reset for type {}", type.toString());
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).reset(type);
                 }
             }
@@ -208,12 +208,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Config Client Reset for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#resetPayloads(): Config Client Reset for type {}", type.toString());
                     ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).reset(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#resetPayloads(): Config Server Reset for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#resetPayloads(): Config Server Reset for type {}", type.toString());
                     ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).reset(type);
                 }
             }
@@ -222,7 +222,7 @@ public class PayloadTypeRegister
 
     public void verifyAllPayloads()
     {
-        MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): sending registerPayloads() to all registered listeners.");
+        MaLiLib.printDebug("PayloadManager#verifyAllPayloads(): sending registerPayloads() to all registered Payload listeners.");
         //listTypes();
 
         for (PayloadType type : TYPES.keySet())
@@ -231,12 +231,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Play Client Payloads for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#verifyAllPayloads(): Play Client Payloads for type {}", type.toString());
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayPayload(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Play Server Payloads for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#verifyAllPayloads(): Play Server Payloads for type {}", type.toString());
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayPayload(type);
                 }
             }
@@ -244,12 +244,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Config Client Payloads for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#verifyAllPayloads(): Config Client Payloads for type {}", type.toString());
                     ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).registerConfigPayload(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#verifyAllPayloads(): Config Server Payloads for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#verifyAllPayloads(): Config Server Payloads for type {}", type.toString());
                     ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).registerConfigPayload(type);
                 }
             }
@@ -261,7 +261,7 @@ public class PayloadTypeRegister
      */
     public void registerAllHandlers()
     {
-        MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): sending registerHandlers() to all registered Payload types.");
+        MaLiLib.printDebug("PayloadManager#registerAllHandlers(): sending registerHandlers() to all registered Payload listeners.");
         //listTypes();
 
         for (PayloadType type : TYPES.keySet())
@@ -270,12 +270,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Play Client Handlers for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#registerAllHandlers(): Play Client Handlers for type {}", type.toString());
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayHandler(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Play Server Handlers for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#registerAllHandlers(): Play Server Handlers for type {}", type.toString());
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayHandler(type);
                 }
             }
@@ -283,12 +283,12 @@ public class PayloadTypeRegister
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Config Client Handlers for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#registerAllHandlers(): Config Client Handlers for type {}", type.toString());
                     ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).registerConfigHandler(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadTypeRegister#registerAllHandlers(): Config Server Handlers for type {}", type.toString());
+                    //MaLiLib.printDebug("PayloadManager#registerAllHandlers(): Config Server Handlers for type {}", type.toString());
                     ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).registerConfigHandler(type);
                 }
             }

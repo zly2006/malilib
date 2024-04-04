@@ -21,17 +21,21 @@ public abstract class MixinMinecraftServer
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
     private void malilib$onServerStarting(CallbackInfo ci)
     {
-        // Initialize Server Environment from here.
         if (MaLiLibReference.isServer())
+        {
+            // This initializes MaLiLib's Server Environment Mode
             ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();
+        }
 
         ((ServerHandler) ServerHandler.getInstance()).onServerStarting((MinecraftServer) (Object) this);
     }
+
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;createMetadata()Lnet/minecraft/server/ServerMetadata;", ordinal = 0), method = "runServer")
     private void malilib$onServerStarted(CallbackInfo ci)
     {
         ((ServerHandler) ServerHandler.getInstance()).onServerStarted((MinecraftServer) (Object) this);
     }
+
     @Inject(at = @At("HEAD"), method = "shutdown")
     private void malilib$onServerStopping(CallbackInfo info)
     {

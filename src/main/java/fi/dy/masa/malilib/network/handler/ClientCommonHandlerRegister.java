@@ -30,6 +30,7 @@ public class ClientCommonHandlerRegister
             MaLiLib.logger.error("ClientCommonHandlerRegister#registerPlayHandler(): Blocked registerGlobalReceiver due to not being in a CLIENT environment.");
         }
     }
+
     public <T extends CustomPayload> void unregisterPlayHandler(CustomPayload.Id<T> type)
     {
         if (MaLiLibReference.isClient())
@@ -42,6 +43,7 @@ public class ClientCommonHandlerRegister
             MaLiLib.logger.error("ClientCommonHandlerRegister#unregisterPlayHandler(): Blocked unregisterGlobalReceiver due to not being in a CLIENT environment.");
         }
     }
+
     public <T extends CustomPayload> void registerConfigHandler(CustomPayload.Id<T> type, ClientConfigurationNetworking.ConfigurationPayloadHandler<T> handler)
     {
         if (MaLiLibReference.isClient())
@@ -54,6 +56,7 @@ public class ClientCommonHandlerRegister
             MaLiLib.logger.error("ClientCommonHandlerRegister#registerConfigHandler(): Blocked registerGlobalReceiver due to not being in a CLIENT environment.");
         }
     }
+
     public <T extends CustomPayload> void unregisterConfigHandler(CustomPayload.Id<T> type)
     {
         if (MaLiLibReference.isClient())
@@ -66,6 +69,8 @@ public class ClientCommonHandlerRegister
             MaLiLib.logger.error("ClientCommonHandlerRegister#unregisterConfigHandler(): Blocked unregisterGlobalReceiver due to not being in a CLIENT environment.");
         }
     }
+
+    // TODO --> An entry here needs to exist for every MaLiLib Payload type
     @SuppressWarnings("unchecked")
     public <T extends CustomPayload> CustomPayload.Id<T> getPayloadType(PayloadType type)
     {
@@ -103,6 +108,7 @@ public class ClientCommonHandlerRegister
             return null;
         }
     }
+
     @SuppressWarnings("unchecked")
     public <B extends ByteBuf, T extends CustomPayload> PacketCodec<B, T> getPacketCodec(PayloadType type)
     {

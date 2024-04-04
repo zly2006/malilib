@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.mixin;
 import javax.annotation.Nullable;
 
 import fi.dy.masa.malilib.network.handler.client.ClientCommonNetworkListener;
-import fi.dy.masa.malilib.network.payload.PayloadTypeRegister;
+import fi.dy.masa.malilib.network.payload.PayloadManager;
 import fi.dy.masa.malilib.event.WorldLoadHandler;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,8 +34,8 @@ public abstract class MixinClientPlayNetworkHandler
         // because the next injection point is right after the world has been assigned,
         // since we need the new world reference for the callback.
         this.worldBefore = this.world;
-        PayloadTypeRegister.getInstance().resetPayloads();
-        PayloadTypeRegister.getInstance().verifyAllPayloads();
+        PayloadManager.getInstance().resetPayloads();
+        PayloadManager.getInstance().verifyAllPayloads();
     }
 
     @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
@@ -52,7 +52,7 @@ public abstract class MixinClientPlayNetworkHandler
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, this.world, MinecraftClient.getInstance());
         this.worldBefore = null;
 
-        PayloadTypeRegister.getInstance().registerAllHandlers();
+        PayloadManager.getInstance().registerAllHandlers();
     }
 
     /**

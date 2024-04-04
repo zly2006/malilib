@@ -140,7 +140,7 @@ public class WidgetDropDownList<T> extends WidgetBase
             }
             else
             {
-                if (!this.scrollBar.wasMouseOver())
+                if (this.scrollBar.wasMouseOver() == false)
                 {
                     int relY = mouseY - this.y - this.height;
                     int ddHeight = this.height * this.maxVisibleEntries;
@@ -154,11 +154,11 @@ public class WidgetDropDownList<T> extends WidgetBase
             }
         }
 
-        if (!this.isOpen || (mouseX < this.x + this.width - this.scrollbarWidth || mouseY < this.y + this.height))
+        if (this.isOpen == false || (mouseX < this.x + this.width - this.scrollbarWidth || mouseY < this.y + this.height))
         {
             this.isOpen = ! this.isOpen;
 
-            if (!this.isOpen)
+            if (this.isOpen == false)
             {
                 this.searchBar.getTextField().setText("");
                 this.updateFilteredEntries();
@@ -213,7 +213,7 @@ public class WidgetDropDownList<T> extends WidgetBase
         this.filteredEntries.clear();
         String filterText = this.searchBar.getTextField().getText();
 
-        if (this.isOpen && !filterText.isEmpty())
+        if (this.isOpen && filterText.isEmpty() == false)
         {
             for (int i = 0; i < this.entries.size(); ++i)
             {
@@ -284,7 +284,7 @@ public class WidgetDropDownList<T> extends WidgetBase
 
         if (this.isOpen)
         {
-            if (!this.searchBar.getTextField().getText().isEmpty())
+            if (this.searchBar.getTextField().getText().isEmpty() == false)
             {
                 this.searchBar.draw(mouseX, mouseY, drawContext);
             }
@@ -333,7 +333,6 @@ public class WidgetDropDownList<T> extends WidgetBase
         }
 
         matrixStack.popMatrix();
-        //matrixStack.pop();
         matrixStackIn.pop();
     }
 

@@ -34,6 +34,7 @@ public class MaLiLibReference
     public static boolean isOpenToLan() { return open_to_lan; }
     public static boolean hasCarpetClient() { return hasCarpetClient; }
     private static DynamicRegistryManager registryManager = DynamicRegistryManager.EMPTY;
+
     public static void setDedicated(boolean toggle)
     {
         if (toggle && isServer())
@@ -47,6 +48,7 @@ public class MaLiLibReference
             dedicated_server = false;
         }
     }
+
     public static void setIntegrated(boolean toggle)
     {
         if (toggle && isClient())
@@ -60,6 +62,7 @@ public class MaLiLibReference
             integrated_server = false;
         }
     }
+
     public static void setOpenToLan(boolean toggle)
     {
         if (toggle && isClient())
@@ -73,6 +76,7 @@ public class MaLiLibReference
             open_to_lan = false;
         }
     }
+
     // For keeping networking API separated for basic sanity checks.
     public static void setCarpetClient(boolean toggle)
     {
@@ -85,10 +89,12 @@ public class MaLiLibReference
             hasCarpetClient = false;
         }
     }
+
     public static DynamicRegistryManager getRegistryManager()
     {
         return registryManager;
     }
+
     public static void setRegistryManager(DynamicRegistryManager manager)
     {
         if (manager != DynamicRegistryManager.EMPTY)
