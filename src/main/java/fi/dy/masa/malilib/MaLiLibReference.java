@@ -21,7 +21,7 @@ public class MaLiLibReference
     /**
      * There is probably a "cleaner" way to manage this data,
      * Many parts of the new Network API depend upon these being set correctly,
-     * and this helps MaLiLib maintain it's Multi-Environment status correctly.
+     * and this helps MaLiLib maintain it's new Multi-Environment status.
      */
     private static boolean dedicated_server = false;
     private static boolean integrated_server = false;
