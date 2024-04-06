@@ -157,34 +157,11 @@ public class PayloadManager
     }
 
     /**
-     * The init for this method.
-     * This must be called at the first possible moment, so it can behave like its static.
-     * Register the play/config channel codec for every existing PayLoad in our TYPES HashMap<>,
-     * or fail to register a channel, then don't attempt to handle the packets using Fabric API.
-     * If you try, prepare for Minecraft to crash.
-     * Consider yourself to have been warned.
-     */
-    public void initPayloads()
-    {
-        // TODO Uncomment these to enable channel registration, or to create new Payloads
-        //register(PayloadType.MALILIB_BYTEBUF,   "malilib_bytebuf",          "malilib",  "bytebuf");
-        //register(PayloadType.SERVUX_BLOCKS,     "block_metadata",           "servux",   "blocks");
-        //register(PayloadType.SERVUX_ENTITIES,   "entity_provider",          "servux",   "entities");
-        //register(PayloadType.SERVUX_LITEMATICS, "litematic_shared_storage", "servux",   "litematics");
-        //register(PayloadType.SERVUX_METADATA,   "metadata_service",         "servux",   "metadata");
-        register(PayloadType.SERVUX_STRUCTURES, "structure_bounding_boxes", "servux",   "structures");
-
-        // Debugging call
-        //listTypes();
-    }
-
-    /**
      * Forces a reset() signal on all registered payloads
      */
     public void resetPayloads()
     {
         MaLiLib.printDebug("PayloadManager#resetPayloads(): sending reset() to all registered Payload listeners.");
-        //listTypes();
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -216,7 +193,6 @@ public class PayloadManager
     public void verifyAllPayloads()
     {
         MaLiLib.printDebug("PayloadManager#verifyAllPayloads(): sending registerPayloads() to all registered Payload listeners.");
-        //listTypes();
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -251,7 +227,6 @@ public class PayloadManager
     public void registerAllHandlers()
     {
         MaLiLib.printDebug("PayloadManager#registerAllHandlers(): sending registerHandlers() to all registered Payload listeners.");
-        //listTypes();
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -277,15 +252,6 @@ public class PayloadManager
                     ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).registerConfigHandler(type);
                 }
             }
-        }
-    }
-
-    // For Debugging only
-    public void listTypes()
-    {
-        for (PayloadCodec codec : TYPES.values())
-        {
-            MaLiLib.printDebug("listTypes(): type {} // {}", codec.getType().toString(), codec.getId().toString());
         }
     }
 }
