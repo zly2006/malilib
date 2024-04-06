@@ -35,14 +35,14 @@ public class MaLiLibConfigs implements IConfigHandler
         public static final ConfigBoolean KEYBIND_DEBUG             = new ConfigBoolean("keybindDebugging", false, "When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)");
         public static final ConfigBoolean KEYBIND_DEBUG_ACTIONBAR   = new ConfigBoolean("keybindDebuggingIngame", false, "If enabled, then the messages from 'keybindDebugging'\nare also printed to the in-game action bar");
         public static final ConfigBoolean MOUSE_SCROLL_DEBUG        = new ConfigBoolean("mouseScrollDebug", false, "If enabled, some debug values from mouse scrolling\nare printed to the game console/log");
-        public static final ConfigBoolean NETWORK_DEBUG             = new ConfigBoolean("networkDebugging", true, "When enabled, networking API events are\nprinted to the game console/log");
+        public static final ConfigBoolean DEBUG_LOG                 = new ConfigBoolean("debugLog",false, "When enabled, debug level API events are printed\nto the game console/log");
 
         public static final ImmutableList<IConfigValue> OPTIONS = ImmutableList.of(
                 INPUT_CANCELLATION_DEBUG,
                 KEYBIND_DEBUG,
                 KEYBIND_DEBUG_ACTIONBAR,
                 MOUSE_SCROLL_DEBUG,
-                NETWORK_DEBUG
+                DEBUG_LOG
         );
     }
 
@@ -59,6 +59,7 @@ public class MaLiLibConfigs implements IConfigHandler
                 JsonObject root = element.getAsJsonObject();
 
                 ConfigUtils.readConfigBase(root, "Generic", Generic.OPTIONS);
+                ConfigUtils.readConfigBase(root, "Debug", Debug.OPTIONS);
             }
         }
     }
@@ -72,6 +73,7 @@ public class MaLiLibConfigs implements IConfigHandler
             JsonObject root = new JsonObject();
 
             ConfigUtils.writeConfigBase(root, "Generic", Generic.OPTIONS);
+            ConfigUtils.writeConfigBase(root, "Debug", Debug.OPTIONS);
 
             JsonUtils.writeJsonToFile(root, new File(dir, CONFIG_FILE_NAME));
         }

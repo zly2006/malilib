@@ -24,7 +24,6 @@ public class MaLiLibInitHandler implements IInitializationHandler
         if (MaLiLibReference.isClient())
         {
             MaLiLib.logger.info("{} --> Initializing CLIENT environment", MaLiLibReference.MOD_STRING);
-            MaLiLib.getCarpetClient();
 
             InputEventHandler.getKeybindManager().registerKeybindProvider(MaLiLibInputHandler.getInstance());
 
@@ -37,9 +36,6 @@ public class MaLiLibInitHandler implements IInitializationHandler
 
         MaLiLibServerListener maLiLibServerListener = new MaLiLibServerListener();
         ServerHandler.getInstance().registerServerHandler(maLiLibServerListener);
-
-        // Example code using Carpet Hello packets.
-        //PacketListenerRegister.registerListeners();
     }
 
     private static class CallbackOpenConfigGui implements IHotkeyCallback

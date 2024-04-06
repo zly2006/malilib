@@ -18,7 +18,7 @@ import java.util.*;
 
 /**
  * This is made to "manage" the payload types and do the actual channel registrations via the Fabric Network API (4.0.0+)
- * From here, we Map the payload CODEC and TYPE into a HashMap; for our own reference by the Payloads based on their PacketType.
+ * From here, we Map the payload CODEC and TYPE into a HashMap; for our own reference by the Payloads based on their PayloadType.
  * This was done in an attempt to make the remaining functions more abstract.
  */
 public class PayloadManager
@@ -27,11 +27,16 @@ public class PayloadManager
     public static PayloadManager getInstance() { return INSTANCE; }
     private final Map<PayloadType, PayloadCodec> TYPES = new HashMap<>();
 
-    public PayloadManager()
-    {
-        initPayloads();
-    }
+    public PayloadManager() {}
 
+    /**
+     * Registers a Payload Type with PayloadManager
+     * -
+     * @param type (PayloadType ENUM)
+     * @param key (Payload KEY value, used for a sort of "default" data field mapping)
+     * @param namespace (Identifier Namespace, ie, servux)
+     * @param path (Identifier path, ie, structures)
+     */
     public void register(PayloadType type, String key, String namespace, String path)
     {
         if (!TYPES.containsKey(type))
@@ -43,7 +48,7 @@ public class PayloadManager
         }
         else
         {
-            MaLiLib.logger.warn("PayloadManager#register(): type {} already exists.", type.toString());
+            MaLiLib.logger.error("PayloadManager#register(): type {} already exists.", type.toString());
         }
     }
 
@@ -108,7 +113,6 @@ public class PayloadManager
     @Nullable
     public PayloadCodec getPayloadCodec(PayloadType type)
     {
-        //MaLiLib.printDebug("PayloadManager#getPayloadCodec(): type: {}", type.toString());
         return TYPES.getOrDefault(type, null);
     }
 
@@ -118,7 +122,6 @@ public class PayloadManager
     @Nullable
     public Identifier getIdentifier(PayloadType type)
     {
-        //MaLiLib.printDebug("PayloadManager#getIdentifier(): type: {}", type.toString());
         return TYPES.getOrDefault(type, null).getId();
     }
 
@@ -129,7 +132,6 @@ public class PayloadManager
     @Nullable
     public String getKey(PayloadType type)
     {
-        //MaLiLib.printDebug("PayloadManager#getKey(): type: {}", type.toString());
         return TYPES.getOrDefault(type, null).getKey();
     }
 
@@ -150,7 +152,7 @@ public class PayloadManager
                 }
             }
         }
-        // Not found
+
         return null;
     }
 
@@ -164,11 +166,6 @@ public class PayloadManager
      */
     public void initPayloads()
     {
-        //MaLiLib.printDebug("PayloadManager#initPayloads(): invoked.");
-
-        // Do not register Carpet Hello, unless for debugging purposes.
-        //register(PayloadType.CARPET_HELLO,      "carpet_hello",             "carpet",   "hello");
-
         // TODO Uncomment these to enable channel registration, or to create new Payloads
         //register(PayloadType.MALILIB_BYTEBUF,   "malilib_bytebuf",          "malilib",  "bytebuf");
         //register(PayloadType.SERVUX_BLOCKS,     "block_metadata",           "servux",   "blocks");
@@ -195,12 +192,10 @@ public class PayloadManager
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadManager#resetPayloads(): Play Client Reset for type {}", type.toString());
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).reset(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadManager#resetPayloads(): Play Server Reset for type {}", type.toString());
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).reset(type);
                 }
             }
@@ -208,12 +203,10 @@ public class PayloadManager
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadManager#resetPayloads(): Config Client Reset for type {}", type.toString());
                     ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).reset(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadManager#resetPayloads(): Config Server Reset for type {}", type.toString());
                     ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).reset(type);
                 }
             }
@@ -231,12 +224,10 @@ public class PayloadManager
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadManager#verifyAllPayloads(): Play Client Payloads for type {}", type.toString());
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayPayload(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadManager#verifyAllPayloads(): Play Server Payloads for type {}", type.toString());
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayPayload(type);
                 }
             }
@@ -244,12 +235,10 @@ public class PayloadManager
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadManager#verifyAllPayloads(): Config Client Payloads for type {}", type.toString());
                     ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).registerConfigPayload(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadManager#verifyAllPayloads(): Config Server Payloads for type {}", type.toString());
                     ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).registerConfigPayload(type);
                 }
             }
@@ -270,12 +259,10 @@ public class PayloadManager
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadManager#registerAllHandlers(): Play Client Handlers for type {}", type.toString());
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayHandler(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadManager#registerAllHandlers(): Play Server Handlers for type {}", type.toString());
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayHandler(type);
                 }
             }
@@ -283,12 +270,10 @@ public class PayloadManager
             {
                 if (MaLiLibReference.isClient())
                 {
-                    //MaLiLib.printDebug("PayloadManager#registerAllHandlers(): Config Client Handlers for type {}", type.toString());
                     ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).registerConfigHandler(type);
                 }
                 if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
                 {
-                    //MaLiLib.printDebug("PayloadManager#registerAllHandlers(): Config Server Handlers for type {}", type.toString());
                     ((ServerConfigHandler<?>) ServerConfigHandler.getInstance()).registerConfigHandler(type);
                 }
             }

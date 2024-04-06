@@ -13,9 +13,10 @@ import java.util.UUID;
 
 public class PlayerHandler implements IPlayerManager
 {
-private static final PlayerHandler INSTANCE = new PlayerHandler();
-private final List<IPlayerListener> handlers = new ArrayList<>();
-public static IPlayerManager getInstance() { return INSTANCE; }
+    private static final PlayerHandler INSTANCE = new PlayerHandler();
+    private final List<IPlayerListener> handlers = new ArrayList<>();
+    public static IPlayerManager getInstance() { return INSTANCE; }
+
     @Override
     public void registerPlayerHandler(IPlayerListener handler) {
         if (!this.handlers.contains(handler))

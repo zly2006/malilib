@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.mixin;
 
-import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.event.TickHandler;
 import fi.dy.masa.malilib.event.WorldLoadHandler;
@@ -60,10 +59,6 @@ public abstract class MixinMinecraftClient
         if (this.worldBefore != null)
         {
             ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, worldClientIn, (MinecraftClient)(Object) this);
-            if (worldClientIn != null)
-            {
-                MaLiLibReference.setRegistryManager(worldClientIn.getRegistryManager());
-            }
             this.worldBefore = null;
         }
     }

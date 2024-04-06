@@ -29,7 +29,8 @@ public abstract class MixinClientPlayNetworkHandler
     private ClientWorld worldBefore;
 
     @Inject(method = "onGameJoin", at = @At("HEAD"))
-    private void malilib$onPreJoinGameHead(GameJoinS2CPacket packet, CallbackInfo ci) {
+    private void malilib$onPreJoinGameHead(GameJoinS2CPacket packet, CallbackInfo ci)
+    {
         // Need to grab the old world reference at the start of the method,
         // because the next injection point is right after the world has been assigned,
         // since we need the new world reference for the callback.
