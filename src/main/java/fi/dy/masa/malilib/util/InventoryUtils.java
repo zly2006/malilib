@@ -447,7 +447,8 @@ public class InventoryUtils
                 //int count = 0;
                 //int maxSlot = -1;
 
-                Iterator<ItemStack> iter = itemContainer.iterator();
+                // FIXME method_59712() Iterator -> Stream
+                Iterator<ItemStack> iter = itemContainer.method_59712().iterator();
 
                 if (slotCount <= 0)
                 {
@@ -559,7 +560,7 @@ public class InventoryUtils
             BundleContentsComponent bundleContainer = data.get(DataComponentTypes.BUNDLE_CONTENTS);
 
             if (bundleContainer != null)
-                return bundleContainer.stream().findAny().isPresent();
+                return !bundleContainer.isEmpty();
             else
                 return false;
         }
