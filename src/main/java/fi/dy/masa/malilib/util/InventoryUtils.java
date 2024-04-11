@@ -447,8 +447,7 @@ public class InventoryUtils
                 //int count = 0;
                 //int maxSlot = -1;
 
-                // FIXME method_59712() Iterator -> Stream
-                Iterator<ItemStack> iter = itemContainer.method_59712().iterator();
+                Iterator<ItemStack> iter = itemContainer.stream().iterator();
 
                 if (slotCount <= 0)
                 {
@@ -472,10 +471,13 @@ public class InventoryUtils
 
                     return items;
                 }
-                // FIXME Slot handling seems to have been removed,
-                //  so we'll use it to define the "size" ...
-                else if (slotCount < 54)
+                else
                 {
+                    if (slotCount > 256)
+                    {
+                        // ContainerComponent.MAX_SLOTS
+                        slotCount = 256;
+                    }
                     for (int i = 0; i < slotCount; i++)
                     {
                         if (iter.hasNext())
@@ -490,8 +492,6 @@ public class InventoryUtils
 
                     return items;
                 }
-                else
-                    return EMPTY_LIST;
             }
             else
                 return EMPTY_LIST;
