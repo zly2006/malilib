@@ -1,15 +1,14 @@
 package fi.dy.masa.malilib.event;
 
-import com.mojang.authlib.GameProfile;
-import fi.dy.masa.malilib.interfaces.IPlayerListener;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
 import javax.annotation.Nullable;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import fi.dy.masa.malilib.interfaces.IPlayerListener;
 
 public class PlayerHandler implements IPlayerManager
 {

@@ -1,25 +1,22 @@
 package fi.dy.masa.malilib.mixin;
 
 import javax.annotation.Nullable;
-
-import fi.dy.masa.malilib.network.handler.client.ClientCommonNetworkListener;
-import fi.dy.masa.malilib.network.payload.PayloadManager;
-import fi.dy.masa.malilib.event.WorldLoadHandler;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
+import fi.dy.masa.malilib.event.WorldLoadHandler;
+import fi.dy.masa.malilib.network.handler.client.ClientNetworkListener;
+import fi.dy.masa.malilib.network.payload.PayloadManager;
 
-@Mixin(value = ClientPlayNetworkHandler.class, priority = 998)
+@Mixin(value = ClientPlayNetworkHandler.class)
 public abstract class MixinClientPlayNetworkHandler
 {
     @Shadow
@@ -36,7 +33,7 @@ public abstract class MixinClientPlayNetworkHandler
         // since we need the new world reference for the callback.
         this.worldBefore = this.world;
         PayloadManager.getInstance().resetPayloads();
-        PayloadManager.getInstance().verifyAllPayloads();
+        PayloadManager.getInstance().verifyPayloads();
     }
 
     @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
@@ -53,7 +50,7 @@ public abstract class MixinClientPlayNetworkHandler
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, this.world, MinecraftClient.getInstance());
         this.worldBefore = null;
 
-        PayloadManager.getInstance().registerAllHandlers();
+        PayloadManager.getInstance().registerHandlers();
     }
 
     /**
@@ -61,8 +58,6 @@ public abstract class MixinClientPlayNetworkHandler
      * It also allows for "OpenToLan" functionality to work, because via the Fabric API,
      * the network handlers are set to NULL, and often fail to function.
      * Perhaps it's a bug in the Fabric API for OpenToLan?
-     * -
-     * You can't use packet.getData() here anymore, it no longer exists.
      */
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
     private void malilib$onCustomPayload(CustomPayload packet, CallbackInfo ci)
@@ -72,6 +67,6 @@ public abstract class MixinClientPlayNetworkHandler
             return;
         }
 
-        ClientCommonNetworkListener.getInstance().handleClientPayload((ClientPlayNetworkHandler) (Object) this, packet, ci);
+        ClientNetworkListener.getInstance().handleClientPayload((ClientPlayNetworkHandler) (Object) this, packet, ci);
     }
 }

@@ -1,12 +1,8 @@
 package fi.dy.masa.malilib.mixin;
 
+import java.net.SocketAddress;
+import java.util.UUID;
 import com.mojang.authlib.GameProfile;
-import fi.dy.masa.malilib.event.PlayerHandler;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ConnectedClientData;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,8 +10,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import java.net.SocketAddress;
-import java.util.UUID;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ConnectedClientData;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import fi.dy.masa.malilib.event.PlayerHandler;
 
 /**
  * Interface for processing various server side Player Manager events

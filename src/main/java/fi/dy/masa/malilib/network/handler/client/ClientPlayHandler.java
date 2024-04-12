@@ -1,13 +1,13 @@
 package fi.dy.masa.malilib.network.handler.client;
 
 import com.google.common.collect.ArrayListMultimap;
-import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
-import fi.dy.masa.malilib.network.payload.PayloadType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
+import fi.dy.masa.malilib.network.payload.PayloadType;
 
 public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHandler
 {
@@ -32,8 +32,6 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
             {
                 this.handlers.put(type, (IPluginClientPlayHandler<T>) handler);
                 handler.registerPlayPayload(type);
-                //handler.registerConfigPayload(type);
-                // Don't register Receivers until Server/World fully joined.
             }
         }
     }
@@ -48,7 +46,6 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
             if (this.handlers.remove(type, handler))
             {
                 handler.unregisterPlayHandler(type);
-                //handler.unregisterConfigHandler(type);
             }
         }
     }

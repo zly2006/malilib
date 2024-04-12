@@ -1,12 +1,11 @@
 package fi.dy.masa.malilib.interfaces;
 
-import com.mojang.authlib.GameProfile;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-
 import javax.annotation.Nullable;
 import java.net.SocketAddress;
 import java.util.UUID;
+import com.mojang.authlib.GameProfile;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 
 public interface IPlayerListener
 {

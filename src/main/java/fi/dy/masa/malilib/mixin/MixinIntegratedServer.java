@@ -1,18 +1,17 @@
 package fi.dy.masa.malilib.mixin;
 
-import fi.dy.masa.malilib.event.ServerHandler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.world.GameMode;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.world.GameMode;
+import fi.dy.masa.malilib.event.ServerHandler;
 
-@Mixin(value = IntegratedServer.class, priority = 998)
+@Mixin(value = IntegratedServer.class)
 public class MixinIntegratedServer
 {
     @Shadow @Final private MinecraftClient client;

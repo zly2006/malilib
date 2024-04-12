@@ -1,14 +1,13 @@
 package fi.dy.masa.malilib.network.handler.server;
 
 import com.google.common.collect.ArrayListMultimap;
-import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
-import fi.dy.masa.malilib.network.payload.PayloadType;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
+import fi.dy.masa.malilib.network.payload.PayloadType;
 
 public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHandler
 {
@@ -33,8 +32,6 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
             {
                 this.handlers.put(type, (IPluginServerPlayHandler<T>) handler);
                 handler.registerPlayPayload(type);
-                //handler.registerConfigPayload(type);
-                // Don't register Receivers until Server/World fully joined.
             }
         }
     }
@@ -49,7 +46,6 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
             if (this.handlers.remove(type, handler))
             {
                 handler.unregisterPlayHandler(type);
-                //handler.unregisterConfigHandler(type);
             }
         }
     }
@@ -67,8 +63,9 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
             }
         }
     }
-   public void registerPlayPayload(PayloadType type)
-   {
+
+    public void registerPlayPayload(PayloadType type)
+    {
        if (!this.handlers.isEmpty())
        {
            for (IPluginServerPlayHandler<T> handler : this.handlers.get(type))
@@ -76,7 +73,8 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
                handler.registerPlayPayload(type);
            }
        }
-   }
+    }
+
     public void registerPlayHandler(PayloadType type)
     {
         if (!this.handlers.isEmpty())
@@ -87,6 +85,7 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
             }
         }
     }
+
     public void unregisterPlayHandler(PayloadType type)
     {
         if (!this.handlers.isEmpty())
@@ -97,16 +96,7 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
             }
         }
     }
-   public <P extends CustomPayload> void receiveC2SPlayPayload(PayloadType type, P payload, ServerPlayNetworking.Context ctx)
-   {
-       if (!this.handlers.isEmpty())
-       {
-           for (IPluginServerPlayHandler<T> handler : this.handlers.get(type))
-           {
-               handler.receiveC2SPlayPayload(type, payload, ctx);
-           }
-       }
-   }
+
     public <P extends CustomPayload> void receiveC2SPlayPayload(PayloadType type, P payload, ServerPlayNetworkHandler networkHandler, CallbackInfo ci)
     {
         if (!this.handlers.isEmpty())
@@ -117,16 +107,18 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
             }
         }
     }
-   public void decodeC2SNbtCompound(PayloadType type, NbtCompound data, ServerPlayerEntity player)
-   {
-       if (!this.handlers.isEmpty())
-       {
-           for (IPluginServerPlayHandler<T> handler : this.handlers.get(type))
-           {
-               handler.decodeC2SNbtCompound(type, data, player);
-           }
-       }
-   }
+
+    public void decodeC2SNbtCompound(PayloadType type, NbtCompound data, ServerPlayerEntity player)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IPluginServerPlayHandler<T> handler : this.handlers.get(type))
+            {
+                handler.decodeC2SNbtCompound(type, data, player);
+            }
+        }
+    }
+
     public void decodeC2SByteBuf(PayloadType type, MaLibByteBuf data, ServerPlayerEntity player)
     {
         if (!this.handlers.isEmpty())

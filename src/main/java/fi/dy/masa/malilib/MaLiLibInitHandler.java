@@ -23,7 +23,7 @@ public class MaLiLibInitHandler implements IInitializationHandler
 
         if (MaLiLibReference.isClient())
         {
-            MaLiLib.logger.info("{} --> Initializing CLIENT environment", MaLiLibReference.MOD_STRING);
+            MaLiLib.printDebug("{} --> Initializing CLIENT environment", MaLiLibReference.MOD_STRING);
 
             InputEventHandler.getKeybindManager().registerKeybindProvider(MaLiLibInputHandler.getInstance());
 
@@ -31,7 +31,7 @@ public class MaLiLibInitHandler implements IInitializationHandler
         }
         if (MaLiLibReference.isServer())
         {
-            MaLiLib.logger.info("{} --> Initializing SERVER environment", MaLiLibReference.MOD_STRING);
+            MaLiLib.printDebug("{} --> Initializing SERVER environment", MaLiLibReference.MOD_STRING);
         }
 
         MaLiLibServerListener maLiLibServerListener = new MaLiLibServerListener();

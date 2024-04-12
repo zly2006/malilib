@@ -1,25 +1,39 @@
 package fi.dy.masa.malilib;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.integrated.IntegratedServer;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.interfaces.IServerListener;
 import fi.dy.masa.malilib.network.payload.PayloadManager;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
-import java.net.*;
 
 /**
- * This could be used on downstream mods, such as ServUX.
- * This is critical for the Network API to function properly at the correct timings.
+ * This could be used on downstream mods, such as ServuX.
+ * This is critical for the Network API to function properly at the correct timings,
+ * and to help manage ModInitTasks in a Server Environment.
  */
 public class MaLiLibServerListener implements IServerListener
 {
-    /**
-     * This interface for IntegratedServers() works much more reliably than invoking a WorldLoadHandler
-     * -- I've tried it first! --
-     * The WorldLoadHandler calls Connect/Disconnect multiple times, breaking the networking API.
-     * So using the IServerListener is best because it only gets invoked ONCE per a server start / stop
-     * to get handled correctly.
-     */
+    private InetAddress localIpAddr = null;
+
+    @Override
+    public InetAddress getLocalIpAddr()
+    {
+        if (this.localIpAddr == null)
+        {
+            try
+            {
+                this.localIpAddr = InetAddress.getLocalHost();
+            }
+            catch (UnknownHostException e)
+            {
+                this.localIpAddr = InetAddress.getLoopbackAddress();
+            }
+        }
+
+        return this.localIpAddr;
+    }
 
     @Override
     public void onServerStarting(MinecraftServer server)
@@ -34,7 +48,7 @@ public class MaLiLibServerListener implements IServerListener
             MaLiLibReference.setDedicated(true);
         }
 
-        if (!MaLiLibReference.isClient())
+        if (MaLiLibReference.isServer())
         {
             ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
         }
@@ -43,27 +57,23 @@ public class MaLiLibServerListener implements IServerListener
     @Override
     public void onServerStarted(MinecraftServer server)
     {
-        PayloadManager.getInstance().verifyAllPayloads();
-        PayloadManager.getInstance().registerAllHandlers();
-
-        if (!MaLiLibReference.isClient())
+        if (MaLiLibReference.isServer())
         {
             ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
         }
+
+        PayloadManager.getInstance().verifyPayloads();
+        PayloadManager.getInstance().registerHandlers();
+
         if (MaLiLibReference.isDedicated())
         {
-            InetAddress localIpAddr;
-            String ipPortString;
-            try
+            if (this.localIpAddr == null)
             {
-                localIpAddr = InetAddress.getLocalHost();
-                ipPortString = "["+localIpAddr.getHostName()+"] "+localIpAddr.getHostAddress() +":"+ server.getServerPort();
+                this.localIpAddr = getLocalIpAddr();
             }
-            catch (UnknownHostException e)
-            {
-                ipPortString = "localhost:"+ server.getServerPort();
-            }
-            MaLiLib.printDebug("[{}] Dedicated server listening for connections on {}", MaLiLibReference.MOD_ID, ipPortString);
+
+            String ipPortString = "["+this.localIpAddr.getHostName()+"] "+this.localIpAddr.getHostAddress() +":"+ server.getServerPort();
+            MaLiLib.logger.info("[{}] Dedicated server listening for connections on {}", MaLiLibReference.MOD_ID, ipPortString);
         }
     }
 
@@ -72,29 +82,30 @@ public class MaLiLibServerListener implements IServerListener
     {
         MaLiLibReference.setOpenToLan(false);
         MaLiLibReference.setDedicated(false);
+
+        if (this.localIpAddr == null)
+        {
+            this.localIpAddr = getLocalIpAddr();
+        }
     }
 
     @Override
     public void onServerOpenToLan(IntegratedServer server)
     {
-        InetAddress localIpAddr;
-        String ipPortString;
-        try
+        if (this.localIpAddr == null)
         {
-            localIpAddr = InetAddress.getLocalHost();
-            ipPortString = "["+localIpAddr.getHostName()+"] "+localIpAddr.getHostAddress() +":"+ server.getServerPort();
+            this.localIpAddr = getLocalIpAddr();
         }
-        catch (UnknownHostException e)
-        {
-            ipPortString = "localhost:"+ server.getServerPort();
-        }
-        MaLiLib.printDebug("[{}] OpenToLan server listening for connections on {}", MaLiLibReference.MOD_ID, ipPortString);
+
         MaLiLibReference.setOpenToLan(true);
         MaLiLibReference.setDedicated(false);
 
         PayloadManager.getInstance().resetPayloads();
-        PayloadManager.getInstance().verifyAllPayloads();
-        PayloadManager.getInstance().registerAllHandlers();
+        PayloadManager.getInstance().verifyPayloads();
+        PayloadManager.getInstance().registerHandlers();
+
+        String ipPortString = "["+this.localIpAddr.getHostName()+"] "+this.localIpAddr.getHostAddress() +":"+ server.getServerPort();
+        MaLiLib.logger.info("[{}] OpenToLan server listening for connections on {}", MaLiLibReference.MOD_ID, ipPortString);
     }
 
     @Override
@@ -102,7 +113,7 @@ public class MaLiLibServerListener implements IServerListener
     {
         PayloadManager.getInstance().resetPayloads();
 
-        if (!MaLiLibReference.isClient())
+        if (MaLiLibReference.isServer())
         {
             ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
         }
@@ -113,5 +124,6 @@ public class MaLiLibServerListener implements IServerListener
     {
         MaLiLibReference.setDedicated(false);
         MaLiLibReference.setOpenToLan(false);
+        this.localIpAddr = null;
     }
 }

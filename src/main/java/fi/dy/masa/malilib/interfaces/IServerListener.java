@@ -1,10 +1,17 @@
 package fi.dy.masa.malilib.interfaces;
 
+import java.net.InetAddress;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
 
 public interface IServerListener
 {
+    /**
+     * Called to obtain your local Inet Address, if it is not yet known,
+     * it should try to resolve it for you, or return localhost.
+     */
+    default InetAddress getLocalIpAddr() { return InetAddress.getLoopbackAddress(); }
+
     /**
      * Called at the initial occurrence of a MinecraftServer is starting up
      * @param server (The MinecraftServer object)

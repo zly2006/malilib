@@ -1,17 +1,15 @@
 package fi.dy.masa.malilib.mixin;
 
-import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.event.InitializationHandler;
-import fi.dy.masa.malilib.event.ServerHandler;
-
-import net.minecraft.server.MinecraftServer;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraft.server.MinecraftServer;
+import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.event.InitializationHandler;
+import fi.dy.masa.malilib.event.ServerHandler;
 
-@Mixin(value = MinecraftServer.class, priority = 998)
+@Mixin(value = MinecraftServer.class)
 public abstract class MixinMinecraftServer
 {
     /**
@@ -23,7 +21,6 @@ public abstract class MixinMinecraftServer
     {
         if (MaLiLibReference.isServer())
         {
-            // This initializes MaLiLib's Server Environment Mode
             ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();
         }
 
