@@ -98,16 +98,4 @@ public abstract class MixinPlayerManager
     {
         ((PlayerHandler) PlayerHandler.getInstance()).onPlayerLeave(player);
     }
-
-    @Inject(method = "setSimulationDistance", at = @At("HEAD"))
-    private void malilib$eventOnSimulDistance(int simulationDistance, CallbackInfo ci)
-    {
-        ((PlayerHandler) PlayerHandler.getInstance()).onSetSimulDistance(simulationDistance);
-    }
-
-    @Inject(method = "setViewDistance", at = @At("HEAD"))
-    private void malilib$eventOnViewDistance(int viewDistance, CallbackInfo ci)
-    {
-        ((PlayerHandler) PlayerHandler.getInstance()).onSetViewDistance(viewDistance);
-    }
 }
