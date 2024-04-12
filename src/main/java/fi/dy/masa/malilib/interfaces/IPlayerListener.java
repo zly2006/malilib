@@ -16,6 +16,4 @@ public interface IPlayerListener
     default void onPlayerOp(GameProfile profile, UUID uuid, @Nullable ServerPlayerEntity player) {}
     default void onPlayerDeOp(GameProfile profile, UUID uuid, @Nullable ServerPlayerEntity player) {}
     default void onPlayerLeave(ServerPlayerEntity player) {}
-    default void onSetSimulDistance(int distance) {}
-    default void onSetViewDistance(int distance) {}
 }

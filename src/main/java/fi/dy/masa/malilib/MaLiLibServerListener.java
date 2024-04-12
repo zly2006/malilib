@@ -26,15 +26,12 @@ public class MaLiLibServerListener implements IServerListener
     {
         if (server.isSingleplayer())
         {
-            MaLiLibReference.setIntegrated(true);
             MaLiLibReference.setOpenToLan(false);
             MaLiLibReference.setDedicated(false);
-            MaLiLib.printDebug("[{}] Single Player/Integrated Server Mode detected", MaLiLibReference.MOD_ID);
         }
         else if (server.isDedicated())
         {
             MaLiLibReference.setDedicated(true);
-            MaLiLib.printDebug("[{}] Dedicated Server Mode detected", MaLiLibReference.MOD_ID);
         }
 
         if (!MaLiLibReference.isClient())
@@ -73,8 +70,6 @@ public class MaLiLibServerListener implements IServerListener
     @Override
     public void onServerIntegratedSetup(IntegratedServer server)
     {
-        MaLiLib.printDebug("[{}] Integrated Server Mode detected", MaLiLibReference.MOD_ID);
-        MaLiLibReference.setIntegrated(true);
         MaLiLibReference.setOpenToLan(false);
         MaLiLibReference.setDedicated(false);
     }
@@ -94,11 +89,9 @@ public class MaLiLibServerListener implements IServerListener
             ipPortString = "localhost:"+ server.getServerPort();
         }
         MaLiLib.printDebug("[{}] OpenToLan server listening for connections on {}", MaLiLibReference.MOD_ID, ipPortString);
-        MaLiLibReference.setIntegrated(true);
         MaLiLibReference.setOpenToLan(true);
         MaLiLibReference.setDedicated(false);
 
-        // This is to register all Server-Side Network API for OpenToLan functionality
         PayloadManager.getInstance().resetPayloads();
         PayloadManager.getInstance().verifyAllPayloads();
         PayloadManager.getInstance().registerAllHandlers();
@@ -107,7 +100,6 @@ public class MaLiLibServerListener implements IServerListener
     @Override
     public void onServerStopping(MinecraftServer minecraftServer)
     {
-        MaLiLib.printDebug("[{}] server is stopping", MaLiLibReference.MOD_ID);
         PayloadManager.getInstance().resetPayloads();
 
         if (!MaLiLibReference.isClient())
@@ -119,9 +111,7 @@ public class MaLiLibServerListener implements IServerListener
     @Override
     public void onServerStopped(MinecraftServer minecraftServer)
     {
-        MaLiLib.printDebug("[{}] server has stopped", MaLiLibReference.MOD_ID);
         MaLiLibReference.setDedicated(false);
-        MaLiLibReference.setIntegrated(false);
         MaLiLibReference.setOpenToLan(false);
     }
 }

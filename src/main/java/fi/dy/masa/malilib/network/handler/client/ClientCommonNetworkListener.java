@@ -42,56 +42,9 @@ public class ClientCommonNetworkListener implements IClientCommonNetworkBase
             switch (type)
             {
                 // TODO --> Entries need to exist here for every MaLiLib type Payload
-                /*
-                case CARPET_HELLO:
-                    // Don't handle Carpet packets if we have Carpet-Client installed
-                    if (MaLiLibReference.hasCarpetClient())
-                    {
-                        ci = new CallbackInfo(ci.getId(), false);
-
-                        // Create a Fake Carpet Packet
-                        NbtCompound nbt = new NbtCompound();
-                        nbt.putString(PacketType.CarpetHello.HI, MaLiLibReference.MOD_STRING);
-                        CarpetHelloPayload fakeCarpetPayload = new CarpetHelloPayload(nbt);
-                        //NetworkThreadUtils.forceMainThread(packet, configHandler, mc);
-                        ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.CARPET_HELLO, fakeCarpetPayload, configHandler, ci);
-                    }
-                    else
-                    {
-                        CarpetHelloPayload realCarpetPayload = (CarpetHelloPayload) packet;
-                        //NetworkThreadUtils.forceMainThread(packet, configHandler, mc);
-                        ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.CARPET_HELLO, realCarpetPayload, configHandler, ci);
-                    }
-                    break;
-                 */
-                case MALILIB_BYTEBUF:
-                    MaLibBufPayload malilibPayload = (MaLibBufPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, configHandler, mc);
-                    ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.MALILIB_BYTEBUF, malilibPayload, configHandler, ci);
-                    break;
-                case SERVUX_BLOCKS:
-                    ServuxBlocksPayload blocksPayload = (ServuxBlocksPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, configHandler, mc);
-                    ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.SERVUX_BLOCKS, blocksPayload, configHandler, ci);
-                    break;
-                case SERVUX_ENTITIES:
-                    ServuxEntitiesPayload entitiesPayload = (ServuxEntitiesPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, configHandler, mc);
-                    ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.SERVUX_ENTITIES, entitiesPayload, configHandler, ci);
-                    break;
-                case SERVUX_LITEMATICS:
-                    ServuxLitematicsPayload litematicsPayload = (ServuxLitematicsPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, configHandler, mc);
-                    ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.SERVUX_LITEMATICS, litematicsPayload, configHandler, ci);
-                    break;
-                case SERVUX_METADATA:
-                    ServuxMetadataPayload metadataPayload = (ServuxMetadataPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, configHandler, mc);
-                    ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.SERVUX_METADATA, metadataPayload, configHandler, ci);
-                    break;
                 case SERVUX_STRUCTURES:
                     ServuxStructuresPayload structuresPayload = (ServuxStructuresPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, configHandler, mc);
+
                     ((ClientConfigHandler<?>) ClientConfigHandler.getInstance()).receiveS2CConfigPayload(PayloadType.SERVUX_STRUCTURES, structuresPayload, configHandler, ci);
                     break;
                 default:
@@ -106,55 +59,9 @@ public class ClientCommonNetworkListener implements IClientCommonNetworkBase
             switch (type)
             {
                 // TODO --> Entries need to exist here for every MaLiLib type Payload
-                /*
-                case CARPET_HELLO:
-                    // Don't handle Carpet packets if we have Carpet-Client installed
-                    if (MaLiLibReference.hasCarpetClient())
-                    {
-                        // Create a Fake Carpet Packet
-                        NbtCompound nbt = new NbtCompound();
-                        nbt.putString(PacketType.CarpetHello.HI, MaLiLibReference.MOD_STRING);
-                        CarpetHelloPayload fakeCarpetPayload = new CarpetHelloPayload(nbt);
-
-                        //NetworkThreadUtils.forceMainThread(packet, playHandler, mc);
-                        ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, fakeCarpetPayload, playHandler, new CallbackInfo(CarpetHelloPayload.KEY, false));
-                    }
-                    else
-                    {
-                        CarpetHelloPayload realCarpetPayload = (CarpetHelloPayload) packet;
-                        //NetworkThreadUtils.forceMainThread(packet, playHandler, mc);
-                        ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.CARPET_HELLO, realCarpetPayload, playHandler, ci);
-                    }
-                    break;
-                 */
-                case MALILIB_BYTEBUF:
-                    MaLibBufPayload malilibPayload = (MaLibBufPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, playHandler, mc);
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.MALILIB_BYTEBUF, malilibPayload, playHandler, ci);
-                    break;
-                case SERVUX_BLOCKS:
-                    ServuxBlocksPayload blocksPayload = (ServuxBlocksPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, playHandler, mc);
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_BLOCKS, blocksPayload, playHandler, ci);
-                    break;
-                case SERVUX_ENTITIES:
-                    ServuxEntitiesPayload entitiesPayload = (ServuxEntitiesPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, playHandler, mc);
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_ENTITIES, entitiesPayload, playHandler, ci);
-                    break;
-                case SERVUX_LITEMATICS:
-                    ServuxLitematicsPayload litematicsPayload = (ServuxLitematicsPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, playHandler, mc);
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_LITEMATICS, litematicsPayload, playHandler, ci);
-                    break;
-                case SERVUX_METADATA:
-                    ServuxMetadataPayload metadataPayload = (ServuxMetadataPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, playHandler, mc);
-                    ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_METADATA, metadataPayload, playHandler, ci);
-                    break;
                 case SERVUX_STRUCTURES:
                     ServuxStructuresPayload structuresPayload = (ServuxStructuresPayload) packet;
-                    //NetworkThreadUtils.forceMainThread(packet, playHandler, mc);
+
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).receiveS2CPlayPayload(PayloadType.SERVUX_STRUCTURES, structuresPayload, playHandler, ci);
                     break;
                 default:

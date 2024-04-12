@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import fi.dy.masa.malilib.MaLiLib;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import net.minecraft.block.BlockState;
@@ -750,7 +749,7 @@ public class InventoryUtils
                     Item item = Registries.ITEM.get(itemId);
                     RegistryEntry<Item> itemEntry = RegistryEntry.of(item);
 
-                    MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): id {}, item {}, entry {}", itemId.toString(), item.toString(), itemEntry.toString());
+                    //MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): id {}, item {}, entry {}", itemId.toString(), item.toString(), itemEntry.toString());
 
                     if (item != Items.AIR && itemEntry.hasKeyAndValue())
                     {

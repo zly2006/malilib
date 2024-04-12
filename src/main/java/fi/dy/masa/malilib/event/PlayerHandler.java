@@ -99,26 +99,4 @@ public class PlayerHandler implements IPlayerManager
             }
         }
     }
-
-    public void onSetSimulDistance(int distance)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IPlayerListener handler : this.handlers)
-            {
-                handler.onSetSimulDistance(distance);
-            }
-        }
-    }
-
-    public void onSetViewDistance(int distance)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IPlayerListener handler : this.handlers)
-            {
-                handler.onSetViewDistance(distance);
-            }
-        }
-    }
 }

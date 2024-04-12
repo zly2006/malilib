@@ -4,7 +4,6 @@ import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -13,7 +12,6 @@ import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.MapIdComponent;
 import net.minecraft.util.math.*;
-import org.apache.commons.lang3.math.Fraction;
 import org.joml.*;
 
 import net.minecraft.block.BlockState;
@@ -1079,64 +1077,6 @@ public class RenderUtils
         }
     }
 
-    public static void renderBundlePreview(ItemStack stack, int baseX, int baseY, Color4f bg, DrawContext drawContext)
-    {
-        if (stack.getComponents() != ComponentMap.EMPTY)
-        {
-            Fraction occupancy = InventoryUtils.bundleCountItems(stack);
-            if (Objects.equals(occupancy, Fraction.ZERO))
-            {
-                // Occupants is the total number of items up to 64, but items.size() is the number of slots.
-                return;
-            }
-
-            DefaultedList<ItemStack> items = InventoryUtils.getBundleItems(stack);
-
-            if (items.isEmpty())
-            {
-                return;
-            }
-            if (items.size() > 27)
-            {
-                // Disable this if the Slots in the Bundle are too much for the screen to logically display
-                //  The Double-Chest (54) Type also doesn't look very good either,
-                //  but I would assume most use cases are less than 27 different items.
-                items.clear();
-                return;
-            }
-
-            InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
-            InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
-
-            int screenWidth = GuiUtils.getScaledWindowWidth();
-            int screenHeight = GuiUtils.getScaledWindowHeight();
-            int height = props.height + 18;
-            int x = MathHelper.clamp(baseX + 8     , 0, screenWidth - props.width);
-            int y = MathHelper.clamp(baseY - height, 0, screenHeight - height);
-
-            color(bg.r, bg.g, bg.b, 1f);
-
-            disableDiffuseLighting();
-
-            // RenderSystem's 'modelViewStack' was changed to a Matrix4fStack method
-            Matrix4fStack matrix4fStack = RenderSystem.getModelViewStack();
-            matrix4fStack.pushMatrix();
-            matrix4fStack.translate(0, 0, 500);
-            RenderSystem.applyModelViewMatrix();
-
-            InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc());
-
-            enableDiffuseLightingGui3D();
-
-            Inventory inv = InventoryUtils.getAsInventory(items);
-            InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, items.size(), mc(), drawContext);
-
-            matrix4fStack.popMatrix();
-            RenderSystem.applyModelViewMatrix();
-
-            items.clear();
-        }
-    }
     public static void renderShulkerBoxPreview(ItemStack stack, int baseX, int baseY, boolean useBgColors, DrawContext drawContext)
     {
         if (stack.getComponents() != ComponentMap.EMPTY)
