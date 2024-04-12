@@ -2,10 +2,13 @@ package fi.dy.masa.malilib.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import net.minecraft.client.Keyboard;
+
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.util.IF3KeyStateSetter;
 
@@ -15,8 +18,9 @@ public abstract class MixinKeyboard implements IF3KeyStateSetter
     @Shadow
     private boolean switchF3State;
 
+    @Unique
     @Override
-    public void malilib$setF3KeyState(boolean value)
+    public void setF3KeyState(boolean value)
     {
         this.switchF3State = value;
     }

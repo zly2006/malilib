@@ -6,9 +6,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.GameMode;
+
 import fi.dy.masa.malilib.event.ServerHandler;
 
 @Mixin(value = IntegratedServer.class)

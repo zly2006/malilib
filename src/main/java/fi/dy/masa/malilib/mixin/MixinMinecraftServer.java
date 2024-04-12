@@ -4,7 +4,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import net.minecraft.server.MinecraftServer;
+
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.event.ServerHandler;
@@ -17,7 +19,7 @@ public abstract class MixinMinecraftServer
      * Works much better for Network API and Mod initialization
      */
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
-    private void malilib$onServerStarting(CallbackInfo ci)
+    private void onServerStarting(CallbackInfo ci)
     {
         if (MaLiLibReference.isServer())
         {
@@ -28,19 +30,19 @@ public abstract class MixinMinecraftServer
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;createMetadata()Lnet/minecraft/server/ServerMetadata;", ordinal = 0), method = "runServer")
-    private void malilib$onServerStarted(CallbackInfo ci)
+    private void onServerStarted(CallbackInfo ci)
     {
         ((ServerHandler) ServerHandler.getInstance()).onServerStarted((MinecraftServer) (Object) this);
     }
 
     @Inject(at = @At("HEAD"), method = "shutdown")
-    private void malilib$onServerStopping(CallbackInfo info)
+    private void onServerStopping(CallbackInfo info)
     {
         ((ServerHandler) ServerHandler.getInstance()).onServerStopping((MinecraftServer) (Object) this);
     }
 
     @Inject(at = @At("TAIL"), method = "shutdown")
-    private void malilib$onServerStopped(CallbackInfo info)
+    private void onServerStopped(CallbackInfo info)
     {
         ((ServerHandler) ServerHandler.getInstance()).onServerStopped((MinecraftServer) (Object) this);
     }

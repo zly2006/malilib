@@ -15,14 +15,13 @@ public interface IRenderer
 
     /**
      * Called after vanilla world rendering
-     * --> Changed to Matrix4f for all downstream Mods
      */
     default void onRenderWorldLast(Matrix4f matrix4f, Matrix4f projMatrix) {}
 
     /**
      * Called after the tooltip text of an item has been rendered
      */
-    default void onRenderTooltipLast(DrawContext drawContext,ItemStack stack, int x, int y) {}
+    default void onRenderTooltipLast(DrawContext drawContext, ItemStack stack, int x, int y) {}
 
     /**
      * Returns a supplier for the profiler section name that should be used for this renderer

@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.mixin;
 
 import java.net.SocketAddress;
 import java.util.UUID;
-import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,11 +9,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import com.mojang.authlib.GameProfile;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ConnectedClientData;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+
 import fi.dy.masa.malilib.event.PlayerHandler;
 
 /**
@@ -29,19 +31,19 @@ public abstract class MixinPlayerManager
     public MixinPlayerManager() { super(); }
 
     @Inject(method = "checkCanJoin", at = @At("RETURN"))
-    private void malilib$eventOnClientConnect(SocketAddress address, GameProfile profile, CallbackInfoReturnable<Text> cir)
+    private void eventOnClientConnect(SocketAddress address, GameProfile profile, CallbackInfoReturnable<Text> cir)
     {
         ((PlayerHandler) PlayerHandler.getInstance()).onClientConnect(address, profile, cir.getReturnValue());
     }
 
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
-    private void malilib$eventOnPlayerJoin(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci)
+    private void eventOnPlayerJoin(ClientConnection connection, ServerPlayerEntity player, ConnectedClientData clientData, CallbackInfo ci)
     {
         ((PlayerHandler) PlayerHandler.getInstance()).onPlayerJoin(connection.getAddress(), clientData.gameProfile(), player);
     }
 
     @Inject(method = "respawnPlayer", at = @At("RETURN"))
-    private void malilib$eventOnPlayerRespawn(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir)
+    private void eventOnPlayerRespawn(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir)
     {
         ServerPlayerEntity newPlayer = cir.getReturnValue();
 
@@ -49,7 +51,7 @@ public abstract class MixinPlayerManager
     }
 
     @Inject(method = "addToOperators", at = @At("HEAD"))
-    private void malilib$captureGameProfileOp(GameProfile profile, CallbackInfo ci)
+    private void captureGameProfileOp(GameProfile profile, CallbackInfo ci)
     {
         this.profileTemp = profile;
     }
@@ -57,7 +59,7 @@ public abstract class MixinPlayerManager
     @Redirect(method = "addToOperators",
             at = @At(value = "INVOKE",
                     target ="Lnet/minecraft/server/PlayerManager;getPlayer(Ljava/util/UUID;)Lnet/minecraft/server/network/ServerPlayerEntity;"))
-    private ServerPlayerEntity malilib$eventOnPlayerOp(PlayerManager instance, UUID uuid)
+    private ServerPlayerEntity eventOnPlayerOp(PlayerManager instance, UUID uuid)
     {
         ServerPlayerEntity player = instance.getPlayer(uuid);
 
@@ -72,7 +74,7 @@ public abstract class MixinPlayerManager
     }
 
     @Inject(method = "removeFromOperators", at = @At("HEAD"))
-    private void malilib$captureGameProfileDeOp(GameProfile profile, CallbackInfo ci)
+    private void captureGameProfileDeOp(GameProfile profile, CallbackInfo ci)
     {
         this.profileTemp = profile;
     }
@@ -80,7 +82,7 @@ public abstract class MixinPlayerManager
     @Redirect(method = "removeFromOperators",
             at = @At(value = "INVOKE",
                     target="Lnet/minecraft/server/PlayerManager;getPlayer(Ljava/util/UUID;)Lnet/minecraft/server/network/ServerPlayerEntity;"))
-    private ServerPlayerEntity malilib$eventOnPlayerDeOp(PlayerManager instance, UUID uuid)
+    private ServerPlayerEntity eventOnPlayerDeOp(PlayerManager instance, UUID uuid)
     {
         ServerPlayerEntity player = instance.getPlayer(uuid);
 
@@ -94,7 +96,7 @@ public abstract class MixinPlayerManager
     }
 
     @Inject(method = "remove", at = @At("HEAD"))
-    private void malilib$eventOnPlayerLeave(ServerPlayerEntity player, CallbackInfo ci)
+    private void eventOnPlayerLeave(ServerPlayerEntity player, CallbackInfo ci)
     {
         ((PlayerHandler) PlayerHandler.getInstance()).onPlayerLeave(player);
     }

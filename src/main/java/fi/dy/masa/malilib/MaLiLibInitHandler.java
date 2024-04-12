@@ -15,7 +15,6 @@ public class MaLiLibInitHandler implements IInitializationHandler
     @Override
     public void registerModHandlers()
     {
-        // Set Directories for Multi-Environment Compatibility
         FileUtils.setRunDirectory(MaLiLibReference.DEFAULT_RUN_DIR);
         FileUtils.setConfigDirectory(MaLiLibReference.DEFAULT_CONFIG_DIR);
 
@@ -23,15 +22,9 @@ public class MaLiLibInitHandler implements IInitializationHandler
 
         if (MaLiLibReference.isClient())
         {
-            MaLiLib.printDebug("{} --> Initializing CLIENT environment", MaLiLibReference.MOD_STRING);
-
             InputEventHandler.getKeybindManager().registerKeybindProvider(MaLiLibInputHandler.getInstance());
 
             MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeybind().setCallback(new CallbackOpenConfigGui());
-        }
-        if (MaLiLibReference.isServer())
-        {
-            MaLiLib.printDebug("{} --> Initializing SERVER environment", MaLiLibReference.MOD_STRING);
         }
 
         MaLiLibServerListener maLiLibServerListener = new MaLiLibServerListener();

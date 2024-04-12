@@ -1,9 +1,10 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.joml.Matrix4fStack;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -15,7 +16,6 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringRetriever;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
-import org.joml.Matrix4fStack;
 
 /**
  * A dropdown selection widget for entries in the given list.

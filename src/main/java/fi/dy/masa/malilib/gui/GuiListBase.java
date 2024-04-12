@@ -1,8 +1,10 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
@@ -164,7 +166,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     {
         super.resize(mc, width, height);
 
-        if (mc != null && this.getListWidget() != null)
+        if (this.getListWidget() != null)
         {
             this.getListWidget().resize(mc, width, height);
         }
