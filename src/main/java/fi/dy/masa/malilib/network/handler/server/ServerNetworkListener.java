@@ -1,9 +1,7 @@
 package fi.dy.masa.malilib.network.handler.server;
 
-import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.network.payload.PayloadType;
-import fi.dy.masa.malilib.network.payload.PayloadManager;
-import fi.dy.masa.malilib.network.payload.channel.*;
+import javax.annotation.Nullable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.network.NetworkThreadUtils;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
@@ -11,9 +9,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import javax.annotation.Nullable;
+import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.network.payload.PayloadManager;
+import fi.dy.masa.malilib.network.payload.PayloadType;
+import fi.dy.masa.malilib.network.payload.channel.ServuxStructuresPayload;
 
 /**
  * These only exist to handle the Mixin-based "onCustomPayload()" packets, so we can

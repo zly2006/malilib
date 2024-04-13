@@ -80,7 +80,7 @@ public class ItemType
                 return false;
             }
 
-            return !this.checkNBT() || Objects.equals(this.stack.getComponents(), other.stack.getComponents());
+            return this.checkNBT() == false || Objects.equals(this.stack.getComponents(), other.stack.getComponents());
         }
     }
 

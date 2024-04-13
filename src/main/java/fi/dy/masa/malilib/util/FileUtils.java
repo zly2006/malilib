@@ -24,8 +24,11 @@ public class FileUtils
 
     public static File getConfigDirectory()
     {
+        // Required for Multi-Environment MaLiLib
         if (MaLiLibReference.isClient())
+        {
             return new File(MinecraftClient.getInstance().runDirectory, "config");
+        }
         else
         {
             if (configDirectory.isDirectory())
@@ -33,14 +36,19 @@ public class FileUtils
                 return configDirectory;
             }
             else
+            {
                 return MaLiLibReference.DEFAULT_CONFIG_DIR;
+            }
         }
     }
 
     public static File getMinecraftDirectory()
     {
+        // Required for Multi-Environment MaLiLib
         if (MaLiLibReference.isClient())
+        {
             return MinecraftClient.getInstance().runDirectory;
+        }
         else
         {
             if (runDirectory.isDirectory())
@@ -48,7 +56,9 @@ public class FileUtils
                 return runDirectory;
             }
             else
+            {
                 return MaLiLibReference.DEFAULT_RUN_DIR;
+            }
         }
     }
 
@@ -179,8 +189,10 @@ public class FileUtils
 
         return null;
     }
+
     public static void setConfigDirectory(File dir)
     {
+        // Required for Multi-Environment MaLiLib
         if (dir == null)
         {
             MaLiLib.logger.fatal("setConfigDirectory: dir given is NULL.");
@@ -204,8 +216,10 @@ public class FileUtils
             }
         }
     }
+
     public static void setRunDirectory(File dir)
     {
+        // Required for Multi-Environment MaLiLib
         if (dir == null)
         {
             MaLiLib.logger.fatal("setRunDirectory: dir given is NULL.");

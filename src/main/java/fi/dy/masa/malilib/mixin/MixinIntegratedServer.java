@@ -6,11 +6,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.GameMode;
-
 import fi.dy.masa.malilib.event.ServerHandler;
 
 @Mixin(value = IntegratedServer.class)
@@ -19,7 +17,7 @@ public class MixinIntegratedServer
     @Shadow @Final private MinecraftClient client;
 
     @Inject(method = "setupServer", at = @At("RETURN"))
-    private void malilib$setupServer(CallbackInfoReturnable<Boolean> cir)
+    private void setupServer(CallbackInfoReturnable<Boolean> cir)
     {
         if (cir.getReturnValue())
         {
@@ -28,7 +26,7 @@ public class MixinIntegratedServer
     }
 
     @Inject(method = "openToLan", at = @At("RETURN"))
-    private void malilib$checkOpenToLan(GameMode gameMode, boolean cheatsAllowed, int port, CallbackInfoReturnable<Boolean> cir)
+    private void checkOpenToLan(GameMode gameMode, boolean cheatsAllowed, int port, CallbackInfoReturnable<Boolean> cir)
     {
         if (cir.getReturnValue())
         {

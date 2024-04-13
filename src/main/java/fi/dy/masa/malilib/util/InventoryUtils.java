@@ -1,12 +1,15 @@
 package fi.dy.masa.malilib.util;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import org.apache.commons.lang3.math.Fraction;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
@@ -16,7 +19,9 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.component.*;
+import net.minecraft.component.ComponentMap;
+import net.minecraft.component.DataComponentType;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BundleContentsComponent;
 import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,7 +43,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.math.Fraction;
 
 public class InventoryUtils
 {
@@ -47,7 +51,7 @@ public class InventoryUtils
     public static final Pattern PATTERN_ITEM_BASE = Pattern.compile("^(?<name>(?:[a-z0-9\\._-]+:)[a-z0-9\\._-]+)$");
 
     /**
-     * @return true if the stacks are identical, including their "Components"
+     * @return true if the stacks are identical, including their Components
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
@@ -55,7 +59,7 @@ public class InventoryUtils
     }
 
     /**
-     * @return true if the stacks are identical, including their "Components"
+     * @return true if the stacks are identical, including their Components
      */
     public static boolean areStacksAndNbtEqual(ItemStack stack1, ItemStack stack2)
     {
@@ -63,7 +67,7 @@ public class InventoryUtils
     }
 
     /**
-     * @return true if the stacks are identical, but ignoring the Components
+     * @return true if the stacks are identical, but ignoring their Components
      */
     public static boolean areStacksEqualIgnoreNbt(ItemStack stack1, ItemStack stack2)
     {
@@ -76,11 +80,12 @@ public class InventoryUtils
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
-        if (!ItemStack.areItemsEqual(stack1, stack2))
+        if (ItemStack.areItemsEqual(stack1, stack2) == false)
         {
             return false;
         }
 
+        // TODO --> via PR #150 (See which method works, I just tried to follow the old code, lol)
         ComponentMap tag1 = stack1.getComponents();
         ComponentMap tag2 = stack2.getComponents();
 
@@ -89,12 +94,20 @@ public class InventoryUtils
             return tag1 == tag2;
         }
 
-        if (!stack1.isDamageable() && !stack2.isDamageable())
+        if (stack1.isDamageable() == false && stack2.isDamageable() == false)
         {
             return Objects.equals(tag1, tag2);
         }
 
         return areNbtEqualIgnoreKeys(tag1, tag2, DataComponentTypes.DAMAGE, DAMAGE_KEY);
+
+        // TODO --> <SNIP>
+        /*
+        ComponentMap map1 = stack1.getComponents().filtered(type -> type != DataComponentTypes.DAMAGE);
+        ComponentMap map2 = stack2.getComponents().filtered(type -> type != DataComponentTypes.DAMAGE);
+        return map1.equals(map2);
+        */
+        // The above code also removes areNbtEqualIgnoreKeys()
     }
 
     /**
@@ -120,7 +133,7 @@ public class InventoryUtils
             keys2.removeAll(ignoredKeys);
         }
 
-        if (!Objects.equals(keys1, keys2))
+        if (Objects.equals(keys1, keys2) == false)
         {
             return false;
         }
@@ -129,7 +142,7 @@ public class InventoryUtils
         {
             for (DataComponentType<?> key : keys1)
             {
-                if (!Objects.equals(tag1.get(key), tag2.get(key)))
+                if (Objects.equals(tag1.get(key), tag2.get(key)) == false)
                 {
                     return false;
                 }
@@ -142,6 +155,7 @@ public class InventoryUtils
             return Objects.equals(tag1.get(type), tag2.get(type));
         }
     }
+    // TODO --> <SNIP>
 
     /**
      * Same as above, but still intended to compare NbtCompounds
@@ -164,14 +178,14 @@ public class InventoryUtils
             keys2.removeAll(ignoredKeys);
         }
 
-        if (!Objects.equals(keys1, keys2))
+        if (Objects.equals(keys1, keys2) == false)
         {
             return false;
         }
 
         for (String key : keys1)
         {
-            if (!Objects.equals(tag1.get(key), tag2.get(key)))
+            if (Objects.equals(tag1.get(key), tag2.get(key)) == false)
             {
                 return false;
             }
@@ -179,6 +193,7 @@ public class InventoryUtils
 
         return true;
     }
+    // TODO --> <SNIP>
 
     /**
      * Swaps the stack from the slot <b>slotNum</b> to the given hotbar slot <b>hotbarSlot</b>
@@ -189,7 +204,6 @@ public class InventoryUtils
     public static void swapSlots(ScreenHandler container, int slotNum, int hotbarSlot)
     {
         MinecraftClient mc = MinecraftClient.getInstance();
-        assert mc.interactionManager != null;
         //MaLiLib.printDebug("swapSlots(): syncId {}, slotNum {}, hotbarSlot {}, swap", container.syncId, slotNum, hotbarSlot);
         mc.interactionManager.clickSlot(container.syncId, slotNum, hotbarSlot, SlotActionType.SWAP, mc.player);
     }
@@ -256,7 +270,7 @@ public class InventoryUtils
         {
             Slot slot = container.slots.get(slotNum);
 
-            if ((!isPlayerInv || isRegularInventorySlot(slot.id, false)) &&
+            if ((isPlayerInv == false || isRegularInventorySlot(slot.id, false)) &&
                 areStacksEqualIgnoreDurability(slot.getStack(), stackReference))
             {
                 return slot.id;
@@ -276,7 +290,6 @@ public class InventoryUtils
     public static boolean swapItemToMainHand(ItemStack stackReference, MinecraftClient mc)
     {
         PlayerEntity player = mc.player;
-        assert player != null;
         boolean isCreative = player.isCreative();
 
         // Already holding the requested item
@@ -288,7 +301,6 @@ public class InventoryUtils
         if (isCreative)
         {
             player.getInventory().addPickBlock(stackReference);
-            assert mc.interactionManager != null;
             mc.interactionManager.clickCreativeStack(player.getMainHandStack(), 36 + player.getInventory().selectedSlot); // sendSlotPacket
             return true;
         }
@@ -299,7 +311,6 @@ public class InventoryUtils
             if (slot != -1)
             {
                 int currentHotbarSlot = player.getInventory().selectedSlot;
-                assert mc.interactionManager != null;
                 //MaLiLib.printDebug("swapItemToMainHand(): syncId {}, slot {}, currentHotbarSLot {}, swap", player.playerScreenHandler.syncId, slot, currentHotbarSlot);
                 mc.interactionManager.clickSlot(player.playerScreenHandler.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
                 return true;
@@ -322,7 +333,7 @@ public class InventoryUtils
         @SuppressWarnings("deprecation")
         boolean isLoaded = world.isChunkLoaded(pos);
 
-        if (!isLoaded)
+        if (isLoaded == false)
         {
             return null;
         }
@@ -420,6 +431,26 @@ public class InventoryUtils
         }
         else
             return EMPTY_LIST;
+
+        // TODO --> Code from PR #150 (Test ?)
+        //  --> I am concerned that this will break the Slot ordering (Empty Slots displayed in order) using the filter() logic
+        /*
+        ContainerComponent container = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
+        if (container != null) {
+            DefaultedList<ItemStack> itemStackOut = DefaultedList.of();
+            container.copyTo(itemStackOut);
+            DefaultedList<ItemStack> nonEmptySlots = DefaultedList.of();
+            nonEmptySlots.addAll(
+                    itemStackOut.stream()
+                            .filter(itemStack -> !itemStack.isEmpty())
+                            .toList()
+            );
+            return nonEmptySlots;
+        }
+
+        return EMPTY_LIST;
+         */
+        // TODO --> <SNIP>
     }
 
     /**
@@ -441,11 +472,6 @@ public class InventoryUtils
             if (itemContainer != null)
             {
                 DefaultedList<ItemStack> items = EMPTY_LIST;
-
-                //final long count = itemContainer.method_57489().count();
-                //int count = 0;
-                //int maxSlot = -1;
-
                 Iterator<ItemStack> iter = itemContainer.stream().iterator();
 
                 if (slotCount <= 0)
@@ -497,59 +523,23 @@ public class InventoryUtils
         }
         else
             return EMPTY_LIST;
-    }
 
+        // TODO --> Code from PR #150 (Test ?)
+        //  --> I have similar concerns, but this is more likely to work.
         /*
-        NbtCompound nbt = stackIn.getNbt();
-
-        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
-        {
-            NbtCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
-
-            if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
-            {
-                NbtList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
-                final int count = tagList.size();
-                int maxSlot = -1;
-
-                if (slotCount <= 0)
-                {
-                    for (int i = 0; i < count; ++i)
-                    {
-                        NbtCompound tag = tagList.getCompound(i);
-                        int slot = tag.getByte("Slot");
-
-                        if (slot > maxSlot)
-                        {
-                            maxSlot = slot;
-                        }
-                    }
-
-                    slotCount = maxSlot + 1;
-                }
-
-                DefaultedList<ItemStack> items = DefaultedList.ofSize(slotCount, ItemStack.EMPTY);
-
-                for (int i = 0; i < count; ++i)
-                {
-                    NbtCompound tag = tagList.getCompound(i);
-                    ItemStack stack = ItemStack.fromNbt(tag);
-                    int slot = tag.getByte("Slot");
-
-                    if (slot >= 0 && slot < items.size() && !stack.isEmpty())
-                    {
-                        items.set(slot, stack);
-                    }
-                }
-
-                return items;
-            }
+        ContainerComponent container = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
+        if (container != null) {
+            DefaultedList<ItemStack> itemStackOut = DefaultedList.ofSize(slotCount, ItemStack.EMPTY);
+            container.copyTo(itemStackOut);
+            return itemStackOut;
         }
 
         return EMPTY_LIST;
-
          */
+        // TODO --> <SNIP>
+    }
 
+    // Same code as above, but for BUNDLE_CONTENTS, such as for the Materials List under Litematica.
     public static boolean bundleHasItems(ItemStack stack)
     {
         ComponentMap data = stack.getComponents();
@@ -626,7 +616,7 @@ public class InventoryUtils
 
         for (ItemStack stack : items)
         {
-            if (!stack.isEmpty())
+            if (stack.isEmpty() == false)
             {
                 map.addTo(new ItemType(stack), stack.getCount());
             }
@@ -651,7 +641,7 @@ public class InventoryUtils
         {
             ItemStack stack = inv.getStack(slot);
 
-            if (!stack.isEmpty())
+            if (stack.isEmpty() == false)
             {
                 map.addTo(new ItemType(stack, false, true), stack.getCount());
 
@@ -763,17 +753,17 @@ public class InventoryUtils
                         }
                         else if (count < 0)
                         {
-                            ItemStack result = new ItemStack(itemEntry);
-                            result.applyComponentsFrom(data);
+                            ItemStack resultStack = new ItemStack(itemEntry);
+                            resultStack.applyComponentsFrom(data);
 
-                            return result;
+                            return resultStack;
                         }
                         else
                         {
-                            ItemStack result = new ItemStack(itemEntry, count);
-                            result.applyComponentsFrom(data);
+                            ItemStack resultStack = new ItemStack(itemEntry, count);
+                            resultStack.applyComponentsFrom(data);
 
-                            return result;
+                            return resultStack;
                         }
                     }
                 }

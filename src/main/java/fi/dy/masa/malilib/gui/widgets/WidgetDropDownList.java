@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import com.mojang.blaze3d.systems.RenderSystem;
+import javax.annotation.Nullable;
 import org.joml.Matrix4fStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
