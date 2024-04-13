@@ -43,6 +43,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class InventoryUtils
 {
@@ -720,7 +721,7 @@ public class InventoryUtils
      */
     public static ItemStack getItemStackFromString(String itemNameIn, int count, ComponentMap data)
     {
-        if (itemNameIn.isEmpty() || itemNameIn.equals("empty") || itemNameIn.equals("minecraft:air"))
+        if (itemNameIn.isEmpty() || itemNameIn.equals("empty") || itemNameIn.equals("minecraft:air") || itemNameIn.equals("air"))
         {
             return ItemStack.EMPTY;
         }
@@ -728,6 +729,7 @@ public class InventoryUtils
         {
             Matcher matcherBase = PATTERN_ITEM_BASE.matcher(itemNameIn);
             String itemName;
+            ItemStack stackOut;
 
             if (matcherBase.matches())
             {
@@ -739,32 +741,27 @@ public class InventoryUtils
                     Item item = Registries.ITEM.get(itemId);
                     RegistryEntry<Item> itemEntry = RegistryEntry.of(item);
 
-                    //MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): id {}, item {}, entry {}", itemId.toString(), item.toString(), itemEntry.toString());
+                    MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): id {}, item {}, entry {}", itemId.toString(), item.toString(), itemEntry.toString());
 
                     if (item != Items.AIR && itemEntry.hasKeyAndValue())
                     {
-                        if (count < 0 && data.isEmpty())
+                        if (count < 0)
                         {
-                            return new ItemStack(itemEntry);
-                        }
-                        else if (data.isEmpty())
-                        {
-                            return new ItemStack(itemEntry, count);
-                        }
-                        else if (count < 0)
-                        {
-                            ItemStack resultStack = new ItemStack(itemEntry);
-                            resultStack.applyComponentsFrom(data);
-
-                            return resultStack;
+                            stackOut = new ItemStack(itemEntry);
                         }
                         else
                         {
-                            ItemStack resultStack = new ItemStack(itemEntry, count);
-                            resultStack.applyComponentsFrom(data);
-
-                            return resultStack;
+                            stackOut = new ItemStack(itemEntry, count);
                         }
+                        if (data.isEmpty() == false && data.equals(ComponentMap.EMPTY) == false)
+                        {
+                            MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): item entry {}, applying ComponentMap", itemEntry.toString());
+
+                            stackOut.applyComponentsFrom(data);
+                            return stackOut;
+                        }
+
+                        return stackOut;
                     }
                 }
             }
