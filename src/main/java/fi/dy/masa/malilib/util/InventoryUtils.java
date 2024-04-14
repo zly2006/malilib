@@ -81,34 +81,21 @@ public class InventoryUtils
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
-        if (ItemStack.areItemsEqual(stack1, stack2) == false)
+        ItemStack ref = stack1.copy();
+        ItemStack check = stack2.copy();
+
+        ref.setCount(1);
+        check.setCount(1);
+        if (ref.isDamageable() && ref.isDamaged())
         {
-            return false;
+            ref.setDamage(0);
+        }
+        if (check.isDamageable() && check.isDamaged())
+        {
+            check.setDamage(0);
         }
 
-        // TODO --> via PR #150 (See which method works, I just tried to follow the old code, lol)
-        ComponentMap tag1 = stack1.getComponents();
-        ComponentMap tag2 = stack2.getComponents();
-
-        if (tag1 == null || tag2 == null)
-        {
-            return tag1 == tag2;
-        }
-
-        if (stack1.isDamageable() == false && stack2.isDamageable() == false)
-        {
-            return Objects.equals(tag1, tag2);
-        }
-
-        return areNbtEqualIgnoreKeys(tag1, tag2, DataComponentTypes.DAMAGE, DAMAGE_KEY);
-
-        // TODO --> <SNIP>
-        /*
-        ComponentMap map1 = stack1.getComponents().filtered(type -> type != DataComponentTypes.DAMAGE);
-        ComponentMap map2 = stack2.getComponents().filtered(type -> type != DataComponentTypes.DAMAGE);
-        return map1.equals(map2);
-        */
-        // The above code also removes areNbtEqualIgnoreKeys()
+        return ItemStack.areItemsAndComponentsEqual(ref, check);
     }
 
     /**
@@ -413,28 +400,18 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn)
     {
-        ComponentMap data = stackIn.getComponents();
+        ContainerComponent itemContainer = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
 
-        if (data != null && data.contains(DataComponentTypes.CONTAINER))
+        if (itemContainer != null)
         {
-            ContainerComponent itemContainer = data.get(DataComponentTypes.CONTAINER);
-
-            if (itemContainer != null)
-            {
-                DefaultedList<ItemStack> items = EMPTY_LIST;
-
-                itemContainer.copyTo(items);
-
-                return items;
-            }
-            else
-                return EMPTY_LIST;
+            DefaultedList<ItemStack> items = EMPTY_LIST;
+            itemContainer.copyTo(items);
+            return items;
         }
         else
             return EMPTY_LIST;
 
         // TODO --> Code from PR #150 (Test ?)
-        //  --> I am concerned that this will break the Slot ordering (Empty Slots displayed in order) using the filter() logic
         /*
         ContainerComponent container = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
         if (container != null) {
@@ -464,69 +441,61 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn, int slotCount)
     {
-        ComponentMap data = stackIn.getComponents();
+        ContainerComponent itemContainer = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
 
-        if (data != null && data.contains(DataComponentTypes.CONTAINER))
+        if (itemContainer != null)
         {
-            ContainerComponent itemContainer = data.get(DataComponentTypes.CONTAINER);
+            DefaultedList<ItemStack> items = EMPTY_LIST;
+            Iterator<ItemStack> iter = itemContainer.stream().iterator();
 
-            if (itemContainer != null)
+            if (slotCount <= 0)
             {
-                DefaultedList<ItemStack> items = EMPTY_LIST;
-                Iterator<ItemStack> iter = itemContainer.stream().iterator();
-
-                if (slotCount <= 0)
-                {
-                    Item itemIn = stackIn.getItem();
-                    if (itemIn instanceof BlockItem && ((BlockItem) itemIn).getBlock() instanceof ShulkerBoxBlock)
-                        slotCount = ShulkerBoxBlockEntity.INVENTORY_SIZE;
-                    else
-                        slotCount = 27;
-
-                    for (int i = 0; i < slotCount; i++)
-                    {
-                        if (iter.hasNext())
-                        {
-                            items.add(iter.next());
-                        }
-                        else
-                        {
-                            items.add(ItemStack.EMPTY);
-                        }
-                    }
-
-                    return items;
-                }
+                Item itemIn = stackIn.getItem();
+                if (itemIn instanceof BlockItem && ((BlockItem) itemIn).getBlock() instanceof ShulkerBoxBlock)
+                    slotCount = ShulkerBoxBlockEntity.INVENTORY_SIZE;
                 else
-                {
-                    if (slotCount > 256)
-                    {
-                        // ContainerComponent.MAX_SLOTS
-                        slotCount = 256;
-                    }
-                    for (int i = 0; i < slotCount; i++)
-                    {
-                        if (iter.hasNext())
-                        {
-                            items.add(iter.next());
-                        }
-                        else
-                        {
-                            items.add(ItemStack.EMPTY);
-                        }
-                    }
+                    slotCount = 27;
 
-                    return items;
+                for (int i = 0; i < slotCount; i++)
+                {
+                    if (iter.hasNext())
+                    {
+                        items.add(iter.next());
+                    }
+                    else
+                    {
+                        items.add(ItemStack.EMPTY);
+                    }
                 }
+
+                return items;
             }
             else
-                return EMPTY_LIST;
+            {
+                if (slotCount > 256)
+                {
+                    // ContainerComponent.MAX_SLOTS
+                    slotCount = 256;
+                }
+                for (int i = 0; i < slotCount; i++)
+                {
+                    if (iter.hasNext())
+                    {
+                        items.add(iter.next());
+                    }
+                    else
+                    {
+                        items.add(ItemStack.EMPTY);
+                    }
+                }
+
+                return items;
+            }
         }
         else
             return EMPTY_LIST;
 
         // TODO --> Code from PR #150 (Test ?)
-        //  --> I have similar concerns, but this is more likely to work.
         /*
         ContainerComponent container = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
         if (container != null) {
@@ -543,63 +512,42 @@ public class InventoryUtils
     // Same code as above, but for BUNDLE_CONTENTS, such as for the Materials List under Litematica.
     public static boolean bundleHasItems(ItemStack stack)
     {
-        ComponentMap data = stack.getComponents();
+        BundleContentsComponent bundleContainer = stack.getComponents().get(DataComponentTypes.BUNDLE_CONTENTS);
 
-        if (data != null && data.contains(DataComponentTypes.BUNDLE_CONTENTS))
-        {
-            BundleContentsComponent bundleContainer = data.get(DataComponentTypes.BUNDLE_CONTENTS);
-
-            if (bundleContainer != null)
-                return !bundleContainer.isEmpty();
-            else
-                return false;
-        }
-
-        return false;
+        if (bundleContainer != null)
+            return !bundleContainer.isEmpty();
+        else
+            return false;
     }
 
     public static Fraction bundleCountItems(ItemStack stack)
     {
-        ComponentMap data = stack.getComponents();
+        BundleContentsComponent bundleContainer = stack.getComponents().get(DataComponentTypes.BUNDLE_CONTENTS);
 
-        if (data != null && data.contains(DataComponentTypes.BUNDLE_CONTENTS))
-        {
-            BundleContentsComponent bundleContainer = data.get(DataComponentTypes.BUNDLE_CONTENTS);
-
-            if (bundleContainer != null)
-                return bundleContainer.getOccupancy();
-            else
-                return Fraction.ZERO;
-        }
-
-        return Fraction.ZERO;
+        if (bundleContainer != null)
+            return bundleContainer.getOccupancy();
+        else
+            return Fraction.ZERO;
     }
 
     public static DefaultedList<ItemStack> getBundleItems(ItemStack stackIn)
     {
-        ComponentMap data = stackIn.getComponents();
+        BundleContentsComponent bundleContainer = stackIn.getComponents().getOrDefault(DataComponentTypes.BUNDLE_CONTENTS, BundleContentsComponent.DEFAULT);
 
-        if (data != null && data.contains(DataComponentTypes.BUNDLE_CONTENTS))
+        if (bundleContainer != null)
         {
-            BundleContentsComponent bundleContainer = data.getOrDefault(DataComponentTypes.BUNDLE_CONTENTS, BundleContentsComponent.DEFAULT);
+            int maxSlots = bundleContainer.size();
+            DefaultedList<ItemStack> items = EMPTY_LIST;
 
-            if (bundleContainer != null)
+            for (int i = 0; i < maxSlots; i++)
             {
-                int maxSlots = bundleContainer.size();
-                DefaultedList<ItemStack> items = EMPTY_LIST;
+                ItemStack slot = bundleContainer.get(i);
 
-                for (int i = 0; i < maxSlots; i++)
-                {
-
-                    ItemStack slot = bundleContainer.get(i);
-
-                    if (!slot.isEmpty())
-                        items.add(slot);
-                }
-
-                return items;
+                if (!slot.isEmpty())
+                    items.add(slot);
             }
-            return EMPTY_LIST;
+
+            return items;
         }
         return EMPTY_LIST;
     }
