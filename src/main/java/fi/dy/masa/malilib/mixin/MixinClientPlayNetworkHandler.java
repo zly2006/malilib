@@ -35,8 +35,7 @@ public abstract class MixinClientPlayNetworkHandler
     }
 
     @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
-                target = "Lnet/minecraft/client/MinecraftClient;joinWorld(" +
-                         "Lnet/minecraft/client/world/ClientWorld;)V"))
+                target = "Lnet/minecraft/client/MinecraftClient;joinWorld(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/gui/screen/DownloadingTerrainScreen$class_9678;)V"))
     private void onPreGameJoin(GameJoinS2CPacket packet, CallbackInfo ci)
     {
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.worldBefore, this.world, MinecraftClient.getInstance());
@@ -52,7 +51,7 @@ public abstract class MixinClientPlayNetworkHandler
     }
 
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-    private void onCustomPayload(CustomPayload packet, CallbackInfo ci)
+    private void malilib_onCustomPayload(CustomPayload packet, CallbackInfo ci)
     {
         if (!MinecraftClient.getInstance().isOnThread())
         {

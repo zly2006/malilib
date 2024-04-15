@@ -18,7 +18,7 @@ public class MixinServerPlayNetworkHandler
             method = "onCustomPayload",
             at = @At("HEAD"),
             cancellable = true)
-    private void onCustomPayload(CustomPayloadC2SPacket packet, CallbackInfo ci)
+    private void malilib_onCustomPayload(CustomPayloadC2SPacket packet, CallbackInfo ci)
     {
         ServerNetworkListener.getInstance().handleServerPayload((ServerPlayNetworkHandler) (Object) this, packet, null, ci);
     }

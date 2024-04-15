@@ -17,7 +17,7 @@ import fi.dy.masa.malilib.network.handler.client.ClientNetworkListener;
 public class MixinClientCommonNetworkHandler
 {
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-    private void malilib$onCustomPayload(CustomPayload packet, CallbackInfo ci)
+    private void malilib_onCustomPayload(CustomPayload packet, CallbackInfo ci)
     {
         if (!MinecraftClient.getInstance().isOnThread())
         {

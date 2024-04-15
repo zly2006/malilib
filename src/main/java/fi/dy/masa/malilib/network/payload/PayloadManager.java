@@ -11,6 +11,7 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.event.ServerHandler;
 import fi.dy.masa.malilib.network.handler.client.ClientPlayHandler;
 import fi.dy.masa.malilib.network.handler.server.ServerPlayHandler;
 
@@ -127,7 +128,7 @@ public class PayloadManager
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).reset(type);
                 }
-                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
+                if (MaLiLibReference.isServer() || (ServerHandler.getInstance()).isOpenToLan() || (ServerHandler.getInstance()).isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).reset(type);
                 }
@@ -147,7 +148,7 @@ public class PayloadManager
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayPayload(type);
                 }
-                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
+                if (MaLiLibReference.isServer() || (ServerHandler.getInstance()).isOpenToLan() || (ServerHandler.getInstance()).isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayPayload(type);
                 }
@@ -170,7 +171,7 @@ public class PayloadManager
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayHandler(type);
                 }
-                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
+                if (MaLiLibReference.isServer() || (ServerHandler.getInstance()).isOpenToLan() || (ServerHandler.getInstance()).isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayHandler(type);
                 }
@@ -193,7 +194,7 @@ public class PayloadManager
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).unregisterPlayHandler(type);
                 }
-                if (MaLiLibReference.isServer() || MaLiLibReference.isOpenToLan() || MaLiLibReference.isDedicated())
+                if (MaLiLibReference.isServer() || (ServerHandler.getInstance()).isOpenToLan() || (ServerHandler.getInstance()).isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).unregisterPlayHandler(type);
                 }
