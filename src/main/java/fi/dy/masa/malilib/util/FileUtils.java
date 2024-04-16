@@ -19,45 +19,45 @@ import fi.dy.masa.malilib.MaLiLib;
 public class FileUtils
 {
     private static final Set<Character> ILLEGAL_CHARACTERS = ImmutableSet.of( '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' );
-    private static File runDirectory;
-    private static File configDirectory;
+    private static File runDirectory = MaLiLibReference.DEFAULT_RUN_DIR;
+    private static File configDirectory = MaLiLibReference.DEFAULT_CONFIG_DIR;
 
     public static File getConfigDirectory()
     {
-        // Required for Multi-Environment MaLiLib
         if (MaLiLibReference.isClient())
         {
             return new File(MinecraftClient.getInstance().runDirectory, "config");
         }
         else
         {
-            if (configDirectory.isDirectory())
+            if (configDirectory != null && configDirectory.isDirectory())
             {
                 return configDirectory;
             }
             else
             {
-                return MaLiLibReference.DEFAULT_CONFIG_DIR;
+                configDirectory = MaLiLibReference.DEFAULT_CONFIG_DIR;
+                return configDirectory;
             }
         }
     }
 
     public static File getMinecraftDirectory()
     {
-        // Required for Multi-Environment MaLiLib
         if (MaLiLibReference.isClient())
         {
             return MinecraftClient.getInstance().runDirectory;
         }
         else
         {
-            if (runDirectory.isDirectory())
+            if (runDirectory != null && runDirectory.isDirectory())
             {
                 return runDirectory;
             }
             else
             {
-                return MaLiLibReference.DEFAULT_RUN_DIR;
+                runDirectory = MaLiLibReference.DEFAULT_RUN_DIR;
+                return runDirectory;
             }
         }
     }

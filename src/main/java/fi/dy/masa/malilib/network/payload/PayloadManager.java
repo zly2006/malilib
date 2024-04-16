@@ -11,7 +11,7 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.event.ServerHandler;
+import fi.dy.masa.malilib.network.NetworkReference;
 import fi.dy.masa.malilib.network.handler.client.ClientPlayHandler;
 import fi.dy.masa.malilib.network.handler.server.ServerPlayHandler;
 
@@ -63,11 +63,11 @@ public class PayloadManager
         if (PayloadTypeRegistryImpl.PLAY_S2C.get(id) != null || PayloadTypeRegistryImpl.PLAY_C2S.get(id) != null)
         {
             // This just saved Minecraft from crashing, your welcome.
-            MaLiLib.logger.error("registerPlayChannel(): blocked duplicate Play Channel registration attempt for: {}.", id.id().toString());
+            MaLiLib.logger.error("registerPlayChannel: blocked duplicate Play Channel registration attempt for: {}.", id.id().toString());
         }
         else
         {
-            MaLiLib.printDebug("PayloadManager#registerPlayChannel(): [Fabric-API] registering Play C2S Channel: {}", id.id().toString());
+            MaLiLib.logger.info("registerPlayChannel: [Fabric-API] registering Play C2S Channel: {}", id.id().toString());
             PayloadTypeRegistry.playC2S().register(id, packetCodec);
             PayloadTypeRegistry.playS2C().register(id, packetCodec);
             // We need to register the channel bi-directionally for it to work.
@@ -128,7 +128,7 @@ public class PayloadManager
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).reset(type);
                 }
-                if (MaLiLibReference.isServer() || (ServerHandler.getInstance()).isOpenToLan() || (ServerHandler.getInstance()).isDedicated())
+                if (MaLiLibReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).reset(type);
                 }
@@ -148,7 +148,7 @@ public class PayloadManager
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayPayload(type);
                 }
-                if (MaLiLibReference.isServer() || (ServerHandler.getInstance()).isOpenToLan() || (ServerHandler.getInstance()).isDedicated())
+                if (MaLiLibReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayPayload(type);
                 }
@@ -171,7 +171,7 @@ public class PayloadManager
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayHandler(type);
                 }
-                if (MaLiLibReference.isServer() || (ServerHandler.getInstance()).isOpenToLan() || (ServerHandler.getInstance()).isDedicated())
+                if (MaLiLibReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayHandler(type);
                 }
@@ -194,7 +194,7 @@ public class PayloadManager
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).unregisterPlayHandler(type);
                 }
-                if (MaLiLibReference.isServer() || (ServerHandler.getInstance()).isOpenToLan() || (ServerHandler.getInstance()).isDedicated())
+                if (MaLiLibReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).unregisterPlayHandler(type);
                 }

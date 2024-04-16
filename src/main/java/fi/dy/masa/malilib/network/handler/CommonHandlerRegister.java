@@ -7,7 +7,7 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.event.ServerHandler;
+import fi.dy.masa.malilib.network.NetworkReference;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 import fi.dy.masa.malilib.network.payload.channel.ServuxStructuresPayload;
 
@@ -30,7 +30,7 @@ public class CommonHandlerRegister
 
     public <T extends CustomPayload> void registerPlayHandler(CustomPayload.Id<T> type, ServerPlayNetworking.PlayPayloadHandler<T> handler)
     {
-        if (MaLiLibReference.isServer() || (ServerHandler.getInstance()).isDedicated() || (ServerHandler.getInstance()).isOpenToLan())
+        if (MaLiLibReference.isServer() || NetworkReference.getInstance().isDedicated() || NetworkReference.getInstance().isOpenToLan())
         {
             MaLiLib.printDebug("CommonHandlerRegister#registerPlayHandler(): for type {}", type.id().toString());
             ServerPlayNetworking.registerGlobalReceiver(type, handler);
@@ -46,7 +46,7 @@ public class CommonHandlerRegister
             ClientPlayNetworking.unregisterGlobalReceiver(type.id());
         }
 
-        if (MaLiLibReference.isServer() || (ServerHandler.getInstance()).isDedicated() || (ServerHandler.getInstance()).isOpenToLan())
+        if (MaLiLibReference.isServer() || NetworkReference.getInstance().isDedicated() || NetworkReference.getInstance().isOpenToLan())
         {
             ServerPlayNetworking.unregisterGlobalReceiver(type.id());
         }
