@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.mixin;
 
+import fi.dy.masa.malilib.config.ConfigManager;
+import fi.dy.masa.malilib.network.NetworkReference;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,6 +24,7 @@ public abstract class MixinMinecraftServer
         if (MaLiLibReference.isServer())
         {
             ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();
+            ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
         }
 
         ((ServerHandler) ServerHandler.getInstance()).onServerStarting((MinecraftServer) (Object) this);
@@ -30,12 +33,22 @@ public abstract class MixinMinecraftServer
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;createMetadata()Lnet/minecraft/server/ServerMetadata;", ordinal = 0), method = "runServer")
     private void onServerStarted(CallbackInfo ci)
     {
+        if (MaLiLibReference.isServer())
+        {
+            ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
+        }
+
         ((ServerHandler) ServerHandler.getInstance()).onServerStarted((MinecraftServer) (Object) this);
     }
 
     @Inject(at = @At("HEAD"), method = "shutdown")
     private void onServerStopping(CallbackInfo info)
     {
+        if (MaLiLibReference.isServer())
+        {
+            ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
+        }
+
         ((ServerHandler) ServerHandler.getInstance()).onServerStopping((MinecraftServer) (Object) this);
     }
 

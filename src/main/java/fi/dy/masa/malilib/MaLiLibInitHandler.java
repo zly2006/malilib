@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.hotkeys.IHotkeyCallback;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
+import fi.dy.masa.malilib.network.ServerListener;
 import fi.dy.masa.malilib.util.FileUtils;
 
 public class MaLiLibInitHandler implements IInitializationHandler
@@ -27,8 +28,8 @@ public class MaLiLibInitHandler implements IInitializationHandler
             MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeybind().setCallback(new CallbackOpenConfigGui());
         }
 
-        MaLiLibServerListener maLiLibServerListener = new MaLiLibServerListener();
-        ServerHandler.getInstance().registerServerHandler(maLiLibServerListener);
+        ServerListener serverListener = new ServerListener();
+        ServerHandler.getInstance().registerServerHandler(serverListener);
     }
 
     private static class CallbackOpenConfigGui implements IHotkeyCallback

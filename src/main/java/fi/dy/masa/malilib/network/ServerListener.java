@@ -1,11 +1,13 @@
-package fi.dy.masa.malilib;
+package fi.dy.masa.malilib.network;
 
 import java.net.InetAddress;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
-import fi.dy.masa.malilib.config.ConfigManager;
+
+import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.interfaces.IServerListener;
-import fi.dy.masa.malilib.network.NetworkReference;
 import fi.dy.masa.malilib.network.payload.PayloadManager;
 
 /**
@@ -13,7 +15,7 @@ import fi.dy.masa.malilib.network.payload.PayloadManager;
  * This is critical for the Network API to function properly at the correct timings,
  * and to help manage ModInitTasks in a Server Environment.
  */
-public class MaLiLibServerListener implements IServerListener
+public class ServerListener implements IServerListener
 {
     @Override
     public void onServerStarting(MinecraftServer server)
@@ -27,21 +29,11 @@ public class MaLiLibServerListener implements IServerListener
         {
             NetworkReference.getInstance().setDedicated(true);
         }
-
-        if (MaLiLibReference.isServer())
-        {
-            ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
-        }
     }
 
     @Override
     public void onServerStarted(MinecraftServer server)
     {
-        if (MaLiLibReference.isServer())
-        {
-            ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
-        }
-
         PayloadManager.getInstance().verifyPayloads();
         PayloadManager.getInstance().registerHandlers();
 
@@ -79,18 +71,13 @@ public class MaLiLibServerListener implements IServerListener
     }
 
     @Override
-    public void onServerStopping(MinecraftServer minecraftServer)
+    public void onServerStopping(MinecraftServer server)
     {
         PayloadManager.getInstance().resetPayloads();
-
-        if (MaLiLibReference.isServer())
-        {
-            ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
-        }
     }
 
     @Override
-    public void onServerStopped(MinecraftServer minecraftServer)
+    public void onServerStopped(MinecraftServer server)
     {
         NetworkReference.getInstance().setDedicated(false);
         NetworkReference.getInstance().setOpenToLan(false);

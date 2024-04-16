@@ -37,8 +37,8 @@ public abstract class MixinMinecraftClient
         TickHandler.getInstance().onClientTick((MinecraftClient)(Object) this);
     }
 
-    @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/gui/screen/DownloadingTerrainScreen$class_9678;)V", at = @At("HEAD"))
-    private void onLoadWorldPre(ClientWorld world, DownloadingTerrainScreen.class_9678 arg, CallbackInfo ci)
+    @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/gui/screen/DownloadingTerrainScreen$WorldEntryReason;)V", at = @At("HEAD"))
+    private void onLoadWorldPre(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci)
     {
         // Only handle dimension changes/respawns here.
         // The initial join is handled in MixinClientPlayNetworkHandler onGameJoin 
@@ -49,8 +49,8 @@ public abstract class MixinMinecraftClient
         }
     }
 
-    @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/gui/screen/DownloadingTerrainScreen$class_9678;)V", at = @At("RETURN"))
-    private void onLoadWorldPost(ClientWorld world, DownloadingTerrainScreen.class_9678 arg, CallbackInfo ci)
+    @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/gui/screen/DownloadingTerrainScreen$WorldEntryReason;)V", at = @At("RETURN"))
+    private void onLoadWorldPost(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci)
     {
         if (this.worldBefore != null)
         {
