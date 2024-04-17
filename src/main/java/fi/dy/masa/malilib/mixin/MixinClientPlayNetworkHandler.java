@@ -30,7 +30,6 @@ public abstract class MixinClientPlayNetworkHandler
         // because the next injection point is right after the world has been assigned,
         // since we need the new world reference for the callback.
         this.worldBefore = this.world;
-        PayloadManager.getInstance().resetPayloads();
         PayloadManager.getInstance().verifyPayloads();
     }
 
@@ -48,7 +47,7 @@ public abstract class MixinClientPlayNetworkHandler
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, this.world, MinecraftClient.getInstance());
         this.worldBefore = null;
 
-        PayloadManager.getInstance().registerHandlers();
+        //PayloadManager.getInstance().registerHandlers();
     }
 
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)

@@ -8,6 +8,7 @@ public class NetworkReference implements INetworkReference
 {
     private static final NetworkReference INSTANCE = new NetworkReference();
     private boolean dedicated_server = false;
+    private boolean integrated = false;
     private boolean open_to_lan = false;
     private InetAddress localIpAddr = null;
 
@@ -35,6 +36,9 @@ public class NetworkReference implements INetworkReference
     public boolean isDedicated() { return this.dedicated_server; }
 
     @Override
+    public boolean isIntegrated() { return this.integrated; }
+
+    @Override
     public boolean isOpenToLan() { return this.open_to_lan; }
 
     @Override
@@ -50,10 +54,25 @@ public class NetworkReference implements INetworkReference
         {
             this.dedicated_server = true;
             this.open_to_lan = false;
+            this.integrated = false;
         }
         else
         {
             this.dedicated_server = false;
+        }
+    }
+
+    @Override
+    public void setIntegrated(boolean toggle)
+    {
+        if (toggle && MaLiLibReference.isClient())
+        {
+            this.integrated = true;
+            this.dedicated_server = false;
+        }
+        else
+        {
+            this.integrated = false;
         }
     }
 
@@ -63,6 +82,7 @@ public class NetworkReference implements INetworkReference
         if (toggle && MaLiLibReference.isClient())
         {
             this.open_to_lan = true;
+            this.integrated = true;
             this.dedicated_server = false;
         }
         else

@@ -29,13 +29,14 @@ public class ServerListener implements IServerListener
         {
             NetworkReference.getInstance().setDedicated(true);
         }
+
+        PayloadManager.getInstance().verifyPayloads();
     }
 
     @Override
     public void onServerStarted(MinecraftServer server)
     {
-        PayloadManager.getInstance().verifyPayloads();
-        PayloadManager.getInstance().registerHandlers();
+        //PayloadManager.getInstance().registerHandlers();
 
         if (NetworkReference.getInstance().isDedicated())
         {
@@ -49,6 +50,7 @@ public class ServerListener implements IServerListener
     @Override
     public void onServerIntegratedSetup(IntegratedServer server)
     {
+        NetworkReference.getInstance().setIntegrated(true);
         NetworkReference.getInstance().setOpenToLan(false);
         NetworkReference.getInstance().setDedicated(false);
         NetworkReference.getInstance().getLocalIpAddr();
@@ -58,6 +60,7 @@ public class ServerListener implements IServerListener
     public void onServerOpenToLan(IntegratedServer server)
     {
         NetworkReference.getInstance().setOpenToLan(true);
+        NetworkReference.getInstance().setIntegrated(true);
         NetworkReference.getInstance().setDedicated(false);
 
         PayloadManager.getInstance().resetPayloads();
@@ -81,6 +84,7 @@ public class ServerListener implements IServerListener
     {
         NetworkReference.getInstance().setDedicated(false);
         NetworkReference.getInstance().setOpenToLan(false);
+        NetworkReference.getInstance().setIntegrated(false);
         NetworkReference.getInstance().setLocalIpAddr(null);
 
         PayloadManager.getInstance().unregisterHandlers();
