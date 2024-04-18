@@ -26,10 +26,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -44,7 +41,6 @@ import net.minecraft.world.World;
 
 public class InventoryUtils
 {
-    private static final DefaultedList<ItemStack> EMPTY_LIST = DefaultedList.of();
     public static final Pattern PATTERN_ITEM_BASE = Pattern.compile("^(?<name>(?:[a-z0-9\\._-]+:)[a-z0-9\\._-]+)$");
 
     /**
@@ -368,11 +364,11 @@ public class InventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stackShulkerBox)
     {
-        ContainerComponent itemContainer = stackShulkerBox.getComponents().get(DataComponentTypes.CONTAINER);
+        ContainerComponent countContainer = stackShulkerBox.getComponents().get(DataComponentTypes.CONTAINER);
 
-        if (itemContainer != null)
+        if (countContainer != null)
         {
-            return itemContainer.stream().findAny().isPresent();
+            return countContainer.iterateNonEmpty().iterator().hasNext();
         }
 
         return false;
@@ -391,10 +387,9 @@ public class InventoryUtils
 
         if (container != null)
         {
-            DefaultedList<ItemStack> items = EMPTY_LIST;
-
             // Using the Vanilla copyTo() seems to "duplicate" the item slots after multiple calls, iterate it.
             Iterator<ItemStack> iter = container.streamNonEmpty().iterator();
+            DefaultedList<ItemStack> items = DefaultedList.ofSize((int) container.streamNonEmpty().count());
 
             while (iter.hasNext())
             {
@@ -406,7 +401,7 @@ public class InventoryUtils
             return items;
         }
 
-        return EMPTY_LIST;
+        return DefaultedList.of();
     }
 
     /**
@@ -424,7 +419,6 @@ public class InventoryUtils
         // Using .copyTo() does not preserve Empty Stacks.
         if (itemContainer != null)
         {
-            DefaultedList<ItemStack> items = EMPTY_LIST;
             long defSlotCount = itemContainer.stream().count();
 
             // ContainerComponent.MAX_SLOTS = 256; (private)
@@ -437,6 +431,7 @@ public class InventoryUtils
                 slotCount = Math.min(slotCount, 256);
             }
 
+            DefaultedList<ItemStack> items = DefaultedList.ofSize(slotCount);
             Iterator<ItemStack> iter = itemContainer.stream().iterator();
             for (int i = 0; i < slotCount; i++)
             {
@@ -454,7 +449,7 @@ public class InventoryUtils
         }
         else
         {
-            return EMPTY_LIST;
+            return DefaultedList.of();
         }
     }
 
@@ -467,10 +462,8 @@ public class InventoryUtils
         {
             return bundleContainer.isEmpty() == false;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     public static Fraction bundleCountItems(ItemStack stack)
@@ -494,7 +487,7 @@ public class InventoryUtils
         if (bundleContainer != null)
         {
             int maxSlots = bundleContainer.size();
-            DefaultedList<ItemStack> items = EMPTY_LIST;
+            DefaultedList<ItemStack> items = DefaultedList.ofSize(maxSlots);
 
             for (int i = 0; i < maxSlots; i++)
             {
@@ -509,7 +502,7 @@ public class InventoryUtils
             return items;
         }
 
-        return EMPTY_LIST;
+        return DefaultedList.of();
     }
 
     /**
@@ -555,8 +548,7 @@ public class InventoryUtils
                 map.addTo(new ItemType(stack, false, true), stack.getCount());
 
                 if (stack.getItem() instanceof BlockItem &&
-                    ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock &&
-                    shulkerBoxHasItems(stack))
+                    ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock)
                 {
                     Object2IntOpenHashMap<ItemType> boxCounts = getStoredItemCounts(stack);
 
