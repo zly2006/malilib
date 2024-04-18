@@ -1,12 +1,16 @@
-package fi.dy.masa.malilib.network.handler.server;
+package fi.dy.masa.malilib.network.server;
 
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.server.network.ServerPlayerEntity;
-import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
+import fi.dy.masa.malilib.network.payload.MaLiLibByteBuf;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 
+/**
+ * The Server Network Play handler
+ * @param <T> (Payload)
+ */
 public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHandler
 {
     private static final ServerPlayHandler<CustomPayload> INSTANCE = new ServerPlayHandler<>();
@@ -49,7 +53,7 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
     }
 
     /**
-     * LOCAL API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
      */
     public void reset(PayloadType type)
     {
@@ -62,6 +66,9 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
         }
     }
 
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
     public void registerPlayPayload(PayloadType type)
     {
        if (!this.handlers.isEmpty())
@@ -73,6 +80,9 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
        }
     }
 
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
     public void registerPlayHandler(PayloadType type)
     {
         if (!this.handlers.isEmpty())
@@ -84,6 +94,9 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
         }
     }
 
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
     public void unregisterPlayHandler(PayloadType type)
     {
         if (!this.handlers.isEmpty())
@@ -95,6 +108,9 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
         }
     }
 
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
     public void decodeC2SNbtCompound(PayloadType type, NbtCompound data, ServerPlayerEntity player)
     {
         if (!this.handlers.isEmpty())
@@ -106,7 +122,10 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
         }
     }
 
-    public void decodeC2SByteBuf(PayloadType type, MaLibByteBuf data, ServerPlayerEntity player)
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
+    public void decodeC2SByteBuf(PayloadType type, MaLiLibByteBuf data, ServerPlayerEntity player)
     {
         if (!this.handlers.isEmpty())
         {

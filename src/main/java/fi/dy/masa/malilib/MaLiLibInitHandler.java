@@ -19,13 +19,11 @@ public class MaLiLibInitHandler implements IInitializationHandler
     {
         FileUtils.setRunDirectory(MaLiLibReference.DEFAULT_RUN_DIR);
         FileUtils.setConfigDirectory(MaLiLibReference.DEFAULT_CONFIG_DIR);
-
         ConfigManager.getInstance().registerConfigHandler(MaLiLibReference.MOD_ID, new MaLiLibConfigs());
 
         if (NetworkReference.isClient())
         {
             InputEventHandler.getKeybindManager().registerKeybindProvider(MaLiLibInputHandler.getInstance());
-
             MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeybind().setCallback(new CallbackOpenConfigGui());
         }
 

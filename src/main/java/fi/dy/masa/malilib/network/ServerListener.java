@@ -1,16 +1,14 @@
 package fi.dy.masa.malilib.network;
 
-import java.net.InetAddress;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
-import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.interfaces.IServerListener;
 import fi.dy.masa.malilib.network.payload.PayloadManager;
 
 /**
- * This could be used on downstream mods, such as ServuX.
+ * This is used on downstream mods, such as MiniHUD and ServuX, and this manages NetworkReference.
  * This is critical for the Network API to function properly at the correct timings,
- * and to help manage ModInitTasks in a Server Environment.
+ * and to help manage ModInitTasks in a Server Environment versus the Client Environment.
  */
 public class ServerListener implements IServerListener
 {
@@ -35,8 +33,7 @@ public class ServerListener implements IServerListener
     {
         if (NetworkReference.getInstance().isDedicated())
         {
-            InetAddress localIpAddr = NetworkReference.getInstance().getLocalIpAddr();
-            MaLiLib.printDebug("Dedicated server listening for connections on [{}] {}:{}", localIpAddr.getHostName(), localIpAddr.getHostAddress(), server.getServerPort());
+            NetworkReference.getInstance().getLocalIpAddr();
         }
     }
 
@@ -60,8 +57,7 @@ public class ServerListener implements IServerListener
         PayloadManager.getInstance().verifyPayloads();
         PayloadManager.getInstance().registerHandlers();
 
-        InetAddress localIpAddr = NetworkReference.getInstance().getLocalIpAddr();
-        MaLiLib.printDebug("OpenToLan server listening for connections on [{}] {}:{}", localIpAddr.getHostName(), localIpAddr.getHostAddress(), server.getServerPort());
+        NetworkReference.getInstance().getLocalIpAddr();
     }
 
     @Override

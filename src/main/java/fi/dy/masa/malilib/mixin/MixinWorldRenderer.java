@@ -17,9 +17,6 @@ import net.minecraft.client.render.WorldRenderer;
 
 import fi.dy.masa.malilib.event.RenderEventHandler;
 
-/**
- * The "MatrixStack" parameter was removed from WorldRenderer in favor of using Matrix4f
- */
 @Mixin(WorldRenderer.class)
 public abstract class MixinWorldRenderer
 {

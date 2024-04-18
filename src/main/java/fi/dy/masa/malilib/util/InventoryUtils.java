@@ -76,8 +76,10 @@ public class InventoryUtils
         ItemStack ref = stack1.copy();
         ItemStack check = stack2.copy();
 
+        // It's a little hacky, but it works.
         ref.setCount(1);
         check.setCount(1);
+
         if (ref.isDamageable() && ref.isDamaged())
         {
             ref.setDamage(0);
@@ -390,7 +392,7 @@ public class InventoryUtils
             Iterator<ItemStack> iter = container.streamNonEmpty().iterator();
             DefaultedList<ItemStack> items = DefaultedList.ofSize((int) container.streamNonEmpty().count());
 
-            //container.copyTo(items);      // Using copyTo() will break Litematica's Material List counting.
+            // Using 'container.copyTo(items)' will break Litematica's Material List
             while (iter.hasNext())
             {
                 items.add(iter.next());
@@ -414,7 +416,7 @@ public class InventoryUtils
     {
         ContainerComponent itemContainer = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
 
-        // Using .copyTo() does not preserve Empty Stacks.
+        // Using itemContainer.copyTo() does not preserve empty stacks.  Iterator again.
         if (itemContainer != null)
         {
             long defSlotCount = itemContainer.stream().count();
@@ -431,6 +433,7 @@ public class InventoryUtils
 
             DefaultedList<ItemStack> items = DefaultedList.ofSize(slotCount);
             Iterator<ItemStack> iter = itemContainer.stream().iterator();
+
             for (int i = 0; i < slotCount; i++)
             {
                 if (iter.hasNext())
@@ -464,7 +467,12 @@ public class InventoryUtils
         return false;
     }
 
-    public static Fraction bundleCountItems(ItemStack stack)
+    /**
+     * Returns a Fraction value, probably indicating fill % value, rather than an actual item count.
+     * @param stack
+     * @return
+     */
+    public static Fraction bundleOccupancy(ItemStack stack)
     {
         BundleContentsComponent bundleContainer = stack.getComponents().get(DataComponentTypes.BUNDLE_CONTENTS);
 
@@ -472,29 +480,89 @@ public class InventoryUtils
         {
             return bundleContainer.getOccupancy();
         }
-        else
-        {
-            return Fraction.ZERO;
-        }
+
+        return Fraction.ZERO;
     }
 
+    /**
+     * Returns the "slot count" (Item Stacks) in the Bundle.
+     * @param stack
+     * @return
+     */
+    public static int bundleCountItems(ItemStack stack)
+    {
+        BundleContentsComponent bundleContainer = stack.getComponents().get(DataComponentTypes.BUNDLE_CONTENTS);
+
+        if (bundleContainer != null)
+        {
+            return bundleContainer.size();
+        }
+
+        return -1;
+    }
+
+    /**
+     * Returns a list of ItemStacks from the Bundle.  Does not preserve Empty Stacks.
+     * @param stackIn
+     * @return
+     */
     public static DefaultedList<ItemStack> getBundleItems(ItemStack stackIn)
     {
         BundleContentsComponent bundleContainer = stackIn.getComponents().getOrDefault(DataComponentTypes.BUNDLE_CONTENTS, BundleContentsComponent.DEFAULT);
 
-        if (bundleContainer != null)
+        if (bundleContainer != null && bundleContainer.equals(BundleContentsComponent.DEFAULT) == false)
         {
             int maxSlots = bundleContainer.size();
             DefaultedList<ItemStack> items = DefaultedList.ofSize(maxSlots);
+            Iterator<ItemStack> iter = bundleContainer.stream().iterator();
 
-            for (int i = 0; i < maxSlots; i++)
+            while (iter.hasNext())
             {
-                ItemStack slot = bundleContainer.get(i);
+                ItemStack slot = iter.next();
 
                 if (slot.isEmpty() == false)
                 {
                     items.add(slot);
                 }
+            }
+
+            return items;
+        }
+
+        return DefaultedList.of();
+    }
+
+    /**
+     * Returns a list of ItemStacks from the Bundle.  Preserves Empty Stacks up to maxSlots.
+     * @param stackIn
+     * @param maxSlots
+     * @return
+     */
+    public static DefaultedList<ItemStack> getBundleItems(ItemStack stackIn, int maxSlots)
+    {
+        BundleContentsComponent bundleContainer = stackIn.getComponents().getOrDefault(DataComponentTypes.BUNDLE_CONTENTS, BundleContentsComponent.DEFAULT);
+
+        if (bundleContainer != null && bundleContainer.equals(BundleContentsComponent.DEFAULT) == false)
+        {
+            int defMaxSlots = bundleContainer.size();
+
+            if (maxSlots < 1)
+            {
+                maxSlots = defMaxSlots;
+            }
+            else
+            {
+                maxSlots = maxSlots < 64 ? maxSlots : defMaxSlots;
+            }
+
+            DefaultedList<ItemStack> items = DefaultedList.ofSize(maxSlots);
+            Iterator<ItemStack> iter = bundleContainer.stream().iterator();
+            int limit = 0;
+
+            while (iter.hasNext() && limit < maxSlots)
+            {
+                items.add(iter.next());
+                limit++;
             }
 
             return items;
@@ -623,44 +691,36 @@ public class InventoryUtils
         {
             return ItemStack.EMPTY;
         }
-        else
+        Matcher matcherBase = PATTERN_ITEM_BASE.matcher(itemNameIn);
+        String itemName;
+        ItemStack stackOut;
+
+        if (matcherBase.matches())
         {
-            Matcher matcherBase = PATTERN_ITEM_BASE.matcher(itemNameIn);
-            String itemName;
-            ItemStack stackOut;
+            itemName = matcherBase.group("name");
 
-            if (matcherBase.matches())
+            if (itemName != null)
             {
-                itemName = matcherBase.group("name");
+                Identifier itemId = new Identifier(itemName);
+                Item item = Registries.ITEM.get(itemId);
+                RegistryEntry<Item> itemEntry = RegistryEntry.of(item);
 
-                if (itemName != null)
+                if (item != Items.AIR && itemEntry.hasKeyAndValue())
                 {
-                    Identifier itemId = new Identifier(itemName);
-                    Item item = Registries.ITEM.get(itemId);
-                    RegistryEntry<Item> itemEntry = RegistryEntry.of(item);
-
-                    //MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): id {}, item {}, entry {}", itemId.toString(), item.toString(), itemEntry.toString());
-
-                    if (item != Items.AIR && itemEntry.hasKeyAndValue())
+                    if (count < 0)
                     {
-                        if (count < 0)
-                        {
-                            stackOut = new ItemStack(itemEntry);
-                        }
-                        else
-                        {
-                            stackOut = new ItemStack(itemEntry, count);
-                        }
-                        if (data.isEmpty() == false && data.equals(ComponentMap.EMPTY) == false)
-                        {
-                            //MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): item entry {}, applying ComponentMap", itemEntry.toString());
-
-                            stackOut.applyComponentsFrom(data);
-                            return stackOut;
-                        }
-
-                        return stackOut;
+                        stackOut = new ItemStack(itemEntry);
                     }
+                    else
+                    {
+                        stackOut = new ItemStack(itemEntry, count);
+                    }
+                    if (data.isEmpty() == false && data.equals(ComponentMap.EMPTY) == false)
+                    {
+                        stackOut.applyComponentsFrom(data);
+                    }
+
+                    return stackOut;
                 }
             }
         }

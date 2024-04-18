@@ -38,36 +38,36 @@ public abstract class MixinMinecraftClient
     }
 
     @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/gui/screen/DownloadingTerrainScreen$WorldEntryReason;)V", at = @At("HEAD"))
-    private void onLoadWorldPre(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci)
+    private void onLoadWorldPre(ClientWorld worldClientIn, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci)
     {
         // Only handle dimension changes/respawns here.
         // The initial join is handled in MixinClientPlayNetworkHandler onGameJoin 
         if (this.world != null)
         {
             this.worldBefore = this.world;
-            ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.world, world, (MinecraftClient)(Object) this);
+            ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.world, worldClientIn, (MinecraftClient)(Object) this);
         }
     }
 
     @Inject(method = "joinWorld(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/client/gui/screen/DownloadingTerrainScreen$WorldEntryReason;)V", at = @At("RETURN"))
-    private void onLoadWorldPost(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci)
+    private void onLoadWorldPost(ClientWorld worldClientIn, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci)
     {
         if (this.worldBefore != null)
         {
-            ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, world, (MinecraftClient)(Object) this);
+            ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, worldClientIn, (MinecraftClient)(Object) this);
             this.worldBefore = null;
         }
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("HEAD"))
-    private void onDisconnectPre(Screen disconnectionScreen, boolean bl, CallbackInfo ci)
+    private void onDisconnectPre(Screen screen, boolean bl, CallbackInfo ci)
     {
         this.worldBefore = this.world;
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.worldBefore, null, (MinecraftClient)(Object) this);
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("RETURN"))
-    private void onDisconnectPost(Screen disconnectionScreen, boolean bl, CallbackInfo ci)
+    private void onDisconnectPost(Screen screen, boolean bl, CallbackInfo ci)
     {
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, null, (MinecraftClient)(Object) this);
         this.worldBefore = null;

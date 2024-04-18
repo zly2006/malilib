@@ -1,11 +1,15 @@
-package fi.dy.masa.malilib.network.handler.client;
+package fi.dy.masa.malilib.network.client;
 
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
-import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
+import fi.dy.masa.malilib.network.payload.MaLiLibByteBuf;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 
+/**
+ * The Client Network Play handler
+ * @param <T> (Payload)
+ */
 public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHandler
 {
     private static final ClientPlayHandler<CustomPayload> INSTANCE = new ClientPlayHandler<>();
@@ -48,7 +52,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
     }
 
     /**
-     * LOCAL API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
      */
     public void reset(PayloadType type)
     {
@@ -61,6 +65,9 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
         }
     }
 
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
     public void registerPlayPayload(PayloadType type)
     {
         if (!this.handlers.isEmpty())
@@ -72,6 +79,9 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
         }
     }
 
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
     public void registerPlayHandler(PayloadType type)
     {
         if (!this.handlers.isEmpty())
@@ -83,6 +93,9 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
         }
     }
 
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
     public void unregisterPlayHandler(PayloadType type)
     {
         if (!this.handlers.isEmpty())
@@ -94,6 +107,9 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
         }
     }
 
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
     public void decodeS2CNbtCompound(PayloadType type, NbtCompound data)
     {
         if (!this.handlers.isEmpty())
@@ -105,7 +121,10 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
         }
     }
 
-    public void decodeS2CByteBuf(PayloadType type, MaLibByteBuf data)
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
+    public void decodeS2CByteBuf(PayloadType type, MaLiLibByteBuf data)
     {
         if (!this.handlers.isEmpty())
         {

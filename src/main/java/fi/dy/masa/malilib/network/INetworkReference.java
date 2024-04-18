@@ -2,6 +2,9 @@ package fi.dy.masa.malilib.network;
 
 import java.net.InetAddress;
 
+/**
+ * Network Environment state reference Interface
+ */
 public interface INetworkReference
 {
     InetAddress getLocalIpAddr();

@@ -14,14 +14,20 @@ public class NetworkReference implements INetworkReference
     private static final EnvType MOD_ENVIRONMENT = FabricLoader.getInstance().getEnvironmentType();
     public static boolean isClient() { return MOD_ENVIRONMENT == EnvType.CLIENT; }
     public static boolean isServer() { return MOD_ENVIRONMENT == EnvType.SERVER; }
+    public static NetworkReference getInstance() { return INSTANCE; }
 
     private boolean dedicated_server = false;
     private boolean integrated = false;
     private boolean open_to_lan = false;
     private InetAddress localIpAddr = null;
 
-    public static NetworkReference getInstance() { return INSTANCE; }
-
+    /**
+     * Obtain the local Minecraft instances' IP Address.
+     * -
+     * Can be useful if you ever want to make a Network API Addon, such as a
+     * direct Mod to Mod socket connection outside of Minecraft.
+     * @return (The Resolved InetAddress)
+     */
     @Override
     public InetAddress getLocalIpAddr()
     {
@@ -29,6 +35,7 @@ public class NetworkReference implements INetworkReference
         {
             try
             {
+                // Try to resolve the local machine's name via DNS
                 this.localIpAddr = InetAddress.getLocalHost();
             }
             catch (UnknownHostException e)

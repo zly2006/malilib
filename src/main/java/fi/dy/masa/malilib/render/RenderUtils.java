@@ -8,6 +8,7 @@ import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -41,6 +42,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.LocalRandom;
+
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.util.*;
@@ -743,7 +745,6 @@ public class RenderUtils
 
         global4fStack.translate((float) (x - cx), (float) (y - cy), (float) (z - cz));
 
-        // TODO Matrix4f handles the rotations directly, but watch for invalid rotation values.
         //  Wrap it with matrix4fRotateFix() if rotation errors are found.
         global4fStack.rotateYXZ((-yaw) * ((float) (Math.PI / 180.0)), pitch * ((float) (Math.PI / 180.0)), 0.0F);
 
@@ -988,12 +989,7 @@ public class RenderUtils
 
     /**
      * Matrix4f rotation adds direct values without adding these numbers.
-     * --> fix with matrix4fRotateFix()
-     * *****************************************************
-     * (VIA RotationAxis.class)
-     * default Quaternionf rotationDegrees(float deg) {
-     *         return this.rotation(deg * 0.017453292F);
-     * *****************************************************
+     * (angle * 0.017453292F) --> easy fix with matrix4fRotateFix()
      */
     private static void blockTargetingOverlayTranslations(double x, double y, double z,
             Direction side, Direction playerFacing, Matrix4fStack matrix4fStack)

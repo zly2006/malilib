@@ -208,11 +208,7 @@ public class FileUtils
             }
             else
             {
-                if (dir.mkdir())
-                {
-                    MaLiLib.logger.info("setConfigDirectory: dir given has been created.");
-                }
-                else
+                if (dir.mkdir() == false)
                 {
                     MaLiLib.logger.fatal("setConfigDirectory: dir given failed to be created.");
                 }
@@ -235,11 +231,7 @@ public class FileUtils
             }
             else
             {
-                if (dir.mkdir())
-                {
-                    MaLiLib.logger.info("setRunDirectory: dir given has been created.");
-                }
-                else
+                if (dir.mkdir() == false)
                 {
                     MaLiLib.logger.fatal("setRunDirectory: dir given failed to be created.");
                 }

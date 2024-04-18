@@ -13,13 +13,14 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.network.NetworkReference;
-import fi.dy.masa.malilib.network.handler.client.ClientPlayHandler;
-import fi.dy.masa.malilib.network.handler.server.ServerPlayHandler;
+import fi.dy.masa.malilib.network.client.ClientPlayHandler;
+import fi.dy.masa.malilib.network.server.ServerPlayHandler;
 
 /**
  * This is made to "manage" the payload types and do the actual channel registrations via the Fabric Network API (4.0.0+)
  * From here, we Map the payload CODEC and TYPE into a HashMap; for our own reference by the Payloads based on their PayloadType.
- * This was done in an attempt to make the remaining functions more abstract, and allows them to define their own Channel Identifier.
+ * This was done to make the remaining functions more abstract, and allows them to define their own Channel Identifier for each
+ * Payload Record file that is created.
  */
 public class PayloadManager
 {
@@ -41,8 +42,6 @@ public class PayloadManager
         {
             PayloadCodec codec = new PayloadCodec(type, id);
             TYPES.put(type, codec);
-
-            //MaLiLib.logger.info("PayloadManager#register(): registering a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
         }
     }
 
@@ -73,12 +72,10 @@ public class PayloadManager
         for (PayloadType type : TYPES.keySet())
         {
             PayloadCodec codec = TYPES.get(type);
-            if (codec != null)
+
+            if (codec != null && codec.getId().equals(id))
             {
-                if (codec.getId().equals(id))
-                {
-                    return type;
-                }
+                return type;
             }
         }
 
@@ -90,7 +87,7 @@ public class PayloadManager
      */
     public <T extends CustomPayload> void registerPlayChannel(PayloadType type, CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> packetCodec)
     {
-        PayloadCodec codec = getPayloadCodec(type);
+        PayloadCodec codec = this.getPayloadCodec(type);
 
         // Never Attempt to "re-register" a channel or bad things will happen.  Kittens harmed, etc.
         if (codec == null || codec.isPlayRegistered())
@@ -108,10 +105,10 @@ public class PayloadManager
         }
         else
         {
-            MaLiLib.logger.info("registerPlayChannel: [Fabric-API] registering Play Channel: {}", id.id().toString());
+            //MaLiLib.logger.info("registerPlayChannel: [Fabric-API] registering Play Channel: {}", id.id().toString());
             PayloadTypeRegistry.playC2S().register(id, packetCodec);
             PayloadTypeRegistry.playS2C().register(id, packetCodec);
-            // We need to register the channel bi-directionally for it to work.
+            // We need to register the channel bi-directionally for it to work correctly.
         }
     }
 
@@ -119,7 +116,6 @@ public class PayloadManager
     {
         if (NetworkReference.isClient())
         {
-            //MaLiLib.printDebug("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
             ClientPlayNetworking.registerGlobalReceiver(type, handler);
         }
     }
@@ -128,15 +124,12 @@ public class PayloadManager
     {
         if (NetworkReference.isServer() || NetworkReference.getInstance().isDedicated() || NetworkReference.getInstance().isOpenToLan())
         {
-            //MaLiLib.printDebug("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
             ServerPlayNetworking.registerGlobalReceiver(type, handler);
         }
     }
 
     public <T extends CustomPayload> void unregisterPlayHandler(CustomPayload.Id<T> type)
     {
-        //MaLiLib.printDebug("PayloadManager#unregisterPlayHandler(): for type {}", type.id().toString());
-
         if (NetworkReference.isClient())
         {
             ClientPlayNetworking.unregisterGlobalReceiver(type.id());
@@ -153,8 +146,6 @@ public class PayloadManager
      */
     public void resetPayloads()
     {
-        MaLiLib.printDebug("PayloadManager#resetPayloads(): sending reset() to all Payload listeners.");
-
         for (PayloadType type : TYPES.keySet())
         {
             if (TYPES.get(type).isPlayRegistered())
@@ -171,10 +162,11 @@ public class PayloadManager
         }
     }
 
+    /**
+     * Forces a registerPlayPayload() signal on all registered payloads
+     */
     public void verifyPayloads()
     {
-        MaLiLib.printDebug("PayloadManager#verifyPayloads(): sending registerPayloads() to all Payload listeners.");
-
         for (PayloadType type : TYPES.keySet())
         {
             if (!TYPES.get(type).isPlayRegistered())
@@ -196,8 +188,6 @@ public class PayloadManager
      */
     public void registerHandlers()
     {
-        MaLiLib.printDebug("PayloadManager#registerHandlers(): sending registerHandlers() to all Payload listeners.");
-
         for (PayloadType type : TYPES.keySet())
         {
             if (TYPES.get(type).isPlayRegistered())
@@ -219,8 +209,6 @@ public class PayloadManager
      */
     public void unregisterHandlers()
     {
-        MaLiLib.printDebug("PayloadManager#unregisterHandlers(): sending unregisterHandlers() to all Payload listeners.");
-
         for (PayloadType type : TYPES.keySet())
         {
             if (TYPES.get(type).isPlayRegistered())

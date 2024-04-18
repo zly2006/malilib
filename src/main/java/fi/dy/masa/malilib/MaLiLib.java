@@ -27,12 +27,4 @@ public class MaLiLib implements ModInitializer
 
         return "?";
     }
-
-    public static void printDebug(String key, Object... args)
-    {
-        if (MaLiLibConfigs.Debug.DEBUG_LOG.getBooleanValue())
-        {
-            logger.info(key, args);
-        }
-    }
 }

@@ -250,7 +250,7 @@ public class InventoryOverlay
         {
             return InventoryRenderType.HOPPER;
         }
-        else if (inv instanceof SimpleInventory)  // FIXME --> does this fix it ?
+        else if (inv.getClass() == SimpleInventory.class) // FIXME
         {
             return InventoryRenderType.HORSE;
         }

@@ -43,9 +43,7 @@ public abstract class MixinPlayerManager
     @Inject(method = "respawnPlayer", at = @At("RETURN"))
     private void eventOnPlayerRespawn(ServerPlayerEntity player, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir)
     {
-        ServerPlayerEntity newPlayer = cir.getReturnValue();
-
-        ((PlayerHandler) PlayerHandler.getInstance()).onPlayerRespawn(newPlayer, player);
+        ((PlayerHandler) PlayerHandler.getInstance()).onPlayerRespawn(cir.getReturnValue(), player);
     }
 
     @Inject(method = "addToOperators", at = @At("HEAD"))
@@ -90,6 +88,7 @@ public abstract class MixinPlayerManager
         {
             this.profileTemp = null;
         }
+
         return player;
     }
 
