@@ -41,7 +41,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import fi.dy.masa.malilib.MaLiLib;
 
 public class InventoryUtils
 {
@@ -375,10 +374,8 @@ public class InventoryUtils
         {
             return itemContainer.stream().findAny().isPresent();
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
     /**
@@ -390,35 +387,26 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn)
     {
-        // TODO --> <SNIP>
-        /*  Sakura's code
-        ContainerComponent itemContainer = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
-
-        if (itemContainer != null)
-        {
-            DefaultedList<ItemStack> items = EMPTY_LIST;
-            itemContainer.copyTo(items);
-            return items;
-        }
-        else
-            return EMPTY_LIST;
-         */
-        // TODO --> Code from PR #150 (Test ?)
         ContainerComponent container = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
 
         if (container != null)
         {
-            DefaultedList<ItemStack> itemStackOut = DefaultedList.of();
-            DefaultedList<ItemStack> nonEmptySlots = DefaultedList.of();
+            DefaultedList<ItemStack> items = EMPTY_LIST;
 
-            container.copyTo(itemStackOut);
-            nonEmptySlots.addAll(itemStackOut.stream().filter(itemStack -> itemStack.isEmpty() == false).toList());
+            // Using the Vanilla copyTo() seems to "duplicate" the item slots after multiple calls, iterate it.
+            Iterator<ItemStack> iter = container.streamNonEmpty().iterator();
 
-            return nonEmptySlots;
+            while (iter.hasNext())
+            {
+                ItemStack stack = iter.next();
+
+                items.add(stack);
+            }
+
+            return items;
         }
 
         return EMPTY_LIST;
-        // TODO --> <SNIP>
     }
 
     /**
@@ -433,6 +421,7 @@ public class InventoryUtils
     {
         ContainerComponent itemContainer = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
 
+        // Using .copyTo() does not preserve Empty Stacks.
         if (itemContainer != null)
         {
             DefaultedList<ItemStack> items = EMPTY_LIST;
@@ -464,20 +453,9 @@ public class InventoryUtils
             return items;
         }
         else
+        {
             return EMPTY_LIST;
-
-        // TODO --> Code from PR #150 (Test ?)
-        /*
-        ContainerComponent container = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
-        if (container != null) {
-            DefaultedList<ItemStack> itemStackOut = DefaultedList.ofSize(slotCount, ItemStack.EMPTY);
-            container.copyTo(itemStackOut);
-            return itemStackOut;
         }
-
-        return EMPTY_LIST;
-         */
-        // TODO --> <SNIP>
     }
 
     // Same code as above, but for BUNDLE_CONTENTS, such as for the Materials List under Litematica.
@@ -671,7 +649,7 @@ public class InventoryUtils
                     Item item = Registries.ITEM.get(itemId);
                     RegistryEntry<Item> itemEntry = RegistryEntry.of(item);
 
-                    MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): id {}, item {}, entry {}", itemId.toString(), item.toString(), itemEntry.toString());
+                    //MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): id {}, item {}, entry {}", itemId.toString(), item.toString(), itemEntry.toString());
 
                     if (item != Items.AIR && itemEntry.hasKeyAndValue())
                     {
@@ -685,7 +663,7 @@ public class InventoryUtils
                         }
                         if (data.isEmpty() == false && data.equals(ComponentMap.EMPTY) == false)
                         {
-                            MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): item entry {}, applying ComponentMap", itemEntry.toString());
+                            //MaLiLib.printDebug("InventoryUtils#getItemStackFromString(): item entry {}, applying ComponentMap", itemEntry.toString());
 
                             stackOut.applyComponentsFrom(data);
                             return stackOut;
