@@ -387,15 +387,13 @@ public class InventoryUtils
 
         if (container != null)
         {
-            // Using the Vanilla copyTo() seems to "duplicate" the item slots after multiple calls, iterate it.
             Iterator<ItemStack> iter = container.streamNonEmpty().iterator();
             DefaultedList<ItemStack> items = DefaultedList.ofSize((int) container.streamNonEmpty().count());
 
+            //container.copyTo(items);      // Using copyTo() will break Litematica's Material List counting.
             while (iter.hasNext())
             {
-                ItemStack stack = iter.next();
-
-                items.add(stack);
+                items.add(iter.next());
             }
 
             return items;
