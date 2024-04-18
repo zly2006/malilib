@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.network.payload.PayloadManager;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 
 /**
- * ServuX Structures Data Provider.
+ * ServuX Structures Data Provider; the actual Payload shared between MiniHUD and ServuX
  */
 public record ServuxStructuresPayload(NbtCompound data) implements CustomPayload
 {

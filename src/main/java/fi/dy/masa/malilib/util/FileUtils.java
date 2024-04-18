@@ -25,6 +25,7 @@ public class FileUtils
 
     public static File getConfigDirectory()
     {
+        // Need to call this based upon Client/Server state.
         if (NetworkReference.isClient())
         {
             return new File(MinecraftClient.getInstance().runDirectory, "config");
@@ -45,6 +46,7 @@ public class FileUtils
 
     public static File getMinecraftDirectory()
     {
+        // Need to call this based upon Client/Server state.
         if (NetworkReference.isClient())
         {
             return MinecraftClient.getInstance().runDirectory;

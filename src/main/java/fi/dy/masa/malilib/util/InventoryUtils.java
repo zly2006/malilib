@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.math.Fraction;
 
@@ -16,7 +15,6 @@ import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.ComponentMap;
@@ -47,7 +45,6 @@ import fi.dy.masa.malilib.MaLiLib;
 
 public class InventoryUtils
 {
-    public static final Set<DataComponentType<Integer>> DAMAGE_KEY = Set.of(DataComponentTypes.DAMAGE);
     private static final DefaultedList<ItemStack> EMPTY_LIST = DefaultedList.of();
     public static final Pattern PATTERN_ITEM_BASE = Pattern.compile("^(?<name>(?:[a-z0-9\\._-]+:)[a-z0-9\\._-]+)$");
 
@@ -143,7 +140,6 @@ public class InventoryUtils
             return Objects.equals(tag1.get(type), tag2.get(type));
         }
     }
-    // TODO --> <SNIP>
 
     /**
      * Same as above, but still intended to compare NbtCompounds
@@ -181,7 +177,6 @@ public class InventoryUtils
 
         return true;
     }
-    // TODO --> <SNIP>
 
     /**
      * Swaps the stack from the slot <b>slotNum</b> to the given hotbar slot <b>hotbarSlot</b>
@@ -192,7 +187,6 @@ public class InventoryUtils
     public static void swapSlots(ScreenHandler container, int slotNum, int hotbarSlot)
     {
         MinecraftClient mc = MinecraftClient.getInstance();
-        //MaLiLib.printDebug("swapSlots(): syncId {}, slotNum {}, hotbarSlot {}, swap", container.syncId, slotNum, hotbarSlot);
         mc.interactionManager.clickSlot(container.syncId, slotNum, hotbarSlot, SlotActionType.SWAP, mc.player);
     }
 
@@ -299,7 +293,6 @@ public class InventoryUtils
             if (slot != -1)
             {
                 int currentHotbarSlot = player.getInventory().selectedSlot;
-                //MaLiLib.printDebug("swapItemToMainHand(): syncId {}, slot {}, currentHotbarSLot {}, swap", player.playerScreenHandler.syncId, slot, currentHotbarSlot);
                 mc.interactionManager.clickSlot(player.playerScreenHandler.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
                 return true;
             }
@@ -376,19 +369,16 @@ public class InventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stackShulkerBox)
     {
-        ComponentMap data = stackShulkerBox.getComponents();
+        ContainerComponent itemContainer = stackShulkerBox.getComponents().get(DataComponentTypes.CONTAINER);
 
-        if (data != null && data.contains(DataComponentTypes.CONTAINER))
+        if (itemContainer != null)
         {
-            ContainerComponent itemContainer = data.get(DataComponentTypes.CONTAINER);
-
-            if (itemContainer != null)
-                return itemContainer.stream().findAny().isPresent();
-            else
-                return false;
+            return itemContainer.stream().findAny().isPresent();
         }
-
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
     /**
@@ -400,6 +390,8 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn)
     {
+        // TODO --> <SNIP>
+        /*  Sakura's code
         ContainerComponent itemContainer = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
 
         if (itemContainer != null)
@@ -410,24 +402,22 @@ public class InventoryUtils
         }
         else
             return EMPTY_LIST;
-
+         */
         // TODO --> Code from PR #150 (Test ?)
-        /*
         ContainerComponent container = stackIn.getComponents().get(DataComponentTypes.CONTAINER);
-        if (container != null) {
+
+        if (container != null)
+        {
             DefaultedList<ItemStack> itemStackOut = DefaultedList.of();
-            container.copyTo(itemStackOut);
             DefaultedList<ItemStack> nonEmptySlots = DefaultedList.of();
-            nonEmptySlots.addAll(
-                    itemStackOut.stream()
-                            .filter(itemStack -> !itemStack.isEmpty())
-                            .toList()
-            );
+
+            container.copyTo(itemStackOut);
+            nonEmptySlots.addAll(itemStackOut.stream().filter(itemStack -> itemStack.isEmpty() == false).toList());
+
             return nonEmptySlots;
         }
 
         return EMPTY_LIST;
-         */
         // TODO --> <SNIP>
     }
 
@@ -446,51 +436,32 @@ public class InventoryUtils
         if (itemContainer != null)
         {
             DefaultedList<ItemStack> items = EMPTY_LIST;
-            Iterator<ItemStack> iter = itemContainer.stream().iterator();
+            long defSlotCount = itemContainer.stream().count();
 
-            if (slotCount <= 0)
+            // ContainerComponent.MAX_SLOTS = 256; (private)
+            if (slotCount < 1)
             {
-                Item itemIn = stackIn.getItem();
-                if (itemIn instanceof BlockItem && ((BlockItem) itemIn).getBlock() instanceof ShulkerBoxBlock)
-                    slotCount = ShulkerBoxBlockEntity.INVENTORY_SIZE;
-                else
-                    slotCount = 27;
-
-                for (int i = 0; i < slotCount; i++)
-                {
-                    if (iter.hasNext())
-                    {
-                        items.add(iter.next());
-                    }
-                    else
-                    {
-                        items.add(ItemStack.EMPTY);
-                    }
-                }
-
-                return items;
+                slotCount = defSlotCount < 256 ? (int) defSlotCount : 256;
             }
             else
             {
-                if (slotCount > 256)
-                {
-                    // ContainerComponent.MAX_SLOTS
-                    slotCount = 256;
-                }
-                for (int i = 0; i < slotCount; i++)
-                {
-                    if (iter.hasNext())
-                    {
-                        items.add(iter.next());
-                    }
-                    else
-                    {
-                        items.add(ItemStack.EMPTY);
-                    }
-                }
-
-                return items;
+                slotCount = Math.min(slotCount, 256);
             }
+
+            Iterator<ItemStack> iter = itemContainer.stream().iterator();
+            for (int i = 0; i < slotCount; i++)
+            {
+                if (iter.hasNext())
+                {
+                    items.add(iter.next());
+                }
+                else
+                {
+                    items.add(ItemStack.EMPTY);
+                }
+            }
+
+            return items;
         }
         else
             return EMPTY_LIST;
@@ -515,9 +486,13 @@ public class InventoryUtils
         BundleContentsComponent bundleContainer = stack.getComponents().get(DataComponentTypes.BUNDLE_CONTENTS);
 
         if (bundleContainer != null)
-            return !bundleContainer.isEmpty();
+        {
+            return bundleContainer.isEmpty() == false;
+        }
         else
+        {
             return false;
+        }
     }
 
     public static Fraction bundleCountItems(ItemStack stack)
@@ -525,9 +500,13 @@ public class InventoryUtils
         BundleContentsComponent bundleContainer = stack.getComponents().get(DataComponentTypes.BUNDLE_CONTENTS);
 
         if (bundleContainer != null)
+        {
             return bundleContainer.getOccupancy();
+        }
         else
+        {
             return Fraction.ZERO;
+        }
     }
 
     public static DefaultedList<ItemStack> getBundleItems(ItemStack stackIn)
@@ -543,12 +522,15 @@ public class InventoryUtils
             {
                 ItemStack slot = bundleContainer.get(i);
 
-                if (!slot.isEmpty())
+                if (slot.isEmpty() == false)
+                {
                     items.add(slot);
+                }
             }
 
             return items;
         }
+
         return EMPTY_LIST;
     }
 

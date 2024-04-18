@@ -5,6 +5,9 @@ import java.net.UnknownHostException;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 
+/**
+ * Used for referencing the Minecraft Run Status to manage the split between Client and Server API
+ */
 public class NetworkReference implements INetworkReference
 {
     private static final NetworkReference INSTANCE = new NetworkReference();

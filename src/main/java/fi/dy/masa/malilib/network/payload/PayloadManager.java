@@ -19,7 +19,7 @@ import fi.dy.masa.malilib.network.handler.server.ServerPlayHandler;
 /**
  * This is made to "manage" the payload types and do the actual channel registrations via the Fabric Network API (4.0.0+)
  * From here, we Map the payload CODEC and TYPE into a HashMap; for our own reference by the Payloads based on their PayloadType.
- * This was done in an attempt to make the remaining functions more abstract.
+ * This was done in an attempt to make the remaining functions more abstract, and allows them to define their own Channel Identifier.
  */
 public class PayloadManager
 {
@@ -42,7 +42,7 @@ public class PayloadManager
             PayloadCodec codec = new PayloadCodec(type, id);
             TYPES.put(type, codec);
 
-            //MaLiLib.logger.error("PayloadManager#register(): registering a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
+            //MaLiLib.logger.info("PayloadManager#register(): registering a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
         }
     }
 
@@ -119,7 +119,7 @@ public class PayloadManager
     {
         if (NetworkReference.isClient())
         {
-            MaLiLib.printDebug("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
+            //MaLiLib.printDebug("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
             ClientPlayNetworking.registerGlobalReceiver(type, handler);
         }
     }
@@ -128,14 +128,14 @@ public class PayloadManager
     {
         if (NetworkReference.isServer() || NetworkReference.getInstance().isDedicated() || NetworkReference.getInstance().isOpenToLan())
         {
-            MaLiLib.printDebug("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
+            //MaLiLib.printDebug("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
             ServerPlayNetworking.registerGlobalReceiver(type, handler);
         }
     }
 
     public <T extends CustomPayload> void unregisterPlayHandler(CustomPayload.Id<T> type)
     {
-        MaLiLib.printDebug("PayloadManager#unregisterPlayHandler(): for type {}", type.id().toString());
+        //MaLiLib.printDebug("PayloadManager#unregisterPlayHandler(): for type {}", type.id().toString());
 
         if (NetworkReference.isClient())
         {

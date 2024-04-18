@@ -4,7 +4,6 @@ import java.net.InetAddress;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.interfaces.IServerListener;
 import fi.dy.masa.malilib.network.payload.PayloadManager;
 
@@ -37,9 +36,7 @@ public class ServerListener implements IServerListener
         if (NetworkReference.getInstance().isDedicated())
         {
             InetAddress localIpAddr = NetworkReference.getInstance().getLocalIpAddr();
-
-            String ipPortString = "["+localIpAddr.getHostName()+"] "+localIpAddr.getHostAddress() +":"+ server.getServerPort();
-            MaLiLib.logger.info("[{}] Dedicated server listening for connections on {}", MaLiLibReference.MOD_ID, ipPortString);
+            MaLiLib.printDebug("Dedicated server listening for connections on [{}] {}:{}", localIpAddr.getHostName(), localIpAddr.getHostAddress(), server.getServerPort());
         }
     }
 
@@ -64,9 +61,7 @@ public class ServerListener implements IServerListener
         PayloadManager.getInstance().registerHandlers();
 
         InetAddress localIpAddr = NetworkReference.getInstance().getLocalIpAddr();
-
-        String ipPortString = "["+localIpAddr.getHostName()+"] "+localIpAddr.getHostAddress() +":"+ server.getServerPort();
-        MaLiLib.logger.info("[{}] OpenToLan server listening for connections on {}", MaLiLibReference.MOD_ID, ipPortString);
+        MaLiLib.printDebug("OpenToLan server listening for connections on [{}] {}:{}", localIpAddr.getHostName(), localIpAddr.getHostAddress(), server.getServerPort());
     }
 
     @Override

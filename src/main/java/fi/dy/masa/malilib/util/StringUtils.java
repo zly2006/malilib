@@ -9,8 +9,11 @@ import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 
+@Environment(EnvType.CLIENT)
 public class StringUtils
 {
     public static String getModVersionString(String modId)

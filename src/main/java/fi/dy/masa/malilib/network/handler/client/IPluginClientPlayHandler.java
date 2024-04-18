@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib.network.handler.client;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
 import fi.dy.masa.malilib.network.payload.PayloadType;
 
