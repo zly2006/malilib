@@ -4,9 +4,9 @@ import net.minecraft.util.Identifier;
 
 /**
  * Used in the TYPES HashMap for registering Channels.
- * This helps provide a more foolproof method to help with the work flow in a more abstract manner,
- * And this class is where the actual Channel Identifier gets stored / created, which
- * can be referenced by the static Payload Records.
+ * This helps provide a more foolproof method to help with the work flow in a more abstract manner.
+ * This class is where the actual Channel Identifier gets stored / created, which
+ * can then be referenced by the static Payload Records.
  */
 public class PayloadCodec implements IPayloadCodec
 {
@@ -14,10 +14,10 @@ public class PayloadCodec implements IPayloadCodec
     private final Identifier id;
     private boolean play_registered;
 
-    protected PayloadCodec(PayloadType type, String namespace, String path)
+    protected PayloadCodec(PayloadType type, Identifier id)
     {
         this.type = type;
-        this.id = new Identifier(namespace, path);
+        this.id = id;
         this.play_registered = false;
     }
 

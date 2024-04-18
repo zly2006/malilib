@@ -31,19 +31,19 @@ public class PayloadManager
     public PayloadManager() {}
 
     /**
-     * Registers a Payload Type with PayloadManager
-     * -
+     * Registers a Payload Type with Payload Manager
+     *
      * @param type (PayloadType ENUM)
-     * @param namespace (Identifier Namespace, ie, servux)
-     * @param path (Identifier path, ie, structures)
+     * @param id (Identifier Namespace:Path, ie, servux:structures)
      */
-    public void register(PayloadType type, String namespace, String path)
+    public void register(PayloadType type, Identifier id)
     {
-        if (!TYPES.containsKey(type))
+        if (TYPES.containsKey(type) == false && type.exists(type))
         {
-            PayloadCodec codec = new PayloadCodec(type, namespace, path);
+            PayloadCodec codec = new PayloadCodec(type, id);
             TYPES.put(type, codec);
-            MaLiLib.logger.error("PayloadManager#register(): registering a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
+
+            //MaLiLib.logger.error("PayloadManager#register(): registering a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
         }
     }
 
@@ -87,7 +87,7 @@ public class PayloadManager
     }
 
     /**
-     * Actual Fabric API Play Channel registration.
+     * Fabric API Play Channel registration.
      */
     public <T extends CustomPayload> void registerPlayChannel(PayloadType type, CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> packetCodec)
     {
@@ -95,7 +95,9 @@ public class PayloadManager
 
         // Never Attempt to "re-register" a channel or bad things will happen.  Kittens harmed, etc.
         if (codec == null || codec.isPlayRegistered())
+        {
             return;
+        }
 
         codec.registerPlayCodec();
 
@@ -107,7 +109,7 @@ public class PayloadManager
         }
         else
         {
-            MaLiLib.logger.error("registerPlayChannel: [Fabric-API] registering Play C2S Channel: {}", id.id().toString());
+            MaLiLib.logger.info("registerPlayChannel: [Fabric-API] registering Play Channel: {}", id.id().toString());
             PayloadTypeRegistry.playC2S().register(id, packetCodec);
             PayloadTypeRegistry.playS2C().register(id, packetCodec);
             // We need to register the channel bi-directionally for it to work.
@@ -118,7 +120,7 @@ public class PayloadManager
     {
         if (MaLiLibReference.isClient())
         {
-            MaLiLib.logger.error("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
+            MaLiLib.printDebug("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
             ClientPlayNetworking.registerGlobalReceiver(type, handler);
         }
     }
@@ -127,14 +129,14 @@ public class PayloadManager
     {
         if (MaLiLibReference.isServer() || NetworkReference.getInstance().isDedicated() || NetworkReference.getInstance().isOpenToLan())
         {
-            MaLiLib.logger.error("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
+            MaLiLib.printDebug("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
             ServerPlayNetworking.registerGlobalReceiver(type, handler);
         }
     }
 
     public <T extends CustomPayload> void unregisterPlayHandler(CustomPayload.Id<T> type)
     {
-        MaLiLib.logger.error("PayloadManager#unregisterPlayHandler(): for type {}", type.id().toString());
+        MaLiLib.printDebug("PayloadManager#unregisterPlayHandler(): for type {}", type.id().toString());
 
         if (MaLiLibReference.isClient())
         {
@@ -152,7 +154,7 @@ public class PayloadManager
      */
     public void resetPayloads()
     {
-        MaLiLib.logger.error("PayloadManager#resetPayloads(): sending reset() to all Payload listeners.");
+        MaLiLib.printDebug("PayloadManager#resetPayloads(): sending reset() to all Payload listeners.");
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -172,7 +174,7 @@ public class PayloadManager
 
     public void verifyPayloads()
     {
-        MaLiLib.logger.error("PayloadManager#verifyPayloads(): sending registerPayloads() to all Payload listeners.");
+        MaLiLib.printDebug("PayloadManager#verifyPayloads(): sending registerPayloads() to all Payload listeners.");
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -195,7 +197,7 @@ public class PayloadManager
      */
     public void registerHandlers()
     {
-        MaLiLib.logger.error("PayloadManager#registerHandlers(): sending registerHandlers() to all Payload listeners.");
+        MaLiLib.printDebug("PayloadManager#registerHandlers(): sending registerHandlers() to all Payload listeners.");
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -218,7 +220,7 @@ public class PayloadManager
      */
     public void unregisterHandlers()
     {
-        MaLiLib.logger.error("PayloadManager#unregisterHandlers(): sending unregisterHandlers() to all Payload listeners.");
+        MaLiLib.printDebug("PayloadManager#unregisterHandlers(): sending unregisterHandlers() to all Payload listeners.");
 
         for (PayloadType type : TYPES.keySet())
         {

@@ -7,8 +7,7 @@ package fi.dy.masa.malilib.network.payload;
 public enum PayloadType
 {
     // Simply add to this ENUM list if you wish to create more Payload Types
-    SERVUX_STRUCTURES,
-    MALILIB_TEST;
+    SERVUX_STRUCTURES;
 
     public boolean exists(PayloadType type)
     {

@@ -15,12 +15,13 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
     default void registerPlayPayload(PayloadType type) {}
     default void registerPlayHandler(PayloadType type) {}
     default void unregisterPlayHandler(PayloadType type) {}
-    default <P extends CustomPayload> void receiveS2CPlayPayload(PayloadType type, P payload, ClientPlayNetworking.Context ctx) {}
-    default <P extends CustomPayload> void receiveS2CPlayPayload(PayloadType type, P payload, ClientPlayNetworkHandler handler, CallbackInfo ci) {}
     default void decodeS2CNbtCompound(PayloadType type, NbtCompound data) {}
     default void decodeS2CByteBuf(PayloadType type, MaLibByteBuf data) {}
-    default <P extends CustomPayload> void sendC2SPlayPayload(PayloadType type, P payload) {}
-    default <P extends CustomPayload> void sendC2SPlayPayload(PayloadType type, P payload, ClientPlayNetworkHandler handler) {}
-    default void encodeC2SNbtCompound(PayloadType type, NbtCompound data) {}
-    default void encodeC2SByteBuf(PayloadType type, MaLibByteBuf data) {}
+    // For reference only
+    default void encodeC2SNbtCompound(NbtCompound data) {}
+    default void encodeC2SByteBuf(MaLibByteBuf data) {}
+    default <P extends CustomPayload> void receiveS2CPlayPayload(P payload, ClientPlayNetworking.Context ctx) {}
+    default <P extends CustomPayload> void receiveS2CPlayPayload(P payload, ClientPlayNetworkHandler handler, CallbackInfo ci) {}
+    default <P extends CustomPayload> void sendC2SPlayPayload(P payload) {}
+    default <P extends CustomPayload> void sendC2SPlayPayload(P payload, ClientPlayNetworkHandler handler) {}
 }

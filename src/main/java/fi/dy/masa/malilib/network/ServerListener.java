@@ -80,11 +80,11 @@ public class ServerListener implements IServerListener
     @Override
     public void onServerStopped(MinecraftServer server)
     {
+        PayloadManager.getInstance().unregisterHandlers();
+
         NetworkReference.getInstance().setDedicated(false);
         NetworkReference.getInstance().setOpenToLan(false);
         NetworkReference.getInstance().setIntegrated(false);
         NetworkReference.getInstance().setLocalIpAddr(null);
-
-        PayloadManager.getInstance().unregisterHandlers();
     }
 }
