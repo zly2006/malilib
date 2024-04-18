@@ -36,8 +36,6 @@ public class ServerListener implements IServerListener
     @Override
     public void onServerStarted(MinecraftServer server)
     {
-        //PayloadManager.getInstance().registerHandlers();
-
         if (NetworkReference.getInstance().isDedicated())
         {
             InetAddress localIpAddr = NetworkReference.getInstance().getLocalIpAddr();

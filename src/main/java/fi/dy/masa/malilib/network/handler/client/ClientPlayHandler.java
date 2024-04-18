@@ -1,9 +1,6 @@
 package fi.dy.masa.malilib.network.handler.client;
 
 import com.google.common.collect.ArrayListMultimap;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
 import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
@@ -63,16 +60,18 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
             }
         }
     }
-   public void registerPlayPayload(PayloadType type)
-   {
-       if (!this.handlers.isEmpty())
-       {
-           for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
-           {
-               handler.registerPlayPayload(type);
-           }
-       }
-   }
+
+    public void registerPlayPayload(PayloadType type)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
+            {
+                handler.registerPlayPayload(type);
+            }
+        }
+    }
+
     public void registerPlayHandler(PayloadType type)
     {
         if (!this.handlers.isEmpty())
@@ -83,6 +82,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
             }
         }
     }
+
     public void unregisterPlayHandler(PayloadType type)
     {
         if (!this.handlers.isEmpty())
@@ -93,36 +93,18 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
             }
         }
     }
-   public <P extends CustomPayload> void receiveS2CPlayPayload(PayloadType type, P payload, ClientPlayNetworking.Context ctx)
-   {
-       if (!this.handlers.isEmpty())
-       {
-           for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
-           {
-               handler.receiveS2CPlayPayload(type, payload, ctx);
-           }
-       }
-   }
-    public <P extends CustomPayload> void receiveS2CPlayPayload(PayloadType type, P payload, ClientPlayNetworkHandler networkHandler, CallbackInfo ci)
+
+    public void decodeS2CNbtCompound(PayloadType type, NbtCompound data)
     {
         if (!this.handlers.isEmpty())
         {
             for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
             {
-                handler.receiveS2CPlayPayload(type, payload, networkHandler, ci);
+                handler.decodeS2CNbtCompound(type, data);
             }
         }
     }
-   public void decodeS2CNbtCompound(PayloadType type, NbtCompound data)
-   {
-       if (!this.handlers.isEmpty())
-       {
-           for (IPluginClientPlayHandler<T> handler : this.handlers.get(type))
-           {
-               handler.decodeS2CNbtCompound(type, data);
-           }
-       }
-   }
+
     public void decodeS2CByteBuf(PayloadType type, MaLibByteBuf data)
     {
         if (!this.handlers.isEmpty())

@@ -1,10 +1,8 @@
 package fi.dy.masa.malilib.network.handler.server;
 
 import com.google.common.collect.ArrayListMultimap;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import fi.dy.masa.malilib.network.payload.MaLibByteBuf;
 import fi.dy.masa.malilib.network.payload.PayloadType;
@@ -93,17 +91,6 @@ public class ServerPlayHandler<T extends CustomPayload> implements IServerPlayHa
             for (IPluginServerPlayHandler<T> handler : this.handlers.get(type))
             {
                 handler.unregisterPlayHandler(type);
-            }
-        }
-    }
-
-    public <P extends CustomPayload> void receiveC2SPlayPayload(PayloadType type, P payload, ServerPlayNetworkHandler networkHandler, CallbackInfo ci)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IPluginServerPlayHandler<T> handler : this.handlers.get(type))
-            {
-                handler.receiveC2SPlayPayload(type, payload, networkHandler, ci);
             }
         }
     }

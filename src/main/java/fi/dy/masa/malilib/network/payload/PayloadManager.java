@@ -3,7 +3,9 @@ package fi.dy.masa.malilib.network.payload;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
@@ -41,36 +43,7 @@ public class PayloadManager
         {
             PayloadCodec codec = new PayloadCodec(type, namespace, path);
             TYPES.put(type, codec);
-            MaLiLib.printDebug("PayloadManager#register(): registering a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
-
-        }
-    }
-
-    /**
-     * Actual Fabric API Play Channel registration.
-     */
-    public <T extends CustomPayload> void registerPlayChannel(PayloadType type, CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> packetCodec)
-    {
-        PayloadCodec codec = getPayloadCodec(type);
-
-        // Never Attempt to "re-register" a channel or bad things will happen.  Kittens harmed, etc.
-        if (codec == null || codec.isPlayRegistered())
-            return;
-
-        codec.registerPlayCodec();
-
-        // Checks with Fabric APIs IMPL layer (I don't think they are confident with their code yet)
-        if (PayloadTypeRegistryImpl.PLAY_S2C.get(id) != null || PayloadTypeRegistryImpl.PLAY_C2S.get(id) != null)
-        {
-            // This just saved Minecraft from crashing, your welcome.
-            MaLiLib.logger.error("registerPlayChannel: blocked duplicate Play Channel registration attempt for: {}.", id.id().toString());
-        }
-        else
-        {
-            MaLiLib.logger.info("registerPlayChannel: [Fabric-API] registering Play C2S Channel: {}", id.id().toString());
-            PayloadTypeRegistry.playC2S().register(id, packetCodec);
-            PayloadTypeRegistry.playS2C().register(id, packetCodec);
-            // We need to register the channel bi-directionally for it to work.
+            MaLiLib.logger.error("PayloadManager#register(): registering a new PayloadCodec id: {} // {}:{}", codec.getId().hashCode(), codec.getId().getNamespace(), codec.getId().getPath());
         }
     }
 
@@ -114,11 +87,72 @@ public class PayloadManager
     }
 
     /**
+     * Actual Fabric API Play Channel registration.
+     */
+    public <T extends CustomPayload> void registerPlayChannel(PayloadType type, CustomPayload.Id<T> id, PacketCodec<PacketByteBuf, T> packetCodec)
+    {
+        PayloadCodec codec = getPayloadCodec(type);
+
+        // Never Attempt to "re-register" a channel or bad things will happen.  Kittens harmed, etc.
+        if (codec == null || codec.isPlayRegistered())
+            return;
+
+        codec.registerPlayCodec();
+
+        // Checks with Fabric APIs IMPL layer (I don't think they are confident with their code yet)
+        if (PayloadTypeRegistryImpl.PLAY_S2C.get(id) != null || PayloadTypeRegistryImpl.PLAY_C2S.get(id) != null)
+        {
+            // This just saved Minecraft from crashing, your welcome.
+            MaLiLib.logger.error("registerPlayChannel: blocked duplicate Play Channel registration attempt for: {}.", id.id().toString());
+        }
+        else
+        {
+            MaLiLib.logger.error("registerPlayChannel: [Fabric-API] registering Play C2S Channel: {}", id.id().toString());
+            PayloadTypeRegistry.playC2S().register(id, packetCodec);
+            PayloadTypeRegistry.playS2C().register(id, packetCodec);
+            // We need to register the channel bi-directionally for it to work.
+        }
+    }
+
+    public <T extends CustomPayload> void registerPlayHandler(CustomPayload.Id<T> type, ClientPlayNetworking.PlayPayloadHandler<T> handler)
+    {
+        if (MaLiLibReference.isClient())
+        {
+            MaLiLib.logger.error("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
+            ClientPlayNetworking.registerGlobalReceiver(type, handler);
+        }
+    }
+
+    public <T extends CustomPayload> void registerPlayHandler(CustomPayload.Id<T> type, ServerPlayNetworking.PlayPayloadHandler<T> handler)
+    {
+        if (MaLiLibReference.isServer() || NetworkReference.getInstance().isDedicated() || NetworkReference.getInstance().isOpenToLan())
+        {
+            MaLiLib.logger.error("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
+            ServerPlayNetworking.registerGlobalReceiver(type, handler);
+        }
+    }
+
+    public <T extends CustomPayload> void unregisterPlayHandler(CustomPayload.Id<T> type)
+    {
+        MaLiLib.logger.error("PayloadManager#unregisterPlayHandler(): for type {}", type.id().toString());
+
+        if (MaLiLibReference.isClient())
+        {
+            ClientPlayNetworking.unregisterGlobalReceiver(type.id());
+        }
+
+        if (MaLiLibReference.isServer() || NetworkReference.getInstance().isDedicated() || NetworkReference.getInstance().isOpenToLan())
+        {
+            ServerPlayNetworking.unregisterGlobalReceiver(type.id());
+        }
+    }
+
+    /**
      * Forces a reset() signal on all registered payloads
      */
     public void resetPayloads()
     {
-        MaLiLib.printDebug("PayloadManager#resetPayloads(): sending reset() to all Payload listeners.");
+        MaLiLib.logger.error("PayloadManager#resetPayloads(): sending reset() to all Payload listeners.");
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -138,7 +172,7 @@ public class PayloadManager
 
     public void verifyPayloads()
     {
-        MaLiLib.printDebug("PayloadManager#verifyPayloads(): sending registerPayloads() to all Payload listeners.");
+        MaLiLib.logger.error("PayloadManager#verifyPayloads(): sending registerPayloads() to all Payload listeners.");
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -161,7 +195,7 @@ public class PayloadManager
      */
     public void registerHandlers()
     {
-        MaLiLib.printDebug("PayloadManager#registerHandlers(): sending registerHandlers() to all Payload listeners.");
+        MaLiLib.logger.error("PayloadManager#registerHandlers(): sending registerHandlers() to all Payload listeners.");
 
         for (PayloadType type : TYPES.keySet())
         {
@@ -184,7 +218,7 @@ public class PayloadManager
      */
     public void unregisterHandlers()
     {
-        MaLiLib.printDebug("PayloadManager#unregisterHandlers(): sending unregisterHandlers() to all Payload listeners.");
+        MaLiLib.logger.error("PayloadManager#unregisterHandlers(): sending unregisterHandlers() to all Payload listeners.");
 
         for (PayloadType type : TYPES.keySet())
         {

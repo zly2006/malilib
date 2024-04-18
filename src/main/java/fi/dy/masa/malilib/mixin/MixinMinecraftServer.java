@@ -1,23 +1,22 @@
 package fi.dy.masa.malilib.mixin;
 
-import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.network.NetworkReference;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.server.MinecraftServer;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.event.ServerHandler;
 
+/**
+ * For invoking IntegratedServer() and DedicatedServer() calls --
+ * Used for Network API and Mod initialization
+ */
 @Mixin(value = MinecraftServer.class)
 public abstract class MixinMinecraftServer
 {
-    /**
-     * For invoking IntegratedServer() and DedicatedServer() calls --
-     * Works much better for Network API and Mod initialization
-     */
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
     private void onServerStarting(CallbackInfo ci)
     {
