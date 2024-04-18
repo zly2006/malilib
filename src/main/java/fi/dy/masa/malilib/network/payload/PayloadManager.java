@@ -3,16 +3,15 @@ package fi.dy.masa.malilib.network.payload;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.network.NetworkReference;
 import fi.dy.masa.malilib.network.handler.client.ClientPlayHandler;
 import fi.dy.masa.malilib.network.handler.server.ServerPlayHandler;
@@ -118,7 +117,7 @@ public class PayloadManager
 
     public <T extends CustomPayload> void registerPlayHandler(CustomPayload.Id<T> type, ClientPlayNetworking.PlayPayloadHandler<T> handler)
     {
-        if (MaLiLibReference.isClient())
+        if (NetworkReference.isClient())
         {
             MaLiLib.printDebug("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
             ClientPlayNetworking.registerGlobalReceiver(type, handler);
@@ -127,7 +126,7 @@ public class PayloadManager
 
     public <T extends CustomPayload> void registerPlayHandler(CustomPayload.Id<T> type, ServerPlayNetworking.PlayPayloadHandler<T> handler)
     {
-        if (MaLiLibReference.isServer() || NetworkReference.getInstance().isDedicated() || NetworkReference.getInstance().isOpenToLan())
+        if (NetworkReference.isServer() || NetworkReference.getInstance().isDedicated() || NetworkReference.getInstance().isOpenToLan())
         {
             MaLiLib.printDebug("PayloadManager#registerPlayHandler(): for type {}", type.id().toString());
             ServerPlayNetworking.registerGlobalReceiver(type, handler);
@@ -138,12 +137,12 @@ public class PayloadManager
     {
         MaLiLib.printDebug("PayloadManager#unregisterPlayHandler(): for type {}", type.id().toString());
 
-        if (MaLiLibReference.isClient())
+        if (NetworkReference.isClient())
         {
             ClientPlayNetworking.unregisterGlobalReceiver(type.id());
         }
 
-        if (MaLiLibReference.isServer() || NetworkReference.getInstance().isDedicated() || NetworkReference.getInstance().isOpenToLan())
+        if (NetworkReference.isServer() || NetworkReference.getInstance().isDedicated() || NetworkReference.getInstance().isOpenToLan())
         {
             ServerPlayNetworking.unregisterGlobalReceiver(type.id());
         }
@@ -160,11 +159,11 @@ public class PayloadManager
         {
             if (TYPES.get(type).isPlayRegistered())
             {
-                if (MaLiLibReference.isClient())
+                if (NetworkReference.isClient())
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).reset(type);
                 }
-                if (MaLiLibReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
+                if (NetworkReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).reset(type);
                 }
@@ -180,11 +179,11 @@ public class PayloadManager
         {
             if (!TYPES.get(type).isPlayRegistered())
             {
-                if (MaLiLibReference.isClient())
+                if (NetworkReference.isClient())
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayPayload(type);
                 }
-                if (MaLiLibReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
+                if (NetworkReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayPayload(type);
                 }
@@ -203,11 +202,11 @@ public class PayloadManager
         {
             if (TYPES.get(type).isPlayRegistered())
             {
-                if (MaLiLibReference.isClient())
+                if (NetworkReference.isClient())
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).registerPlayHandler(type);
                 }
-                if (MaLiLibReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
+                if (NetworkReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).registerPlayHandler(type);
                 }
@@ -226,11 +225,11 @@ public class PayloadManager
         {
             if (TYPES.get(type).isPlayRegistered())
             {
-                if (MaLiLibReference.isClient())
+                if (NetworkReference.isClient())
                 {
                     ((ClientPlayHandler<?>) ClientPlayHandler.getInstance()).unregisterPlayHandler(type);
                 }
-                if (MaLiLibReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
+                if (NetworkReference.isServer() || NetworkReference.getInstance().isOpenToLan() || NetworkReference.getInstance().isDedicated())
                 {
                     ((ServerPlayHandler<?>) ServerPlayHandler.getInstance()).unregisterPlayHandler(type);
                 }

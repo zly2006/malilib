@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.hotkeys.IHotkeyCallback;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
+import fi.dy.masa.malilib.network.NetworkReference;
 import fi.dy.masa.malilib.network.ServerListener;
 import fi.dy.masa.malilib.util.FileUtils;
 
@@ -21,7 +22,7 @@ public class MaLiLibInitHandler implements IInitializationHandler
 
         ConfigManager.getInstance().registerConfigHandler(MaLiLibReference.MOD_ID, new MaLiLibConfigs());
 
-        if (MaLiLibReference.isClient())
+        if (NetworkReference.isClient())
         {
             InputEventHandler.getKeybindManager().registerKeybindProvider(MaLiLibInputHandler.getInstance());
 

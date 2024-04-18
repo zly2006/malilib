@@ -1,20 +1,21 @@
 package fi.dy.masa.malilib.util;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Set;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
 
-import fi.dy.masa.malilib.MaLiLibReference;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtSizeTracker;
 
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.network.NetworkReference;
 
 public class FileUtils
 {
@@ -24,7 +25,7 @@ public class FileUtils
 
     public static File getConfigDirectory()
     {
-        if (MaLiLibReference.isClient())
+        if (NetworkReference.isClient())
         {
             return new File(MinecraftClient.getInstance().runDirectory, "config");
         }
@@ -44,7 +45,7 @@ public class FileUtils
 
     public static File getMinecraftDirectory()
     {
-        if (MaLiLibReference.isClient())
+        if (NetworkReference.isClient())
         {
             return MinecraftClient.getInstance().runDirectory;
         }

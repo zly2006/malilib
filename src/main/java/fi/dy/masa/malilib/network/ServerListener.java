@@ -1,10 +1,8 @@
 package fi.dy.masa.malilib.network;
 
 import java.net.InetAddress;
-
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.integrated.IntegratedServer;
-
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.interfaces.IServerListener;

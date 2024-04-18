@@ -2,10 +2,10 @@ package fi.dy.masa.malilib.event;
 
 import java.util.ArrayList;
 import java.util.List;
-import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.interfaces.IInitializationDispatcher;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
+import fi.dy.masa.malilib.network.NetworkReference;
 
 public class InitializationHandler implements IInitializationDispatcher
 {
@@ -42,7 +42,7 @@ public class InitializationHandler implements IInitializationDispatcher
 
         ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
 
-        if (MaLiLibReference.isClient())
+        if (NetworkReference.isClient())
         {
             InputEventHandler.getKeybindManager().updateUsedKeys();
         }

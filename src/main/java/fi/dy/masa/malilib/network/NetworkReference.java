@@ -2,11 +2,16 @@ package fi.dy.masa.malilib.network;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import fi.dy.masa.malilib.MaLiLibReference;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class NetworkReference implements INetworkReference
 {
     private static final NetworkReference INSTANCE = new NetworkReference();
+    private static final EnvType MOD_ENVIRONMENT = FabricLoader.getInstance().getEnvironmentType();
+    public static boolean isClient() { return MOD_ENVIRONMENT == EnvType.CLIENT; }
+    public static boolean isServer() { return MOD_ENVIRONMENT == EnvType.SERVER; }
+
     private boolean dedicated_server = false;
     private boolean integrated = false;
     private boolean open_to_lan = false;
@@ -50,7 +55,7 @@ public class NetworkReference implements INetworkReference
     @Override
     public void setDedicated(boolean toggle)
     {
-        if (toggle && MaLiLibReference.isServer())
+        if (toggle && isServer())
         {
             this.dedicated_server = true;
             this.open_to_lan = false;
@@ -65,7 +70,7 @@ public class NetworkReference implements INetworkReference
     @Override
     public void setIntegrated(boolean toggle)
     {
-        if (toggle && MaLiLibReference.isClient())
+        if (toggle && isClient())
         {
             this.integrated = true;
             this.dedicated_server = false;
@@ -79,7 +84,7 @@ public class NetworkReference implements INetworkReference
     @Override
     public void setOpenToLan(boolean toggle)
     {
-        if (toggle && MaLiLibReference.isClient())
+        if (toggle && isClient())
         {
             this.open_to_lan = true;
             this.integrated = true;
