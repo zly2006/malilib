@@ -10,7 +10,6 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.network.NetworkReference;
 import fi.dy.masa.malilib.network.client.ClientPlayHandler;
@@ -95,21 +94,11 @@ public class PayloadManager
             return;
         }
 
+        //MaLiLib.logger.info("registerPlayChannel: [Fabric-API] registering Play Channel: {}", id.id().toString());
         codec.registerPlayCodec();
-
-        // Checks with Fabric APIs IMPL layer (I don't think they are confident with their code yet)
-        if (PayloadTypeRegistryImpl.PLAY_S2C.get(id) != null || PayloadTypeRegistryImpl.PLAY_C2S.get(id) != null)
-        {
-            // This just saved Minecraft from crashing, your welcome.
-            MaLiLib.logger.error("registerPlayChannel: blocked duplicate Play Channel registration attempt for: {}.", id.id().toString());
-        }
-        else
-        {
-            //MaLiLib.logger.info("registerPlayChannel: [Fabric-API] registering Play Channel: {}", id.id().toString());
-            PayloadTypeRegistry.playC2S().register(id, packetCodec);
-            PayloadTypeRegistry.playS2C().register(id, packetCodec);
-            // We need to register the channel bi-directionally for it to work correctly.
-        }
+        PayloadTypeRegistry.playC2S().register(id, packetCodec);
+        PayloadTypeRegistry.playS2C().register(id, packetCodec);
+        // We need to register the channel bi-directionally for it to work correctly.
     }
 
     public <T extends CustomPayload> void registerPlayHandler(CustomPayload.Id<T> type, ClientPlayNetworking.PlayPayloadHandler<T> handler)
