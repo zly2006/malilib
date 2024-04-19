@@ -1,32 +1,68 @@
 package fi.dy.masa.malilib.util;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Set;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.nbt.NbtTagSizeTracker;
+import net.minecraft.nbt.NbtSizeTracker;
 
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.network.NetworkReference;
 
 public class FileUtils
 {
     private static final Set<Character> ILLEGAL_CHARACTERS = ImmutableSet.of( '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' );
+    private static File runDirectory = MaLiLibReference.DEFAULT_RUN_DIR;
+    private static File configDirectory = MaLiLibReference.DEFAULT_CONFIG_DIR;
 
     public static File getConfigDirectory()
     {
-        return new File(MinecraftClient.getInstance().runDirectory, "config");
+        // Need to call this based upon Client/Server state.
+        if (NetworkReference.isClient())
+        {
+            return new File(MinecraftClient.getInstance().runDirectory, "config");
+        }
+        else
+        {
+            if (configDirectory != null && configDirectory.isDirectory())
+            {
+                return configDirectory;
+            }
+            else
+            {
+                configDirectory = MaLiLibReference.DEFAULT_CONFIG_DIR;
+                return configDirectory;
+            }
+        }
     }
 
     public static File getMinecraftDirectory()
     {
-        return MinecraftClient.getInstance().runDirectory;
+        // Need to call this based upon Client/Server state.
+        if (NetworkReference.isClient())
+        {
+            return MinecraftClient.getInstance().runDirectory;
+        }
+        else
+        {
+            if (runDirectory != null && runDirectory.isDirectory())
+            {
+                return runDirectory;
+            }
+            else
+            {
+                runDirectory = MaLiLibReference.DEFAULT_RUN_DIR;
+                return runDirectory;
+            }
+        }
     }
 
     /**
@@ -144,7 +180,7 @@ public class FileUtils
             try
             {
                 FileInputStream is = new FileInputStream(file);
-                NbtCompound nbt = NbtIo.readCompressed(is, NbtTagSizeTracker.ofUnlimitedBytes());
+                NbtCompound nbt = NbtIo.readCompressed(is, NbtSizeTracker.ofUnlimitedBytes());
                 is.close();
                 return nbt;
             }
@@ -155,5 +191,51 @@ public class FileUtils
         }
 
         return null;
+    }
+
+    public static void setConfigDirectory(File dir)
+    {
+        // Required for Multi-Environment MaLiLib
+        if (dir == null)
+        {
+            MaLiLib.logger.fatal("setConfigDirectory: dir given is NULL.");
+        }
+        else
+        {
+            if (dir.isDirectory())
+            {
+                configDirectory = dir;
+            }
+            else
+            {
+                if (dir.mkdir() == false)
+                {
+                    MaLiLib.logger.fatal("setConfigDirectory: dir given failed to be created.");
+                }
+            }
+        }
+    }
+
+    public static void setRunDirectory(File dir)
+    {
+        // Required for Multi-Environment MaLiLib
+        if (dir == null)
+        {
+            MaLiLib.logger.fatal("setRunDirectory: dir given is NULL.");
+        }
+        else
+        {
+            if (dir.isDirectory())
+            {
+                runDirectory = dir;
+            }
+            else
+            {
+                if (dir.mkdir() == false)
+                {
+                    MaLiLib.logger.fatal("setRunDirectory: dir given failed to be created.");
+                }
+            }
+        }
     }
 }
