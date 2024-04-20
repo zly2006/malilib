@@ -12,7 +12,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import fi.dy.masa.malilib.event.WorldLoadHandler;
-import fi.dy.masa.malilib.network.payload.PayloadManager;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class MixinClientPlayNetworkHandler
@@ -28,7 +27,6 @@ public abstract class MixinClientPlayNetworkHandler
         // because the next injection point is right after the world has been assigned,
         // since we need the new world reference for the callback.
         this.worldBefore = this.world;
-        PayloadManager.getInstance().verifyPayloads();
     }
 
     @Inject(method = "onGameJoin", at = @At(value = "INVOKE",
