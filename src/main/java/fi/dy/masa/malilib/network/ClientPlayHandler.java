@@ -24,17 +24,37 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
     @SuppressWarnings("unchecked")
     public <P extends CustomPayload> void registerClientPlayHandler(IPluginClientPlayHandler<P> handler)
     {
+        boolean isRegistered = this.isClientPlayChannelRegistered(handler);
         Identifier channel = handler.getPayloadChannel();
 
         if (this.handlers.containsEntry(channel, handler) == false)
         {
             this.handlers.put(channel, (IPluginClientPlayHandler<T>) handler);
-            if (handler.isPlayRegistered(channel) == false)
+
+            if (handler.isPlayRegistered(channel) == false && isRegistered == false)
             {
+                // Only register if another handler isn't already registered for this channel ID.
                 handler.registerPlayPayload(channel);
+                handler.registerPlayHandler(channel);
             }
-            handler.registerPlayHandler(channel);
         }
+    }
+
+    @Override
+    public <P extends CustomPayload> boolean isClientPlayChannelRegistered(IPluginClientPlayHandler<P> handler)
+    {
+        Identifier channel = handler.getPayloadChannel();
+        boolean isRegistered = false;
+
+        for (IPluginClientPlayHandler<T> handlerEnt : this.handlers.get(channel))
+        {
+            if (isRegistered == false)
+            {
+                isRegistered = handlerEnt.isPlayRegistered(channel);
+            }
+        }
+
+        return isRegistered;
     }
 
     @Override
