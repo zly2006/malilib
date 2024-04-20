@@ -5,14 +5,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.server.MinecraftServer;
-import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.event.ServerHandler;
-import fi.dy.masa.malilib.network.NetworkReference;
 
 /**
- * For invoking IntegratedServer() and DedicatedServer() calls --
- * Used for Network API and Mod initialization
+ * For invoking IntegratedServer() calls
  */
 @Mixin(value = MinecraftServer.class)
 public abstract class MixinMinecraftServer
@@ -20,34 +16,18 @@ public abstract class MixinMinecraftServer
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
     private void onServerStarting(CallbackInfo ci)
     {
-        if (NetworkReference.isServer())
-        {
-            ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();
-            ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
-        }
-
         ((ServerHandler) ServerHandler.getInstance()).onServerStarting((MinecraftServer) (Object) this);
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;createMetadata()Lnet/minecraft/server/ServerMetadata;", ordinal = 0), method = "runServer")
     private void onServerStarted(CallbackInfo ci)
     {
-        if (NetworkReference.isServer())
-        {
-            ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
-        }
-
         ((ServerHandler) ServerHandler.getInstance()).onServerStarted((MinecraftServer) (Object) this);
     }
 
     @Inject(at = @At("HEAD"), method = "shutdown")
     private void onServerStopping(CallbackInfo info)
     {
-        if (NetworkReference.isServer())
-        {
-            ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
-        }
-
         ((ServerHandler) ServerHandler.getInstance()).onServerStopping((MinecraftServer) (Object) this);
     }
 
