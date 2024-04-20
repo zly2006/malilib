@@ -37,6 +37,8 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
                 handler.registerPlayPayload(channel);
                 handler.registerPlayHandler(channel);
             }
+
+            handler.setPlayRegistered(channel);
         }
     }
 
