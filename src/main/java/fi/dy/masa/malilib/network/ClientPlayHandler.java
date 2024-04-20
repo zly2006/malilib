@@ -33,9 +33,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
 
             if (handler.isPlayRegistered(channel) == false && isRegistered == false)
             {
-                // Only register if another handler isn't already registered for this channel ID.
                 handler.registerPlayPayload(channel);
-                handler.registerPlayHandler(channel);
             }
 
             handler.setPlayRegistered(channel);
