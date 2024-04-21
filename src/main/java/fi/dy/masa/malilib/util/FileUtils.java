@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Set;
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
