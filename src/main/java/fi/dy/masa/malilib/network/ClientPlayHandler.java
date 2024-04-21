@@ -155,13 +155,13 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
     /**
      * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
      */
-    public void decodeObject(Identifier channel, Object data)
+    public void decodeObjects(Identifier channel, Object... args)
     {
         if (!this.handlers.isEmpty())
         {
             for (IPluginClientPlayHandler<T> handler : this.handlers.get(channel))
             {
-                handler.decodeObject(channel, data);
+                handler.decodeObjects(channel, args);
             }
         }
     }
