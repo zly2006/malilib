@@ -79,6 +79,8 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
                         PayloadTypeRegistry.playS2C().register(id, codec);
                     }
                 }
+
+                return;
             }
             catch (IllegalArgumentException e)
             {
