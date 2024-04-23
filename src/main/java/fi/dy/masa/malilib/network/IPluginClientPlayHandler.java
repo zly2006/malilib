@@ -14,6 +14,7 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
+import fi.dy.masa.malilib.MaLiLib;
 
 /**
  * Interface for ClientPlayHandler, for downstream mods.
@@ -58,15 +59,13 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
      * See the fabric-networking-api-v1 Java Docs under PayloadTypeRegistry -> register()
      * for more information on how to do this.
      * -
-     * @param channel (Your Channel ID)
-     * @param direction (Payload Direction)
      * @param id (Your Payload Id<T>)
      * @param codec (Your Payload's CODEC)
+     * @param direction (Payload Direction)
      */
-    default void registerPlayPayload(Identifier channel, int direction,
-                                     @Nonnull CustomPayload.Id<T> id, @Nonnull PacketCodec<? super RegistryByteBuf,T> codec)
+    default void registerPlayPayload(@Nonnull CustomPayload.Id<T> id, @Nonnull PacketCodec<? super RegistryByteBuf,T> codec, int direction)
     {
-        if (channel.equals(this.getPayloadChannel()) && this.isPlayRegistered(this.getPayloadChannel()) == false)
+        if (this.isPlayRegistered(this.getPayloadChannel()) == false)
         {
             try
             {
@@ -83,15 +82,13 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
             }
             catch (IllegalArgumentException e)
             {
-                throw new IllegalArgumentException("registerPlayPayload: Channel ID "+ channel +" is already registered");
+                MaLiLib.logger.error("registerPlayPayload: channel ID [{}] is is already registered", this.getPayloadChannel());
             }
 
-            this.setPlayRegistered(channel);
+            this.setPlayRegistered(this.getPayloadChannel());
         }
-        else
-        {
-            throw new IllegalArgumentException("registerPlayPayload: channel ID "+ channel +" is invalid, or it is already registered");
-        }
+
+        MaLiLib.logger.error("registerPlayPayload: channel ID [{}] is invalid, or it is already registered", this.getPayloadChannel());
     }
 
     /**
@@ -100,15 +97,13 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
      * See the fabric-network-api-v1 Java Docs under ClientPlayNetworking.registerGlobalReceiver()
      * for more information on how to do this.
      * -
-     * @param channel (Your Channel ID)
      * @param id (Your Payload Id<T>)
      * @param receiver (Your Packet Receiver // if null, uses this::receivePlayPayload)
      * @return (True / False)
      */
-    default boolean registerPlayReceiver(Identifier channel,
-                                         @Nonnull CustomPayload.Id<T> id, @Nullable ClientPlayNetworking.PlayPayloadHandler<T> receiver)
+    default boolean registerPlayReceiver(@Nonnull CustomPayload.Id<T> id, @Nullable ClientPlayNetworking.PlayPayloadHandler<T> receiver)
     {
-        if (channel.equals(this.getPayloadChannel()) && this.isPlayRegistered(this.getPayloadChannel()))
+        if (this.isPlayRegistered(this.getPayloadChannel()))
         {
             try
             {
@@ -116,13 +111,12 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
             }
             catch (IllegalArgumentException e)
             {
-                throw new IllegalArgumentException("registerPlayReceiver: Channel ID " + channel + " payload has not been registered");
+                MaLiLib.logger.error("registerPlayReceiver: Channel ID [{}] payload has not been registered", this.getPayloadChannel());
             }
         }
-        else
-        {
-            throw new IllegalArgumentException("registerPlayReceiver: Channel ID " + channel + " is invalid, or not registered");
-        }
+
+        MaLiLib.logger.error("registerPlayReceiver: Channel ID [{}] is invalid, or not registered", this.getPayloadChannel());
+        return false;
     }
 
     /**
@@ -130,15 +124,10 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
      * You can use the HANDLER itself (Singleton method), or any other class that you choose.
      * See the fabric-network-api-v1 Java Docs under ClientPlayNetworking.unregisterGlobalReceiver()
      * for more information on how to do this.
-     * -
-     * @param channel (Your Channel ID)
      */
-    default void unregisterPlayReceiver(Identifier channel)
+    default void unregisterPlayReceiver()
     {
-        if (channel.equals(this.getPayloadChannel()))
-        {
-            ClientPlayNetworking.unregisterGlobalReceiver(channel);
-        }
+        ClientPlayNetworking.unregisterGlobalReceiver(this.getPayloadChannel());
     }
 
     /**
