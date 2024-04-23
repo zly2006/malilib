@@ -14,7 +14,6 @@ import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
-import fi.dy.masa.malilib.MaLiLib;
 
 /**
  * Interface for ClientPlayHandler, for downstream mods.
@@ -69,17 +68,29 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
     {
         if (channel.equals(this.getPayloadChannel()) && this.isPlayRegistered(this.getPayloadChannel()) == false)
         {
-            switch (direction)
+            try
             {
-                case TO_SERVER, FROM_CLIENT -> PayloadTypeRegistry.playC2S().register(id, codec);
-                case FROM_SERVER, TO_CLIENT -> PayloadTypeRegistry.playS2C().register(id, codec);
-                default ->
+                switch (direction)
                 {
-                    PayloadTypeRegistry.playC2S().register(id, codec);
-                    PayloadTypeRegistry.playS2C().register(id, codec);
+                    case TO_SERVER, FROM_CLIENT -> PayloadTypeRegistry.playC2S().register(id, codec);
+                    case FROM_SERVER, TO_CLIENT -> PayloadTypeRegistry.playS2C().register(id, codec);
+                    default ->
+                    {
+                        PayloadTypeRegistry.playC2S().register(id, codec);
+                        PayloadTypeRegistry.playS2C().register(id, codec);
+                    }
                 }
             }
+            catch (IllegalArgumentException e)
+            {
+                throw new IllegalArgumentException("registerPlayPayload: Channel ID "+ channel +" is already registered");
+            }
+
             this.setPlayRegistered(channel);
+        }
+        else
+        {
+            throw new IllegalArgumentException("registerPlayPayload: channel ID "+ channel +" is invalid, or it is already registered");
         }
     }
 
@@ -105,15 +116,13 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
             }
             catch (IllegalArgumentException e)
             {
-                MaLiLib.logger.error("registerPlayReceiver IllegalArgumentException: Payload not registered");
+                throw new IllegalArgumentException("registerPlayReceiver: Channel ID " + channel + " payload has not been registered");
             }
         }
         else
         {
-           MaLiLib.logger.error("registerPlayReceiver: Invalid channel ID");
+            throw new IllegalArgumentException("registerPlayReceiver: Channel ID " + channel + " is invalid, or not registered");
         }
-
-        return false;
     }
 
     /**
