@@ -46,13 +46,13 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
      * Sets your HANDLER as registered.
      * @param channel (Your Channel ID)
      */
-    default void setPlayRegistered(Identifier channel) {}
+    void setPlayRegistered(Identifier channel);
 
     /**
      * Send your HANDLER a global reset() event, such as when the client is shutting down, or logging out.
      * @param channel (Your Channel ID)
      */
-    default void reset(Identifier channel) {}
+    void reset(Identifier channel);
 
     /**
      * Register your Payload with Fabric API.
@@ -114,6 +114,7 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
             catch (IllegalArgumentException e)
             {
                 MaLiLib.logger.error("registerPlayReceiver: Channel ID [{}] payload has not been registered", this.getPayloadChannel());
+                return false;
             }
         }
 
@@ -138,7 +139,7 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
      * @param payload (Payload to decode)
      * @param ctx (Fabric Context)
      */
-    default void receivePlayPayload(T payload, ClientPlayNetworking.Context ctx) {}
+    void receivePlayPayload(T payload, ClientPlayNetworking.Context ctx);
 
     /**
      * Receive Payload via the legacy "onCustomPayload" from a Network Handler Mixin interface.
