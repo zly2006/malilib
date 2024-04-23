@@ -79,8 +79,6 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
                         PayloadTypeRegistry.playS2C().register(id, codec);
                     }
                 }
-
-                return;
             }
             catch (IllegalArgumentException e)
             {
@@ -88,6 +86,7 @@ public interface IPluginClientPlayHandler<T extends CustomPayload> extends Clien
             }
 
             this.setPlayRegistered(this.getPayloadChannel());
+            return;
         }
 
         MaLiLib.logger.error("registerPlayPayload: channel ID [{}] is invalid, or it is already registered", this.getPayloadChannel());
