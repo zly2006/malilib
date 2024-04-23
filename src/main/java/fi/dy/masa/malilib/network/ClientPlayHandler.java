@@ -24,37 +24,12 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
     @SuppressWarnings("unchecked")
     public <P extends CustomPayload> void registerClientPlayHandler(IPluginClientPlayHandler<P> handler)
     {
-        boolean isRegistered = this.isClientPlayChannelRegistered(handler);
         Identifier channel = handler.getPayloadChannel();
 
         if (this.handlers.containsEntry(channel, handler) == false)
         {
             this.handlers.put(channel, (IPluginClientPlayHandler<T>) handler);
-
-            if (handler.isPlayRegistered(channel) == false && isRegistered == false)
-            {
-                handler.registerPlayPayload(channel);
-            }
-
-            handler.setPlayRegistered(channel);
         }
-    }
-
-    @Override
-    public <P extends CustomPayload> boolean isClientPlayChannelRegistered(IPluginClientPlayHandler<P> handler)
-    {
-        Identifier channel = handler.getPayloadChannel();
-        boolean isRegistered = false;
-
-        for (IPluginClientPlayHandler<T> handlerEnt : this.handlers.get(channel))
-        {
-            if (isRegistered == false)
-            {
-                isRegistered = handlerEnt.isPlayRegistered(channel);
-            }
-        }
-
-        return isRegistered;
     }
 
     @Override
@@ -64,7 +39,8 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
 
         if (this.handlers.remove(channel, handler))
         {
-            handler.unregisterPlayHandler(channel);
+            handler.reset(channel);
+            handler.unregisterPlayReceiver(channel);
         }
     }
 
@@ -78,48 +54,6 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
             for (IPluginClientPlayHandler<T> handler : this.handlers.get(channel))
             {
                 handler.reset(channel);
-            }
-        }
-    }
-
-    /**
-     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
-     */
-    public void registerPlayPayload(Identifier channel)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IPluginClientPlayHandler<T> handler : this.handlers.get(channel))
-            {
-                handler.registerPlayPayload(channel);
-            }
-        }
-    }
-
-    /**
-     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
-     */
-    public void registerPlayHandler(Identifier channel)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IPluginClientPlayHandler<T> handler : this.handlers.get(channel))
-            {
-                handler.registerPlayHandler(channel);
-            }
-        }
-    }
-
-    /**
-     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
-     */
-    public void unregisterPlayHandler(Identifier channel)
-    {
-        if (!this.handlers.isEmpty())
-        {
-            for (IPluginClientPlayHandler<T> handler : this.handlers.get(channel))
-            {
-                handler.unregisterPlayHandler(channel);
             }
         }
     }
@@ -155,13 +89,69 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
     /**
      * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
      */
-    public void decodeObjects(Identifier channel, Object... args)
+    public <D> void decodeObject(Identifier channel, D data1)
     {
         if (!this.handlers.isEmpty())
         {
             for (IPluginClientPlayHandler<T> handler : this.handlers.get(channel))
             {
-                handler.decodeObjects(channel, args);
+                handler.decodeObject(channel, data1);
+            }
+        }
+    }
+
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
+    public <D, E> void decodeObject(Identifier channel, D data1, E data2)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IPluginClientPlayHandler<T> handler : this.handlers.get(channel))
+            {
+                handler.decodeObject(channel, data1, data2);
+            }
+        }
+    }
+
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
+    public <D, E, F> void decodeObject(Identifier channel, D data1, E data2, F data3)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IPluginClientPlayHandler<T> handler : this.handlers.get(channel))
+            {
+                handler.decodeObject(channel, data1, data2, data3);
+            }
+        }
+    }
+
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
+    public <D, E, F, G> void decodeObject(Identifier channel, D data1, E data2, F data3, G data4)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IPluginClientPlayHandler<T> handler : this.handlers.get(channel))
+            {
+                handler.decodeObject(channel, data1, data2, data3, data4);
+            }
+        }
+    }
+
+    /**
+     * API CALLS DO NOT USE ANYWHERE ELSE (DANGEROUS!)
+     */
+    public <D, E, F, G, H> void decodeObject(Identifier channel, D data1, E data2, F data3, G data4, H data5)
+    {
+        if (!this.handlers.isEmpty())
+        {
+            for (IPluginClientPlayHandler<T> handler : this.handlers.get(channel))
+            {
+                handler.decodeObject(channel, data1, data2, data3, data4, data5);
             }
         }
     }
