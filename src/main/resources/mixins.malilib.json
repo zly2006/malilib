@@ -12,6 +12,7 @@
         "MixinKeyboard",
         "MixinMinecraftClient",
         "MixinMouse",
+        "MixinScreen",
         "MixinWorldRenderer"
     ],
     "mixins": [
