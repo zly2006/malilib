@@ -1,24 +1,20 @@
 package fi.dy.masa.malilib.network;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nullable;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import org.apache.commons.lang3.tuple.Pair;
-
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.listener.PacketListener;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.util.Identifier;
 
 /**
  * Network packet splitter code from QuickCarpet by skyrising
  * @author skyrising
  *
+ * Updated by Sakura to work with newer versions by changing the Reading Session keys,
+ * and using the HANDLER interface to send packets via the Payload system
  */
 public class PacketSplitter
 {
@@ -29,21 +25,14 @@ public class PacketSplitter
     public static final int DEFAULT_MAX_RECEIVE_SIZE_C2S = 1048576;
     public static final int DEFAULT_MAX_RECEIVE_SIZE_S2C = 67108864;
 
-    private static final Map<Pair<PacketListener, Identifier>, ReadingSession> READING_SESSIONS = new HashMap<>();
+    private static final Map<Long, ReadingSession> READING_SESSIONS = new HashMap<>();
 
-    public static void send(ServerPlayNetworkHandler networkHandler, Identifier channel, PacketByteBuf packet)
+    public static <T extends CustomPayload> boolean send(IPluginClientPlayHandler<T> handler, PacketByteBuf packet, ClientPlayNetworkHandler networkHandler)
     {
-        //send(packet, MAX_PAYLOAD_PER_PACKET_S2C, buf -> networkHandler.sendPacket(new CustomPayloadS2CPacket(channel, buf)));
+        return send(handler, packet, MAX_PAYLOAD_PER_PACKET_C2S, networkHandler);
     }
 
-    public static void send(ClientPlayNetworkHandler networkHandler, Identifier channel, PacketByteBuf packet)
-    {
-        //ClientPlayNetworking.send(channel, packet);
-        //send(packet, MAX_PAYLOAD_PER_PACKET_C2S, buf -> networkHandler.sendPacket(new CustomPayloadC2SPacket(new PacketByteBufPayload(channel, buf))));
-        send(channel, packet, MAX_PAYLOAD_PER_PACKET_C2S);
-    }
-
-    private static void send(Identifier channel, PacketByteBuf packet, int payloadLimit)
+    private static <T extends CustomPayload> boolean send(IPluginClientPlayHandler<T> handler, PacketByteBuf packet, int payloadLimit, ClientPlayNetworkHandler networkHandler)
     {
         int len = packet.writerIndex();
 
@@ -62,47 +51,69 @@ public class PacketSplitter
             }
 
             buf.writeBytes(packet, thisLen);
-
-            ClientPlayNetworking.send(channel, buf);
+            handler.encodeWithSplitter(buf, networkHandler);
         }
 
         packet.release();
+
+        return true;
     }
 
-    @Nullable
-    public static PacketByteBuf receive(ClientPlayPacketListener networkHandler,
-                                        Identifier channel,
-                                        PacketByteBuf buf)
+    public static <T extends CustomPayload> PacketByteBuf receive(IPluginClientPlayHandler<T> handler,
+                                                                  long key,
+                                                                  PacketByteBuf buf)
     {
-        return receive(networkHandler, channel, buf, DEFAULT_MAX_RECEIVE_SIZE_S2C);
+        return receive(handler.getPayloadChannel(), key, buf, DEFAULT_MAX_RECEIVE_SIZE_S2C);
     }
 
     @Nullable
-    private static PacketByteBuf receive(ClientPlayPacketListener networkHandler,
-                                         Identifier channel,
+    private static PacketByteBuf receive(Identifier channel,
+                                         long key,
                                          PacketByteBuf buf,
                                          int maxLength)
     {
-        Pair<PacketListener, Identifier> key = Pair.of(networkHandler, channel);
-
-        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(readPayload(buf), maxLength);
+        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(buf, maxLength);
     }
 
+    // Not needed
+    /*
     public static PacketByteBuf readPayload(PacketByteBuf byteBuf)
     {
-        PacketByteBuf newBuf = PacketByteBufs.create();
+        PacketByteBuf newBuf = new PacketByteBuf(Unpooled.buffer());
         newBuf.writeBytes(byteBuf.copy());
         byteBuf.skipBytes(byteBuf.readableBytes());
         return newBuf;
     }
 
+    **
+     * Sends a packet type ID as a VarInt, and then the given Compound tag.
+     *
+    public static <T extends CustomPayload> void sendPacketTypeAndCompound(IPluginClientPlayHandler<T> handler, int packetType, NbtCompound data, ClientPlayNetworkHandler networkHandler)
+    {
+        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+        buf.writeVarInt(packetType);
+        buf.writeNbt(data);
+
+        send(handler, buf, networkHandler);
+    }
+     */
+
+    /**
+     * I had to fix the `Pair.of` key mappings, because they were removed from MC;
+     * So I made it into a pre-shared random session 'key' between client and server.
+     * Generated using 'long key = Random.create(Util.getMeasuringTimeMs()).nextLong();'
+     * -
+     * It can be shared to the receiving end via a separate packet; or it can just be
+     * generated randomly on the receiving end per an expected Reading Session.
+     * It needs to be stored and changed for every unique session.
+     */
     private static class ReadingSession
     {
-        private final Pair<PacketListener, Identifier> key;
+        private final long key;
         private int expectedSize = -1;
         private PacketByteBuf received;
 
-        private ReadingSession(Pair<PacketListener, Identifier> key)
+        private ReadingSession(long key)
         {
             this.key = key;
         }
@@ -110,6 +121,9 @@ public class PacketSplitter
         @Nullable
         private PacketByteBuf receive(PacketByteBuf data, int maxLength)
         {
+            data.readerIndex(0);
+            //data = PacketUtils.slice(data);
+
             if (this.expectedSize < 0)
             {
                 this.expectedSize = data.readVarInt();

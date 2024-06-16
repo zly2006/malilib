@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.util;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.net.SocketAddress;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.annotation.Nullable;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import fi.dy.masa.malilib.MaLiLibConfigs;
