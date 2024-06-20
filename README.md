@@ -1,3 +1,5 @@
+[![](https://jitpack.io/v/sakura-ryoko/malilib.svg)](https://jitpack.io/#sakura-ryoko/malilib)
+
 malilib
 ==============
 malilib is a library mod used by masa's LiteLoader mods. It contains some common code previously
