@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.render;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +34,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapState;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -42,8 +44,10 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.LocalRandom;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.mixin.IMixinBufferBuilder;
 import fi.dy.masa.malilib.util.*;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 
@@ -520,6 +524,7 @@ public class RenderUtils
 
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
+     * --> Correction, never assume this is safe.
      */
     public static void drawBlockBoundingBoxSidesBatchedQuads(BlockPos pos, Color4f color, double expand, BufferBuilder buffer)
     {
@@ -535,6 +540,7 @@ public class RenderUtils
 
     /**
      * Assumes a BufferBuilder in GL_LINES mode has been initialized
+     * --> Correction, never assume this is safe.
      */
     public static void drawBlockBoundingBoxOutlinesBatchedLines(BlockPos pos, Color4f color, double expand, BufferBuilder buffer)
     {
@@ -543,6 +549,7 @@ public class RenderUtils
 
     /**
      * Assumes a BufferBuilder in GL_LINES mode has been initialized.
+     * --> Correction, never assume this is safe.
      * The cameraPos value will be subtracted from the absolute coordinate values of the passed in BlockPos.
      * @param pos
      * @param cameraPos
@@ -564,6 +571,7 @@ public class RenderUtils
 
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
+     * --> Correction, never assume this is safe.
      */
     public static void drawBoxAllSidesBatchedQuads(float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
             Color4f color, BufferBuilder buffer)
@@ -576,6 +584,7 @@ public class RenderUtils
     /**
      * Draws a box with outlines around the given corner positions.
      * Takes in buffers initialized for GL_QUADS and GL_LINES modes.
+     * --> Correction, never assume this is safe.
      * @param posMin
      * @param posMax
      * @param colorLines
@@ -592,6 +601,7 @@ public class RenderUtils
      * Draws a box with outlines around the given corner positions.
      * Takes in buffers initialized for GL_QUADS and GL_LINES modes.
      * The cameraPos value will be subtracted from the absolute coordinate values of the passed in block positions.
+     * --> Correction, never assume this is safe.
      * @param posMin
      * @param posMax
      * @param cameraPos
@@ -615,6 +625,7 @@ public class RenderUtils
 
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
+     * --> Correction, never assume this is safe.
      */
     public static void drawBoxHorizontalSidesBatchedQuads(float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
             Color4f color, BufferBuilder buffer)
@@ -646,6 +657,7 @@ public class RenderUtils
 
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
+     * --> Correction, never assume this is safe.
      */
     public static void drawBoxTopBatchedQuads(float minX, float minZ, float maxX, float maxY, float maxZ, Color4f color, BufferBuilder buffer)
     {
@@ -658,6 +670,7 @@ public class RenderUtils
 
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
+     * --> Correction, never assume this is safe.
      */
     public static void drawBoxBottomBatchedQuads(float minX, float minY, float minZ, float maxX, float maxZ, Color4f color, BufferBuilder buffer)
     {
@@ -670,6 +683,7 @@ public class RenderUtils
 
     /**
      * Assumes a BufferBuilder in GL_LINES mode has been initialized
+     * --> Correction, never assume this is safe.
      */
     public static void drawBoxAllEdgesBatchedLines(float minX, float minY, float minZ, float maxX, float maxY, float maxZ,
             Color4f color, BufferBuilder buffer)
@@ -1145,9 +1159,11 @@ public class RenderUtils
 
     public static void renderShulkerBoxPreview(ItemStack stack, int baseX, int baseY, boolean useBgColors, DrawContext drawContext)
     {
+        DefaultedList<ItemStack> items;
+
         if (stack.getComponents().contains(DataComponentTypes.CONTAINER))
         {
-            DefaultedList<ItemStack> items = InventoryUtils.getStoredItems(stack, ShulkerBoxBlockEntity.INVENTORY_SIZE);
+            items = InventoryUtils.getStoredItems(stack, ShulkerBoxBlockEntity.INVENTORY_SIZE);
 
             if (items.isEmpty())
             {
@@ -1160,7 +1176,7 @@ public class RenderUtils
             int screenWidth = GuiUtils.getScaledWindowWidth();
             int screenHeight = GuiUtils.getScaledWindowHeight();
             int height = props.height + 18;
-            int x = MathHelper.clamp(baseX + 8     , 0, screenWidth - props.width);
+            int x = MathHelper.clamp(baseX + 8, 0, screenWidth - props.width);
             int y = MathHelper.clamp(baseY - height, 0, screenHeight - height);
 
             if (stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock)
@@ -1185,6 +1201,58 @@ public class RenderUtils
 
             Inventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
             InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, ShulkerBoxBlockEntity.INVENTORY_SIZE, mc(), drawContext);
+
+            matrix4fStack.popMatrix();
+            RenderSystem.applyModelViewMatrix();
+        }
+    }
+
+    /**
+     *  Render's the Inventory Overlay using an NbtCompound Items[] List format instead of the Item Container Component,
+     *  Such as for a Crafter, etc.  This is meant to be simillar to the 1.20.4 behavior, minus the "BlockEntityTag";
+     *  since it no longer exists; but this can be used as such, if the "BlockEntityTag" or its eqivalent, is read in first.
+     *  -
+     * @param stackIn (Stack of the Entity for selecting the right textures)
+     * @param itemsTag (Nbt Items[] list)
+     * @param baseX
+     * @param baseY
+     * @param useBgColors
+     * @param drawContext
+     */
+    public static void renderNbtItemsPreview(ItemStack stackIn, @Nonnull NbtCompound itemsTag, int baseX, int baseY, boolean useBgColors, DrawContext drawContext)
+    {
+        if (InventoryUtils.hasNbtItems(itemsTag))
+        {
+            DefaultedList<ItemStack> items = InventoryUtils.getNbtItems(itemsTag, -1);
+
+            if (items.size() == 0)
+            {
+                return;
+            }
+
+            InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stackIn);
+            InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
+
+            int screenWidth = GuiUtils.getScaledWindowWidth();
+            int screenHeight = GuiUtils.getScaledWindowHeight();
+            int height = props.height + 18;
+            int x = MathHelper.clamp(baseX + 8, 0, screenWidth - props.width);
+            int y = MathHelper.clamp(baseY - height, 0, screenHeight - height);
+
+            color(1f, 1f, 1f, 1f);
+            disableDiffuseLighting();
+
+            Matrix4fStack matrix4fStack = RenderSystem.getModelViewStack();
+            matrix4fStack.pushMatrix();
+            matrix4fStack.translate(0, 0, 500);
+            RenderSystem.applyModelViewMatrix();
+
+            InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc());
+
+            enableDiffuseLightingGui3D();
+
+            Inventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
+            InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc(), drawContext);
 
             matrix4fStack.popMatrix();
             RenderSystem.applyModelViewMatrix();
@@ -1244,7 +1312,6 @@ public class RenderUtils
 
         setupGuiTransform(x, y, model.hasDepth(), zLevel);
 
-        // TODO -- Verify we get the correct rotations for this method using the matrix4fRotateFix()
         matrix4fStack.rotateX(matrix4fRotateFix(30));
         matrix4fStack.rotateY(matrix4fRotateFix(225));
 
@@ -1389,4 +1456,50 @@ public class RenderUtils
      * Only required for translating the values to their RotationAxis.POSITIVE_?.rotationDegrees() equivalence
      */
     public static float matrix4fRotateFix(float ang) { return (ang * 0.017453292F); }
+
+    /**
+     * Check if a BufferBuilder is safe to use.
+     * This is cursed, but nesscary so we can be sure things won't crash due to 'BufferBuilder' issues
+     * @return (true|false)
+     */
+    public static boolean isBufferBuilderSafe(BufferBuilder buffer)
+    {
+        if (buffer == null)
+        {
+            return false;
+        }
+
+        // To be on the safe side, these things are angry
+        try
+        {
+            IMixinBufferBuilder test = (IMixinBufferBuilder) buffer;
+
+            if (test.getVertexCount() == 0)
+            {
+                return false;
+            }
+
+            if (test.getVertexSize() == 0)
+            {
+                return false;
+            }
+
+            if (test.getDrawMode() == null)
+            {
+                return false;
+            }
+
+            if (test.getBuffer() == null)
+            {
+                return false;
+            }
+
+            return test.isBuilding();
+        }
+        catch (Exception e)
+        {
+            MaLiLib.logger.warn("Exception caught testing if BufferBuilder is safe (it's not) --> Reason: {}", e.getLocalizedMessage());
+            return false;
+        }
+    }
 }
