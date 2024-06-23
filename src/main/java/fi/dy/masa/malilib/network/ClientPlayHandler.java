@@ -63,7 +63,7 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
      * @param data (The Data type packet)
      * @param <P> (The Type of Data as a Generic)
      */
-    @ApiStatus.Internal
+    @ApiStatus.Experimental
     public <P extends IClientPayloadData> void decodeClientData(Identifier channel, P data)
     {
         if (this.handlers.isEmpty() == false)
