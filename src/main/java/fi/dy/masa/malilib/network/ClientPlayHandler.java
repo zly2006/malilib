@@ -55,4 +55,23 @@ public class ClientPlayHandler<T extends CustomPayload> implements IClientPlayHa
             }
         }
     }
+
+    /**
+     * This allows your Data Channel to be "shared" among more than one mod.
+     * Using the IClientPayloadData interface as the Data Packet type.
+     * @param channel (The shared Channel)
+     * @param data (The Data type packet)
+     * @param <P> (The Type of Data as a Generic)
+     */
+    @ApiStatus.Internal
+    public <P extends IClientPayloadData> void decodeServerData(Identifier channel, P data)
+    {
+        if (this.handlers.isEmpty() == false)
+        {
+            for (IPluginClientPlayHandler<T> handler : this.handlers.get(channel))
+            {
+                handler.decodeClientData(channel, data);
+            }
+        }
+    }
 }
