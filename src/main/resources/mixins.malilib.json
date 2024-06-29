@@ -14,12 +14,13 @@
         "MixinKeyboard",
         "MixinMinecraftClient",
         "MixinMouse",
-        "MixinWorldRenderer"
-    ],
-    "mixins": [
-        "MixinMinecraftServer"
+        "MixinWorldRenderer",
+        "MixinMinecraftServer",
+        "inventoryOwner.MixinHorseEntity",
+        "inventoryOwner.MixinPiglinEntity",
+        "inventoryOwner.MixinSimpleInventory"
     ],
     "injectors": {
         "defaultRequire": 1
-  }
+    }
 }
