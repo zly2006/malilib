@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.mixin.inventoryOwner;
+package fi.dy.masa.malilib.mixin;
 
 import fi.dy.masa.malilib.util.IEntityOwnedInventory;
 import net.minecraft.entity.Entity;

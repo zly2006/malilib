@@ -16,9 +16,9 @@
         "MixinMouse",
         "MixinWorldRenderer",
         "MixinMinecraftServer",
-        "inventoryOwner.MixinHorseEntity",
-        "inventoryOwner.MixinPiglinEntity",
-        "inventoryOwner.MixinSimpleInventory"
+        "MixinHorseEntity",
+        "MixinPiglinEntity",
+        "MixinSimpleInventory"
     ],
     "injectors": {
         "defaultRequire": 1
