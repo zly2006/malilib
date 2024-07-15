@@ -35,6 +35,11 @@ public class ConfigDouble extends ConfigBase<ConfigDouble> implements IConfigDou
         this(name, defaultValue, minValue, maxValue, false, comment, prettyName);
     }
 
+    public ConfigDouble(String name, double defaultValue, double minValue, double maxValue, boolean useSlider, String comment)
+    {
+        this(name, defaultValue, minValue, maxValue, useSlider, comment, name);
+    }
+
     public ConfigDouble(String name, double defaultValue, double minValue, double maxValue, boolean useSlider, String comment, String prettyName)
     {
         super(ConfigType.DOUBLE, name, comment, prettyName);
