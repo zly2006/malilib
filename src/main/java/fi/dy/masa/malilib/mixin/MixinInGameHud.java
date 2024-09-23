@@ -18,18 +18,7 @@ import fi.dy.masa.malilib.event.RenderEventHandler;
 public abstract class MixinInGameHud
 {
     @Shadow @Final private MinecraftClient client;
-    // REVERT
-    //@Shadow @Final private LayeredDrawer layeredDrawer;
 
-    /*
-    @Inject(method = "<init>", at = @At("TAIL"))
-    private void onInit(CallbackInfo info)
-    {
-        this.layeredDrawer.addLayer(this::malilib_onGameOverlayPost);
-    }
-    */
-
-    //@Unique
     @Inject(method = "render", at = @At("TAIL"))
     private void malilib_onGameOverlayPost(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci)
     {

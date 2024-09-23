@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.ApiStatus;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
@@ -75,6 +76,11 @@ public class InputEventHandler implements IKeybindManager, IInputManager
     @Override
     public void updateUsedKeys()
     {
+        if (this.mc == null)
+        {
+            return;
+        }
+
         this.hotkeyMap.clear();
 
         for (IKeybindProvider handler : this.keybindProviders)
@@ -134,12 +140,16 @@ public class InputEventHandler implements IKeybindManager, IInputManager
         this.mouseHandlers.remove(handler);
     }
 
-    /**
-     * NOT PUBLIC API - DO NOT CALL
-     */
+    @ApiStatus.Internal
     public boolean onKeyInput(int keyCode, int scanCode, int modifiers, int action)
     {
-        boolean eventKeyState = action != GLFW.GLFW_RELEASE;
+        boolean eventKeyState;
+
+        if (this.mc == null)
+        {
+            return false;
+        }
+        eventKeyState = action != GLFW.GLFW_RELEASE;
 
         // Update the cached pressed keys status
         KeybindMulti.onKeyInputPre(keyCode, scanCode, modifiers, action);
@@ -161,13 +171,15 @@ public class InputEventHandler implements IKeybindManager, IInputManager
         return cancel;
     }
 
-    /**
-     * NOT PUBLIC API - DO NOT CALL
-     */
+    @ApiStatus.Internal
     public boolean onMouseClick(int mouseX, int mouseY, int eventButton, int action)
     {
         boolean cancel = false;
 
+        if (this.mc == null)
+        {
+            return false;
+        }
         if (eventButton != -1)
         {
             boolean eventButtonState = action == GLFW.GLFW_PRESS;
@@ -203,14 +215,20 @@ public class InputEventHandler implements IKeybindManager, IInputManager
         }
     }
 
-    /**
-     * NOT PUBLIC API - DO NOT CALL
-     */
+    @ApiStatus.Internal
     public boolean onMouseScroll(final int mouseX, final int mouseY, final double xOffset, final double yOffset)
     {
-        boolean discrete = this.mc.options.getDiscreteMouseScroll().getValue();
-        double sensitivity = this.mc.options.getMouseWheelSensitivity().getValue();
-        double amount = (discrete ? Math.signum(yOffset) : yOffset) * sensitivity;
+        boolean discrete;
+        double sensitivity;
+        double amount;
+
+        if (this.mc == null)
+        {
+            return false;
+        }
+        discrete = this.mc.options.getDiscreteMouseScroll().getValue();
+        sensitivity = this.mc.options.getMouseWheelSensitivity().getValue();
+        amount = (discrete ? Math.signum(yOffset) : yOffset) * sensitivity;
 
         if (MaLiLibConfigs.Debug.MOUSE_SCROLL_DEBUG.getBooleanValue())
         {
@@ -249,11 +267,13 @@ public class InputEventHandler implements IKeybindManager, IInputManager
         return false;
     }
 
-    /**
-     * NOT PUBLIC API - DO NOT CALL
-     */
+    @ApiStatus.Internal
     public void onMouseMove(final int mouseX, final int mouseY)
     {
+        if (this.mc == null)
+        {
+            return;
+        }
         if (this.mouseHandlers.isEmpty() == false)
         {
             for (IMouseInputHandler handler : this.mouseHandlers)
