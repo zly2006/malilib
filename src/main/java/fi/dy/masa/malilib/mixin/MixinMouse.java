@@ -24,32 +24,26 @@ public abstract class MixinMouse
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/Mouse;hasResolutionChanged:Z", ordinal = 0))
     private void hookOnMouseMove(long handle, double xpos, double ypos, CallbackInfo ci)
     {
-        if (this.client != null)
-        {
-            Window window = this.client.getWindow();
-            int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
-            int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
+        Window window = this.client.getWindow();
+        int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
+        int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
 
-            ((InputEventHandler) InputEventHandler.getInputManager()).onMouseMove(mouseX, mouseY);
-        }
+        ((InputEventHandler) InputEventHandler.getInputManager()).onMouseMove(mouseX, mouseY, this.client);
     }
 
     @Inject(method = "onMouseScroll", cancellable = true,
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", ordinal = 0))
     private void hookOnMouseScroll(long handle, double xOffset, double yOffset, CallbackInfo ci)
     {
-        if (this.client != null)
-        {
-            Window window = this.client.getWindow();
-            int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
-            int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
+        Window window = this.client.getWindow();
+        int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
+        int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
 
-            if (((InputEventHandler) InputEventHandler.getInputManager()).onMouseScroll(mouseX, mouseY, xOffset, yOffset))
-            {
-                this.eventDeltaHorizontalWheel = 0.0;
-                this.eventDeltaVerticalWheel = 0.0;
-                ci.cancel();
-            }
+        if (((InputEventHandler) InputEventHandler.getInputManager()).onMouseScroll(mouseX, mouseY, xOffset, yOffset, this.client))
+        {
+            this.eventDeltaHorizontalWheel = 0.0;
+            this.eventDeltaVerticalWheel = 0.0;
+            ci.cancel();
         }
     }
 
@@ -57,16 +51,13 @@ public abstract class MixinMouse
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;IS_SYSTEM_MAC:Z", ordinal = 0))
     private void hookOnMouseClick(long handle, final int button, final int action, int mods, CallbackInfo ci)
     {
-        if (this.client != null)
-        {
-            Window window = this.client.getWindow();
-            int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
-            int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
+        Window window = this.client.getWindow();
+        int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
+        int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
 
-            if (((InputEventHandler) InputEventHandler.getInputManager()).onMouseClick(mouseX, mouseY, button, action))
-            {
-                ci.cancel();
-            }
+        if (((InputEventHandler) InputEventHandler.getInputManager()).onMouseClick(mouseX, mouseY, button, action, this.client))
+        {
+            ci.cancel();
         }
     }
 }
