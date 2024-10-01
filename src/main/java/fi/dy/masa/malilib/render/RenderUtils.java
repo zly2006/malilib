@@ -1232,7 +1232,7 @@ public class RenderUtils
     {
         if (InventoryUtils.hasNbtItems(itemsTag))
         {
-            DefaultedList<ItemStack> items = InventoryUtils.getNbtItems(itemsTag, -1);
+            DefaultedList<ItemStack> items = InventoryUtils.getNbtItems(itemsTag);
 
             if (items.size() == 0)
             {
