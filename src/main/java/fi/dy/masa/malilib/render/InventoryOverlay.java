@@ -755,7 +755,7 @@ public class InventoryOverlay
     public static void renderLockedSlotAt(float x, float y, float scale, DrawContext drawContext, double mouseX, double mouseY)
     {
         MatrixStack matrixStack = drawContext.getMatrices();
-        int color = -1;
+        //int color = -1;
 
         matrixStack.push();
         matrixStack.translate(x, y, 0.f);
@@ -764,7 +764,7 @@ public class InventoryOverlay
         RenderUtils.enableDiffuseLightingGui3D();
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        drawContext.drawGuiTexture(TEXTURE_LOCKED_SLOT, 0, 0, 18, 18, color);
+        drawContext.drawGuiTexture(TEXTURE_LOCKED_SLOT, 0, 0, 18, 18, 18);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         matrixStack.pop();
