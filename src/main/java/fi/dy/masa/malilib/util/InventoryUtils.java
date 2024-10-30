@@ -296,7 +296,8 @@ public class InventoryUtils
 
         if (isCreative)
         {
-            player.getInventory().addPickBlock(stackReference);
+            // FIXME addPickBlock()
+            player.getInventory().method_65126(stackReference);
             mc.interactionManager.clickCreativeStack(player.getMainHandStack(), 36 + player.getInventory().selectedSlot); // sendSlotPacket
             return true;
         }
