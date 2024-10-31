@@ -232,28 +232,54 @@ public class InventoryOverlay
         RenderUtils.drawTexturedRectBatched(x +   7, y +   7,   7,  17, 162, 108, buffer); // middle
     }
 
-    public static void renderBrewerBackgroundSlots(int x, int y, DrawContext drawContext)
+    public static void renderBrewerBackgroundSlots(Inventory inv, int x, int y, DrawContext drawContext)
     {
-        renderBrewerBackgroundSlots(x, y, 1.0f, drawContext, 0, 0);
+        renderBrewerBackgroundSlots(inv, x, y, 0.9f, drawContext, 0, 0);
     }
 
-    public static void renderBrewerBackgroundSlots(int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
+    public static void renderBrewerBackgroundSlots(Inventory inv, int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
     {
-        renderBackgroundSlotAt(x + 47, y + 42, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
-        renderBackgroundSlotAt(x + 70, y + 49, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
-        renderBackgroundSlotAt(x + 93, y + 42, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
-        renderBackgroundSlotAt(x +  8,  y + 8, scale, TEXTURE_EMPTY_BREWER_FUEL, drawContext, mouseX, mouseY);
+        if (inv.getStack(0).isEmpty())
+        {
+            renderBackgroundSlotAt(x + 47, y + 42, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
+        }
+        if (inv.getStack(1).isEmpty())
+        {
+            renderBackgroundSlotAt(x + 70, y + 49, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
+        }
+        if (inv.getStack(2).isEmpty())
+        {
+            renderBackgroundSlotAt(x + 93, y + 42, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
+        }
+        if (inv.getStack(4).isEmpty())
+        {
+            renderBackgroundSlotAt(x + 8, y + 8, scale, TEXTURE_EMPTY_BREWER_FUEL, drawContext, mouseX, mouseY);
+        }
     }
 
-    public static void renderHorseArmorBackgroundSlots(int x, int y, DrawContext drawContext)
+    public static void renderHorseArmorBackgroundSlots(Inventory inv, int x, int y, DrawContext drawContext)
     {
-        renderHorseArmorBackgroundSlots(x, y, 1.0f, drawContext, 0, 0);
+        renderHorseArmorBackgroundSlots(inv, x, y, 0.9f, false, drawContext, 0, 0);
     }
 
-    public static void renderHorseArmorBackgroundSlots(int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
+    public static void renderHorseArmorBackgroundSlots(Inventory inv, int x, int y, float scale, boolean llama, DrawContext drawContext, double mouseX, double mouseY)
     {
-        renderBackgroundSlotAt(        x, y, scale, TEXTURE_EMPTY_HORSE_ARMOR, drawContext, mouseX, mouseY);
-        renderBackgroundSlotAt(x + 18, y, scale, TEXTURE_EMPTY_SADDLE, drawContext, mouseX, mouseY);
+        if (inv.getStack(0).isEmpty())
+        {
+            if (llama)
+            {
+                renderBackgroundSlotAt(x, y, scale, TEXTURE_EMPTY_LLAMA_ARMOR, drawContext, mouseX, mouseY);
+            }
+            else
+            {
+                renderBackgroundSlotAt(x, y, scale, TEXTURE_EMPTY_HORSE_ARMOR, drawContext, mouseX, mouseY);
+            }
+        }
+
+        if (inv.getStack(1).isEmpty())
+        {
+            renderBackgroundSlotAt(x, y + 18, scale, TEXTURE_EMPTY_SADDLE, drawContext, mouseX, mouseY);
+        }
     }
 
     public static void renderEquipmentOverlayBackground(int x, int y, LivingEntity entity, DrawContext drawContext)
@@ -292,11 +318,12 @@ public class InventoryOverlay
         }
         catch (Exception ignored) { }
 
-        RenderUtils.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        //RenderUtils.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
         if (entity.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty())
         {
-            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_SHIELD, drawContext);
+            //RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_SHIELD, drawContext);
+            renderBackgroundSlotAt(x + 28 + 1, y + 3 * 18 + 7 + 1, TEXTURE_EMPTY_SHIELD, drawContext);
         }
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
@@ -306,7 +333,8 @@ public class InventoryOverlay
             if (entity.getEquippedStack(eqSlot).isEmpty())
             {
                 Identifier texture = EMPTY_SLOT_TEXTURES[eqSlot.getEntitySlotId()];
-                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, texture, drawContext);
+                //RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, texture, drawContext);
+                renderBackgroundSlotAt(x + xOff + 1, y + yOff + 1, texture, drawContext);
             }
         }
     }
@@ -901,6 +929,11 @@ public class InventoryOverlay
         {
             hoveredStack = null;
         }
+    }
+
+    public static void renderBackgroundSlotAt(float x, float y, Identifier texture, DrawContext drawContext)
+    {
+        renderBackgroundSlotAt(x, y, 0.9f, texture, drawContext, 0, 0);
     }
 
     public static void renderBackgroundSlotAt(float x, float y, float scale, Identifier texture, DrawContext drawContext, double mouseX, double mouseY)
