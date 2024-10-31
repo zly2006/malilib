@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.block.*;
@@ -64,18 +66,32 @@ public class InventoryOverlay
     public static final Identifier TEXTURE_PLAYER_INV       = Identifier.ofVanilla("textures/gui/container/inventory.png");
     public static final Identifier TEXTURE_SINGLE_CHEST     = Identifier.ofVanilla("textures/gui/container/shulker_box.png");
 
-    public static final Identifier TEXTURE_EMPTY_SHIELD     = Identifier.ofVanilla("item/empty_armor_slot_shield");
+    //public static final Identifier TEXTURE_EMPTY_SHIELD     = Identifier.ofVanilla("item/empty_armor_slot_shield");
+    public static final Identifier TEXTURE_EMPTY_SHIELD     = Identifier.ofVanilla("container/slot/shield");
     public static final Identifier TEXTURE_LOCKED_SLOT      = Identifier.ofVanilla("container/crafter/disabled_slot");
+
+    // Additional Empty Slot Textures
+    public static final Identifier TEXTURE_EMPTY_HORSE_ARMOR = Identifier.ofVanilla("container/slot/horse_armor");
+    public static final Identifier TEXTURE_EMPTY_LLAMA_ARMOR = Identifier.ofVanilla("container/slot/llama_armor");
+    public static final Identifier TEXTURE_EMPTY_SADDLE      = Identifier.ofVanilla("container/slot/saddle");
+    public static final Identifier TEXTURE_EMPTY_BREWER_FUEL = Identifier.ofVanilla("container/slot/brewing_fuel");
+    public static final Identifier TEXTURE_EMPTY_POTION      = Identifier.ofVanilla("container/slot/potion");
 
     private static final EquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
     public static final InventoryProperties INV_PROPS_TEMP = new InventoryProperties();
 
     private static final Identifier[] EMPTY_SLOT_TEXTURES = new Identifier[]
     {
+            /*
         Identifier.ofVanilla("item/empty_armor_slot_boots"),
         Identifier.ofVanilla("item/empty_armor_slot_leggings"),
         Identifier.ofVanilla("item/empty_armor_slot_chestplate"),
         Identifier.ofVanilla("item/empty_armor_slot_helmet")
+             */
+        Identifier.ofVanilla("container/slot/boots"),
+        Identifier.ofVanilla("container/slot/leggings"),
+        Identifier.ofVanilla("container/slot/chestplate"),
+        Identifier.ofVanilla("container/slot/helmet")
     };
 
     private static ItemStack hoveredStack = null;
@@ -214,6 +230,22 @@ public class InventoryOverlay
         RenderUtils.drawTexturedRectBatched(x      , y + 115,   0, 215, 169,   7, buffer); // bottom (left)
         RenderUtils.drawTexturedRectBatched(x + 169, y +   7, 169, 107,   7, 115, buffer); // right (bottom)
         RenderUtils.drawTexturedRectBatched(x +   7, y +   7,   7,  17, 162, 108, buffer); // middle
+    }
+
+    public static void renderBrewerBackgroundSlots(int x, int y, DrawContext drawContext)
+    {
+        RenderUtils.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        RenderUtils.renderSprite(x + 47, y + 42, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_POTION, drawContext);
+        RenderUtils.renderSprite(x + 70, y + 49, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_POTION, drawContext);
+        RenderUtils.renderSprite(x + 93, y + 42, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_POTION, drawContext);
+        RenderUtils.renderSprite( x + 8,  y + 8, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_BREWER_FUEL, drawContext);
+    }
+
+    public static void renderHorseArmorBackgroundSlots(int x, int y, DrawContext drawContext)
+    {
+        RenderUtils.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        RenderUtils.renderSprite(        x, y, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_HORSE_ARMOR, drawContext);
+        RenderUtils.renderSprite(x + 18, y, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_SADDLE, drawContext);
     }
 
     public static void renderEquipmentOverlayBackground(int x, int y, LivingEntity entity, DrawContext drawContext)
