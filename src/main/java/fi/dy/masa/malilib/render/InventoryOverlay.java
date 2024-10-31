@@ -234,18 +234,26 @@ public class InventoryOverlay
 
     public static void renderBrewerBackgroundSlots(int x, int y, DrawContext drawContext)
     {
-        RenderUtils.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-        RenderUtils.renderSprite(x + 47, y + 42, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_POTION, drawContext);
-        RenderUtils.renderSprite(x + 70, y + 49, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_POTION, drawContext);
-        RenderUtils.renderSprite(x + 93, y + 42, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_POTION, drawContext);
-        RenderUtils.renderSprite( x + 8,  y + 8, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_BREWER_FUEL, drawContext);
+        renderBrewerBackgroundSlots(x, y, 1.0f, drawContext, 0, 0);
+    }
+
+    public static void renderBrewerBackgroundSlots(int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
+    {
+        renderBackgroundSlotAt(x + 47, y + 42, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
+        renderBackgroundSlotAt(x + 70, y + 49, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
+        renderBackgroundSlotAt(x + 93, y + 42, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
+        renderBackgroundSlotAt(x +  8,  y + 8, scale, TEXTURE_EMPTY_BREWER_FUEL, drawContext, mouseX, mouseY);
     }
 
     public static void renderHorseArmorBackgroundSlots(int x, int y, DrawContext drawContext)
     {
-        RenderUtils.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
-        RenderUtils.renderSprite(        x, y, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_HORSE_ARMOR, drawContext);
-        RenderUtils.renderSprite(x + 18, y, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_SADDLE, drawContext);
+        renderHorseArmorBackgroundSlots(x, y, 1.0f, drawContext, 0, 0);
+    }
+
+    public static void renderHorseArmorBackgroundSlots(int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
+    {
+        renderBackgroundSlotAt(        x, y, scale, TEXTURE_EMPTY_HORSE_ARMOR, drawContext, mouseX, mouseY);
+        renderBackgroundSlotAt(x + 18, y, scale, TEXTURE_EMPTY_SADDLE, drawContext, mouseX, mouseY);
     }
 
     public static void renderEquipmentOverlayBackground(int x, int y, LivingEntity entity, DrawContext drawContext)
@@ -884,6 +892,30 @@ public class InventoryOverlay
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         drawContext.drawGuiTexture(RenderLayer::getGuiTextured, TEXTURE_LOCKED_SLOT, 0, 0, 18, 18, color);
+        RenderUtils.forceDraw(drawContext);
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
+        matrixStack.pop();
+
+        if (mouseX >= x && mouseX < x + 16 * scale && mouseY >= y && mouseY < y + 16 * scale)
+        {
+            hoveredStack = null;
+        }
+    }
+
+    public static void renderBackgroundSlotAt(float x, float y, float scale, Identifier texture, DrawContext drawContext, double mouseX, double mouseY)
+    {
+        MatrixStack matrixStack = drawContext.getMatrices();
+        int color = -1;
+
+        matrixStack.push();
+        matrixStack.translate(x, y, 0.f);
+        matrixStack.scale(scale, scale, 1);
+
+        RenderUtils.enableDiffuseLightingGui3D();
+        RenderUtils.color(1f, 1f, 1f, 1f);
+
+        drawContext.drawGuiTexture(RenderLayer::getGuiTextured, texture, 0, 0, 18, 18, color);
         RenderUtils.forceDraw(drawContext);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
