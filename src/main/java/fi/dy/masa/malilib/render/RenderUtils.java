@@ -36,7 +36,6 @@ import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.map.MapState;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
@@ -107,7 +106,7 @@ public class RenderUtils
     /**
      * Get the VertexConsumer for the texture Layer from DrawContext.
      *
-     * @param textureLyaer
+     * @param textureLayer
      * @param drawContext
      * @return
      */

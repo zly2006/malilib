@@ -26,7 +26,9 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.minecraft.entity.passive.LlamaEntity;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.AbstractChestBoatEntity;
 import net.minecraft.entity.vehicle.ChestMinecartEntity;
@@ -232,6 +234,26 @@ public class InventoryOverlay
         RenderUtils.drawTexturedRectBatched(x +   7, y +   7,   7,  17, 162, 108, buffer); // middle
     }
 
+    public static void renderInventoryBackgroundSlots(InventoryRenderType type, Inventory inv, int x, int y, DrawContext drawContext)
+    {
+        if (type == InventoryRenderType.BREWING_STAND)
+        {
+            renderBrewerBackgroundSlots(inv, x, y, drawContext);
+        }
+        else if (type == InventoryRenderType.HORSE)
+        {
+            renderHorseArmorBackgroundSlots(inv, x, y, drawContext);
+        }
+        else if (type == InventoryRenderType.LLAMA)
+        {
+            renderLlamaArmorBackgroundSlots(inv, x, y, drawContext);
+        }
+        else if (type == InventoryRenderType.WOLF)
+        {
+            renderWolfArmorBackgroundSlots(inv, x, y, drawContext);
+        }
+    }
+
     public static void renderBrewerBackgroundSlots(Inventory inv, int x, int y, DrawContext drawContext)
     {
         renderBrewerBackgroundSlots(inv, x, y, 0.9f, drawContext, 0, 0);
@@ -259,26 +281,45 @@ public class InventoryOverlay
 
     public static void renderHorseArmorBackgroundSlots(Inventory inv, int x, int y, DrawContext drawContext)
     {
-        renderHorseArmorBackgroundSlots(inv, x, y, 0.9f, false, drawContext, 0, 0);
+        renderHorseArmorBackgroundSlots(inv, x, y, 0.9f, drawContext, 0, 0);
     }
 
-    public static void renderHorseArmorBackgroundSlots(Inventory inv, int x, int y, float scale, boolean llama, DrawContext drawContext, double mouseX, double mouseY)
+    public static void renderHorseArmorBackgroundSlots(Inventory inv, int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
     {
         if (inv.getStack(0).isEmpty())
         {
-            if (llama)
-            {
-                renderBackgroundSlotAt(x, y, scale, TEXTURE_EMPTY_LLAMA_ARMOR, drawContext, mouseX, mouseY);
-            }
-            else
-            {
-                renderBackgroundSlotAt(x, y, scale, TEXTURE_EMPTY_HORSE_ARMOR, drawContext, mouseX, mouseY);
-            }
+            renderBackgroundSlotAt(x, y, scale, TEXTURE_EMPTY_HORSE_ARMOR, drawContext, mouseX, mouseY);
         }
 
         if (inv.getStack(1).isEmpty())
         {
             renderBackgroundSlotAt(x, y + 18, scale, TEXTURE_EMPTY_SADDLE, drawContext, mouseX, mouseY);
+        }
+    }
+
+    public static void renderLlamaArmorBackgroundSlots(Inventory inv, int x, int y, DrawContext drawContext)
+    {
+        renderLlamaArmorBackgroundSlots(inv, x, y, 0.9f, drawContext, 0, 0);
+    }
+
+    public static void renderLlamaArmorBackgroundSlots(Inventory inv, int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
+    {
+        if (inv.getStack(0).isEmpty())
+        {
+            renderBackgroundSlotAt(x, y, scale, TEXTURE_EMPTY_LLAMA_ARMOR, drawContext, mouseX, mouseY);
+        }
+    }
+
+    public static void renderWolfArmorBackgroundSlots(Inventory inv, int x, int y, DrawContext drawContext)
+    {
+        renderWolfArmorBackgroundSlots(inv, x, y, 0.9f, drawContext, 0, 0);
+    }
+
+    public static void renderWolfArmorBackgroundSlots(Inventory inv, int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
+    {
+        if (inv.getStack(0).isEmpty())
+        {
+            renderBackgroundSlotAt(x, y, scale, TEXTURE_EMPTY_HORSE_ARMOR, drawContext, mouseX, mouseY);
         }
     }
 
@@ -384,7 +425,15 @@ public class InventoryOverlay
         }
         else if (inv instanceof IEntityOwnedInventory inventory)
         {
-            if (inventory.malilib$getEntityOwner() instanceof AbstractHorseEntity)
+            if (inventory.malilib$getEntityOwner() instanceof LlamaEntity)
+            {
+                return InventoryRenderType.LLAMA;
+            }
+            else if (inventory.malilib$getEntityOwner() instanceof WolfEntity)
+            {
+                return InventoryRenderType.WOLF;
+            }
+            else if (inventory.malilib$getEntityOwner() instanceof AbstractHorseEntity)
             {
                 return InventoryRenderType.HORSE;
             }
@@ -510,12 +559,19 @@ public class InventoryOverlay
                 entityType.equals(EntityType.DONKEY) ||
                 entityType.equals(EntityType.MULE) ||
                 entityType.equals(EntityType.CAMEL) ||
-                entityType.equals(EntityType.LLAMA) ||
-                entityType.equals(EntityType.TRADER_LLAMA) ||
                 entityType.equals(EntityType.SKELETON_HORSE) ||
                 entityType.equals(EntityType.ZOMBIE_HORSE))
             {
                 return InventoryRenderType.HORSE;
+            }
+            else if (entityType.equals(EntityType.LLAMA) ||
+                entityType.equals(EntityType.TRADER_LLAMA))
+            {
+                return InventoryRenderType.LLAMA;
+            }
+            else if (entityType.equals(EntityType.WOLF))
+            {
+                return InventoryRenderType.WOLF;
             }
             else if (entityType.equals(EntityType.VILLAGER) ||
                      entityType.equals(EntityType.ALLAY) ||
@@ -622,7 +678,7 @@ public class InventoryOverlay
             INV_PROPS_TEMP.width = 68;
             INV_PROPS_TEMP.height = 68;
         }
-        else if (type == InventoryRenderType.HORSE)
+        else if (type == InventoryRenderType.HORSE || type == InventoryRenderType.LLAMA || type == InventoryRenderType.WOLF)
         {
             INV_PROPS_TEMP.slotsPerRow = Math.max(1, totalSlots / 3);
             INV_PROPS_TEMP.slotOffsetX = 8;
@@ -998,6 +1054,8 @@ public class InventoryOverlay
         FURNACE,
         HOPPER,
         HORSE,
+        LLAMA,
+        WOLF,
         FIXED_27,
         FIXED_54,
         VILLAGER,
