@@ -850,7 +850,7 @@ public class InventoryOverlay
 
         if (hoveredStack != null)
         {
-            var stack = hoveredStack;
+            var stack = hoveredStack.copy();
             hoveredStack = null;
             // Some mixin / side effects can happen here
             drawContext.drawItemTooltip(mc.textRenderer, stack, (int) mouseX, (int) mouseY);
@@ -891,7 +891,7 @@ public class InventoryOverlay
 
         if (hoveredStack != null)
         {
-            stack = hoveredStack;
+            stack = hoveredStack.copy();
             hoveredStack = null;
             // Some mixin / side effects can happen here, so reset hoveredStack
             drawContext.drawItemTooltip(mc.textRenderer, stack, (int) mouseX, (int) mouseY);
@@ -977,7 +977,7 @@ public class InventoryOverlay
 
         if (mouseX >= x && mouseX < x + 16 * scale && mouseY >= y && mouseY < y + 16 * scale)
         {
-            hoveredStack = stack;
+            hoveredStack = stack.copy();
         }
     }
 
