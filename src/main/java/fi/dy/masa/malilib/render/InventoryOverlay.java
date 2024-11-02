@@ -31,10 +31,7 @@ import net.minecraft.entity.vehicle.HopperMinecartEntity;
 import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.item.*;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
@@ -368,6 +365,10 @@ public class InventoryOverlay
                 return InventoryRenderType.BOOKSHELF;
             }
         }
+        else if (item instanceof BundleItem)
+        {
+            return InventoryRenderType.BUNDLE;
+        }
 
         return InventoryRenderType.GENERIC;
     }
@@ -604,6 +605,16 @@ public class InventoryOverlay
             INV_PROPS_TEMP.width = 68;
             INV_PROPS_TEMP.height = 50;
             INV_PROPS_TEMP.totalSlots = 6;
+        }
+        else if (type == InventoryRenderType.BUNDLE)
+        {
+            INV_PROPS_TEMP.slotsPerRow = 9;
+            INV_PROPS_TEMP.slotOffsetX = 8;
+            INV_PROPS_TEMP.slotOffsetY = 8;
+            int rows = (int) (Math.ceil((double) totalSlots / (double) INV_PROPS_TEMP.slotsPerRow));
+            INV_PROPS_TEMP.width = Math.min(INV_PROPS_TEMP.slotsPerRow, totalSlots) * 18 + 14;
+            INV_PROPS_TEMP.height = rows * 18 + 14;
+            INV_PROPS_TEMP.totalSlots = rows * INV_PROPS_TEMP.slotsPerRow;
         }
         else
         {
@@ -933,6 +944,7 @@ public class InventoryOverlay
         VILLAGER,
         BOOKSHELF,
         SINGLE_ITEM,
+        BUNDLE,
         GENERIC;
     }
 
