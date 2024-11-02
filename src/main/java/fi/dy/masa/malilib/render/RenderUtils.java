@@ -1372,10 +1372,12 @@ public class RenderUtils
 
             enableDiffuseLightingGui3D();
 
+            /*
             if (type == InventoryOverlay.InventoryRenderType.BREWING_STAND)
             {
                 InventoryOverlay.renderBrewerBackgroundSlots(inv, x, y, drawContext);
             }
+             */
             if (type == InventoryOverlay.InventoryRenderType.CRAFTER && !nbt.isEmpty())
             {
                 lockedSlots = BlockUtils.getDisabledSlotsFromNbt(nbt);
