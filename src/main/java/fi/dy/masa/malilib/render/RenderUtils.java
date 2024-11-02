@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.render;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.mixin.IMixinDrawContext;
@@ -26,6 +27,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.MapIdComponent;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -49,9 +51,7 @@ import org.joml.Matrix4fStack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 public class RenderUtils
@@ -1326,13 +1326,17 @@ public class RenderUtils
 
         if (stack.getComponents().contains(DataComponentTypes.CONTAINER))
         {
-            items = InventoryUtils.getStoredItems(stack, ShulkerBoxBlockEntity.INVENTORY_SIZE);
+            //items = InventoryUtils.getStoredItems(stack, ShulkerBoxBlockEntity.INVENTORY_SIZE);
+            items = InventoryUtils.getStoredItems(stack, -1);
 
             if (items.isEmpty())
             {
                 return;
             }
 
+            NbtCompound nbt = InventoryUtils.getStoredBlockEntityNbt(stack);
+            Set<Integer> lockedSlots = new HashSet<>();
+            Inventory inv = InventoryUtils.getAsInventory(items);
             InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
             InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
 
@@ -1341,6 +1345,9 @@ public class RenderUtils
             int height = props.height + 18;
             int x = MathHelper.clamp(baseX + 8, 0, screenWidth - props.width);
             int y = MathHelper.clamp(baseY - height, 0, screenHeight - height);
+
+            // Mask items behind the shulker box display, trying to minimize the sharp corners
+            drawTexturedRect(GuiBase.BG_TEXTURE, x + 1, y + 1, 0, 0, props.width - 2, props.height - 2, drawContext);
 
             if (stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock)
             {
@@ -1360,16 +1367,28 @@ public class RenderUtils
             //drawContext.getMatrices().translate(0, 0, 500);
             //RenderSystem.applyModelViewMatrix();
 
-            InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc());
+            InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, props.totalSlots, mc());
+            color(1f, 1f, 1f, 1f);
 
             enableDiffuseLightingGui3D();
 
-            Inventory inv = InventoryUtils.getAsInventory(items);
-            InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, (inv.size()), mc(), drawContext);
+            if (type == InventoryOverlay.InventoryRenderType.BREWING_STAND)
+            {
+                InventoryOverlay.renderBrewerBackgroundSlots(inv, x, y, drawContext);
+            }
+            if (type == InventoryOverlay.InventoryRenderType.CRAFTER && !nbt.isEmpty())
+            {
+                lockedSlots = BlockUtils.getDisabledSlotsFromNbt(nbt);
+                InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, lockedSlots, mc(), drawContext);
+            }
+            else
+            {
+                InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc(), drawContext);
+            }
 
             matrix4fStack.popMatrix();
             //drawContext.getMatrices().pop();
-            forceDraw(drawContext);
+            //forceDraw(drawContext);
             //RenderSystem.applyModelViewMatrix();
         }
     }
