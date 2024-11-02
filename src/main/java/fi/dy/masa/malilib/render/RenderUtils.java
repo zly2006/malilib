@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.mixin.IMixinDrawContext;
@@ -33,9 +34,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.item.map.MapState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.DyeColor;
@@ -1393,6 +1392,57 @@ public class RenderUtils
         }
     }
 
+    public static void renderBundlePreview(ItemStack stack, int baseX, int baseY, boolean useBgColors, DrawContext drawContext)
+    {
+        DefaultedList<ItemStack> items;
+
+        if (stack.getComponents().contains(DataComponentTypes.BUNDLE_CONTENTS))
+        {
+            int count = InventoryUtils.bundleCountItems(stack);
+            items = InventoryUtils.getBundleItems(stack, count);
+
+            if (items.isEmpty())
+            {
+                return;
+            }
+
+            Inventory inv = InventoryUtils.getAsInventory(items);
+            InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
+            InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, count);
+
+            int screenWidth = GuiUtils.getScaledWindowWidth();
+            int screenHeight = GuiUtils.getScaledWindowHeight();
+            int height = props.height + 18;
+            int x = MathHelper.clamp(baseX + 8, 0, screenWidth - props.width);
+            int y = MathHelper.clamp(baseY - height, 0, screenHeight - height);
+
+            // Mask items behind the shulker box display, trying to minimize the sharp corners
+            drawTexturedRect(GuiBase.BG_TEXTURE, x + 1, y + 1, 0, 0, props.width - 2, props.height - 2, drawContext);
+
+            setBundleBackgroundTintColor(stack, useBgColors);
+            disableDiffuseLighting();
+
+            Matrix4fStack matrix4fStack = RenderSystem.getModelViewStack();
+            matrix4fStack.pushMatrix();
+            matrix4fStack.translate(0, 0, 500);
+            //drawContext.getMatrices().push();
+            //drawContext.getMatrices().translate(0, 0, 500);
+            //RenderSystem.applyModelViewMatrix();
+
+            InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, props.totalSlots, mc());
+            color(1f, 1f, 1f, 1f);
+
+            enableDiffuseLightingGui3D();
+
+            InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, count, mc(), drawContext);
+
+            matrix4fStack.popMatrix();
+            //drawContext.getMatrices().pop();
+            //forceDraw(drawContext);
+            //RenderSystem.applyModelViewMatrix();
+        }
+    }
+
     /**
      *  Render's the Inventory Overlay using an NbtCompound Items[] List format instead of the Item Container Component,
      *  Such as for a Crafter, etc.  This is meant to be simillar to the 1.20.4 behavior, minus the "BlockEntityTag";
@@ -1481,6 +1531,101 @@ public class RenderUtils
         int l = (color & 255) >> 0;
 
         return new float[]{(float)j / 255.0F, (float)k / 255.0F, (float)l / 255.0F};
+    }
+
+    public static void setBundleBackgroundTintColor(ItemStack bundle, boolean useBgColors)
+    {
+        if (useBgColors)
+        {
+            final DyeColor dye = getBundleColor(bundle);
+
+            if (dye != null)
+            {
+                final float[] colors = getColorComponents(dye.getEntityColor());
+                color(colors[0], colors[1], colors[2], 1f);
+                return;
+            }
+        }
+
+        color(1f, 1f, 1f, 1f);
+    }
+
+    public static DyeColor getBundleColor(ItemStack bundle)
+    {
+        Item item = bundle.getItem();
+
+        if (item == null)
+        {
+            return null;
+        }
+        if (item.equals(Items.WHITE_BUNDLE))
+        {
+            return DyeColor.WHITE;
+        }
+        else if (item.equals(Items.ORANGE_BUNDLE))
+        {
+            return DyeColor.ORANGE;
+        }
+        else if (item.equals(Items.MAGENTA_BUNDLE))
+        {
+            return DyeColor.MAGENTA;
+        }
+        else if (item.equals(Items.LIGHT_BLUE_BUNDLE))
+        {
+            return DyeColor.LIGHT_BLUE;
+        }
+        else if (item.equals(Items.YELLOW_BUNDLE))
+        {
+            return DyeColor.YELLOW;
+        }
+        else if (item.equals(Items.LIME_BUNDLE))
+        {
+            return DyeColor.LIME;
+        }
+        else if (item.equals(Items.PINK_BUNDLE))
+        {
+            return DyeColor.PINK;
+        }
+        else if (item.equals(Items.GRAY_BUNDLE))
+        {
+            return DyeColor.GRAY;
+        }
+        else if (item.equals(Items.LIGHT_GRAY_BUNDLE))
+        {
+            return DyeColor.LIGHT_GRAY;
+        }
+        else if (item.equals(Items.CYAN_BUNDLE))
+        {
+            return DyeColor.CYAN;
+        }
+        else if (item.equals(Items.BLUE_BUNDLE))
+        {
+            return DyeColor.BLUE;
+        }
+        else if (item.equals(Items.BROWN_BUNDLE))
+        {
+            return DyeColor.BROWN;
+        }
+        else if (item.equals(Items.GREEN_BUNDLE))
+        {
+            return DyeColor.GREEN;
+        }
+        else if (item.equals(Items.RED_BUNDLE))
+        {
+            return DyeColor.RED;
+        }
+        else if (item.equals(Items.BLACK_BUNDLE))
+        {
+            return DyeColor.BLACK;
+        }
+        else if (item.equals(Items.PURPLE_BUNDLE))
+        {
+            return DyeColor.PURPLE;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public static void renderModelInGui(int x, int y, BakedModel model, BlockState state, float zLevel)
