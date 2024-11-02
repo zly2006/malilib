@@ -359,6 +359,14 @@ public class InventoryOverlay
             {
                 return InventoryRenderType.CRAFTER;
             }
+            else if (block instanceof DecoratedPotBlock || block instanceof JukeboxBlock || block instanceof LecternBlock)
+            {
+                return InventoryRenderType.SINGLE_ITEM;
+            }
+            else if (block instanceof ChiseledBookshelfBlock)
+            {
+                return InventoryRenderType.BOOKSHELF;
+            }
         }
 
         return InventoryRenderType.GENERIC;
@@ -413,6 +421,16 @@ public class InventoryOverlay
             else if (blockType.equals(BlockEntityType.CRAFTER))
             {
                 return InventoryRenderType.CRAFTER;
+            }
+            else if (blockType.equals(BlockEntityType.DECORATED_POT) ||
+                    blockType.equals(BlockEntityType.JUKEBOX) ||
+                    blockType.equals(BlockEntityType.LECTERN))
+            {
+                return InventoryRenderType.SINGLE_ITEM;
+            }
+            else if (blockType.equals(BlockEntityType.CHISELED_BOOKSHELF))
+            {
+                return InventoryRenderType.BOOKSHELF;
             }
         }
 
@@ -534,18 +552,11 @@ public class InventoryOverlay
             INV_PROPS_TEMP.slotsPerRow = 9;
             INV_PROPS_TEMP.slotOffsetX = 0;
             INV_PROPS_TEMP.slotOffsetY = 0;
-            INV_PROPS_TEMP.width = 127;
+            //INV_PROPS_TEMP.width = 127;
+            INV_PROPS_TEMP.width = 109;
             INV_PROPS_TEMP.height = 72;
         }
-        else if (type == InventoryRenderType.CRAFTER)
-        {
-            INV_PROPS_TEMP.slotsPerRow = 3;
-            INV_PROPS_TEMP.slotOffsetX = 8;
-            INV_PROPS_TEMP.slotOffsetY = 8;
-            INV_PROPS_TEMP.width = 68;
-            INV_PROPS_TEMP.height = 68;
-        }
-        else if (type == InventoryRenderType.DISPENSER)
+        else if (type == InventoryRenderType.CRAFTER || type == InventoryRenderType.DISPENSER)
         {
             INV_PROPS_TEMP.slotsPerRow = 3;
             INV_PROPS_TEMP.slotOffsetX = 8;
@@ -576,6 +587,23 @@ public class InventoryOverlay
             INV_PROPS_TEMP.slotOffsetY = 8;
             INV_PROPS_TEMP.width = 50;
             INV_PROPS_TEMP.height = 86;
+        }
+        else if (type == InventoryRenderType.SINGLE_ITEM)
+        {
+            INV_PROPS_TEMP.slotsPerRow = 1;
+            INV_PROPS_TEMP.slotOffsetX = 8;
+            INV_PROPS_TEMP.slotOffsetY = 8;
+            INV_PROPS_TEMP.width = 32;
+            INV_PROPS_TEMP.height = 32;
+        }
+        else if (type == InventoryRenderType.BOOKSHELF)
+        {
+            INV_PROPS_TEMP.slotsPerRow = 3;
+            INV_PROPS_TEMP.slotOffsetX = 8;
+            INV_PROPS_TEMP.slotOffsetY = 8;
+            INV_PROPS_TEMP.width = 68;
+            INV_PROPS_TEMP.height = 50;
+            INV_PROPS_TEMP.totalSlots = 6;
         }
         else
         {
@@ -903,6 +931,8 @@ public class InventoryOverlay
         FIXED_27,
         FIXED_54,
         VILLAGER,
+        BOOKSHELF,
+        SINGLE_ITEM,
         GENERIC;
     }
 
