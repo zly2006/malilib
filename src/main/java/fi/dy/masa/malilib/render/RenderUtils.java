@@ -1674,8 +1674,9 @@ public class RenderUtils
         matrix4fStack.translate((float) -0.5, (float) -0.5, (float) -0.5);
         int color = 0xFFFFFFFF;
 
-        if (model.isBuiltin() == false)
-        {
+        // TODO watch for side effects
+        //if (model.isBuiltin() == false)
+        //{
             RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_SOLID);
             //RenderSystem.setShader(GameRenderer::getRenderTypeSolidProgram);
             //RenderSystem.applyModelViewMatrix();
@@ -1699,7 +1700,7 @@ public class RenderUtils
                 builtBuffer.close();
             }
             catch (Exception ignored) { }
-        }
+        //}
 
         matrix4fStack.popMatrix();
     }
