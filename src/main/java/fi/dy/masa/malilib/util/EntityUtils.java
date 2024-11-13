@@ -648,7 +648,7 @@ public class EntityUtils
 
         if (nbt.contains(NbtKeys.FACING, Constants.NBT.TAG_BYTE))
         {
-            facing = Direction.fromHorizontal(nbt.getByte(NbtKeys.FACING));
+            facing = Direction.fromHorizontalQuarterTurns(nbt.getByte(NbtKeys.FACING));
         }
         if (nbt.contains(NbtKeys.VARIANT, Constants.NBT.TAG_COMPOUND))
         {

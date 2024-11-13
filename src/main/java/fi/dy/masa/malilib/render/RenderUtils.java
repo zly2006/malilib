@@ -1210,11 +1210,11 @@ public class RenderUtils
         switch (side)
         {
             case DOWN:
-                matrix4fStack.rotateY(matrix4fRotateFix(180f - playerFacing.asRotation()));
+                matrix4fStack.rotateY(matrix4fRotateFix(180f - playerFacing.getPositiveHorizontalDegrees()));
                 matrix4fStack.rotateX(matrix4fRotateFix(90f));
                 break;
             case UP:
-                matrix4fStack.rotateY(matrix4fRotateFix(180f - playerFacing.asRotation()));
+                matrix4fStack.rotateY(matrix4fRotateFix(180f - playerFacing.getPositiveHorizontalDegrees()));
                 matrix4fStack.rotateX(matrix4fRotateFix(-90f));
                 break;
             case NORTH:
@@ -1637,6 +1637,7 @@ public class RenderUtils
 
         Matrix4fStack matrix4fStack = RenderSystem.getModelViewStack();
         matrix4fStack.pushMatrix();
+        // FIXME -- Deprecation (BLOCK_ATLAS_TEXTURE)
         bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
         mc().getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
 
