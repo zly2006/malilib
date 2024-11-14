@@ -30,6 +30,7 @@ import net.minecraft.entity.passive.LlamaEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.vehicle.AbstractChestBoatEntity;
 import net.minecraft.entity.vehicle.ChestMinecartEntity;
 import net.minecraft.entity.vehicle.HopperMinecartEntity;
@@ -420,6 +421,10 @@ public class InventoryOverlay
         {
             return InventoryRenderType.HOPPER;
         }
+        else if (inv instanceof PlayerInventory)
+        {
+            return InventoryRenderType.PLAYER;
+        }
         else if (inv instanceof IEntityOwnedInventory inventory)
         {
             if (inventory.malilib$getEntityOwner() instanceof LlamaEntity)
@@ -481,6 +486,10 @@ public class InventoryOverlay
             else if (block instanceof ChiseledBookshelfBlock)
             {
                 return InventoryRenderType.BOOKSHELF;
+            }
+            else if (block instanceof EnderChestBlock)
+            {
+                return InventoryRenderType.ENDER_CHEST;
             }
         }
         else if (item instanceof BundleItem)
@@ -551,6 +560,10 @@ public class InventoryOverlay
             {
                 return InventoryRenderType.BOOKSHELF;
             }
+            else if (blockType.equals(BlockEntityType.ENDER_CHEST))
+            {
+                return InventoryRenderType.ENDER_CHEST;
+            }
         }
 
         EntityType<?> entityType = EntityUtils.getEntityTypeFromNbt(nbt);
@@ -600,6 +613,10 @@ public class InventoryOverlay
                      entityType.equals(EntityType.ZOMBIE_VILLAGER))
             {
                 return InventoryRenderType.VILLAGER;
+            }
+            else if (entityType.equals(EntityType.PLAYER))
+            {
+                return InventoryRenderType.PLAYER;
             }
         }
 
@@ -743,7 +760,7 @@ public class InventoryOverlay
         }
         else
         {
-            if (type == InventoryRenderType.FIXED_27)
+            if (type == InventoryRenderType.FIXED_27 || type == InventoryRenderType.PLAYER || type == InventoryRenderType.ENDER_CHEST)
             {
                 totalSlots = 27;
             }
@@ -1098,6 +1115,8 @@ public class InventoryOverlay
         FIXED_27,
         FIXED_54,
         VILLAGER,
+        PLAYER,
+        ENDER_CHEST,
         BOOKSHELF,
         SINGLE_ITEM,
         BUNDLE,
