@@ -1,3 +1,3 @@
 files:
-  - source: /src/main/resources/assets/malilib/lang/en_us.json
+  - source: /src/main/resources/assets/malilib/lang/*.json
     translation: /src/main/resources/assets/malilib/lang/crowdin/%locale_with_underscore%.json
