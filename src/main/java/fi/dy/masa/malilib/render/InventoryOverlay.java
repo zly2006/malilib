@@ -23,7 +23,9 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.entity.passive.AbstractHorseEntity;
+import net.minecraft.entity.passive.LlamaEntity;
 import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.vehicle.AbstractChestBoatEntity;
@@ -64,6 +66,13 @@ public class InventoryOverlay
     public static final Identifier TEXTURE_EMPTY_SHIELD     = Identifier.ofVanilla("item/empty_armor_slot_shield");
     public static final Identifier TEXTURE_LOCKED_SLOT      = Identifier.ofVanilla("container/crafter/disabled_slot");
 
+    // Additional Empty Slot Textures
+    public static final Identifier TEXTURE_EMPTY_HORSE_ARMOR = Identifier.ofVanilla("container/slot/horse_armor");
+    public static final Identifier TEXTURE_EMPTY_LLAMA_ARMOR = Identifier.ofVanilla("container/slot/llama_armor");
+    public static final Identifier TEXTURE_EMPTY_SADDLE      = Identifier.ofVanilla("container/slot/saddle");
+    public static final Identifier TEXTURE_EMPTY_BREWER_FUEL = Identifier.ofVanilla("container/slot/brewing_fuel");
+    public static final Identifier TEXTURE_EMPTY_POTION      = Identifier.ofVanilla("container/slot/potion");
+
     private static final EquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
     public static final InventoryProperties INV_PROPS_TEMP = new InventoryProperties();
 
@@ -73,6 +82,12 @@ public class InventoryOverlay
         Identifier.ofVanilla("item/empty_armor_slot_leggings"),
         Identifier.ofVanilla("item/empty_armor_slot_chestplate"),
         Identifier.ofVanilla("item/empty_armor_slot_helmet")
+/*
+        Identifier.ofVanilla("container/slot/boots"),
+        Identifier.ofVanilla("container/slot/leggings"),
+        Identifier.ofVanilla("container/slot/chestplate"),
+        Identifier.ofVanilla("container/slot/helmet")
+ */
     };
 
     private static ItemStack hoveredStack = null;
@@ -213,6 +228,95 @@ public class InventoryOverlay
         RenderUtils.drawTexturedRectBatched(x +   7, y +   7,   7,  17, 162, 108, buffer); // middle
     }
 
+    public static void renderInventoryBackgroundSlots(InventoryRenderType type, Inventory inv, int x, int y, DrawContext drawContext)
+    {
+        if (type == InventoryRenderType.BREWING_STAND)
+        {
+            renderBrewerBackgroundSlots(inv, x, y, drawContext);
+        }
+        else if (type == InventoryRenderType.HORSE)
+        {
+            renderHorseArmorBackgroundSlots(inv, x, y, drawContext);
+        }
+        else if (type == InventoryRenderType.LLAMA)
+        {
+            renderLlamaArmorBackgroundSlots(inv, x, y, drawContext);
+        }
+        else if (type == InventoryRenderType.WOLF)
+        {
+            renderWolfArmorBackgroundSlots(inv, x, y, drawContext);
+        }
+    }
+
+    public static void renderBrewerBackgroundSlots(Inventory inv, int x, int y, DrawContext drawContext)
+    {
+        renderBrewerBackgroundSlots(inv, x, y, 0.9f, drawContext, 0, 0);
+    }
+
+    public static void renderBrewerBackgroundSlots(Inventory inv, int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
+    {
+        if (inv.getStack(0).isEmpty())
+        {
+            renderBackgroundSlotAt(x + 47, y + 42, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
+        }
+        if (inv.getStack(1).isEmpty())
+        {
+            renderBackgroundSlotAt(x + 70, y + 49, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
+        }
+        if (inv.getStack(2).isEmpty())
+        {
+            renderBackgroundSlotAt(x + 93, y + 42, scale, TEXTURE_EMPTY_POTION, drawContext, mouseX, mouseY);
+        }
+        if (inv.getStack(4).isEmpty())
+        {
+            renderBackgroundSlotAt(x + 8, y + 8, scale, TEXTURE_EMPTY_BREWER_FUEL, drawContext, mouseX, mouseY);
+        }
+    }
+
+    public static void renderHorseArmorBackgroundSlots(Inventory inv, int x, int y, DrawContext drawContext)
+    {
+        renderHorseArmorBackgroundSlots(inv, x, y, 0.9f, drawContext, 0, 0);
+    }
+
+    public static void renderHorseArmorBackgroundSlots(Inventory inv, int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
+    {
+        if (inv.getStack(0).isEmpty())
+        {
+            renderBackgroundSlotAt(x, y, scale, TEXTURE_EMPTY_HORSE_ARMOR, drawContext, mouseX, mouseY);
+        }
+
+        if (inv.getStack(1).isEmpty())
+        {
+            renderBackgroundSlotAt(x, y + 18, scale, TEXTURE_EMPTY_SADDLE, drawContext, mouseX, mouseY);
+        }
+    }
+
+    public static void renderLlamaArmorBackgroundSlots(Inventory inv, int x, int y, DrawContext drawContext)
+    {
+        renderLlamaArmorBackgroundSlots(inv, x, y, 0.9f, drawContext, 0, 0);
+    }
+
+    public static void renderLlamaArmorBackgroundSlots(Inventory inv, int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
+    {
+        if (inv.getStack(0).isEmpty())
+        {
+            renderBackgroundSlotAt(x, y, scale, TEXTURE_EMPTY_LLAMA_ARMOR, drawContext, mouseX, mouseY);
+        }
+    }
+
+    public static void renderWolfArmorBackgroundSlots(Inventory inv, int x, int y, DrawContext drawContext)
+    {
+        renderWolfArmorBackgroundSlots(inv, x, y, 0.9f, drawContext, 0, 0);
+    }
+
+    public static void renderWolfArmorBackgroundSlots(Inventory inv, int x, int y, float scale, DrawContext drawContext, double mouseX, double mouseY)
+    {
+        if (inv.getStack(0).isEmpty())
+        {
+            renderBackgroundSlotAt(x, y, scale, TEXTURE_EMPTY_HORSE_ARMOR, drawContext, mouseX, mouseY);
+        }
+    }
+
     public static void renderEquipmentOverlayBackground(int x, int y, LivingEntity entity, DrawContext drawContext)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
@@ -317,7 +421,15 @@ public class InventoryOverlay
         }
         else if (inv instanceof IEntityOwnedInventory inventory)
         {
-            if (inventory.malilib$getEntityOwner() instanceof AbstractHorseEntity)
+            if (inventory.malilib$getEntityOwner() instanceof LlamaEntity)
+            {
+                return InventoryRenderType.LLAMA;
+            }
+            else if (inventory.malilib$getEntityOwner() instanceof WolfEntity)
+            {
+                return InventoryRenderType.WOLF;
+            }
+            else if (inventory.malilib$getEntityOwner() instanceof AbstractHorseEntity)
             {
                 return InventoryRenderType.HORSE;
             }
@@ -470,15 +582,22 @@ public class InventoryOverlay
                 return InventoryRenderType.HOPPER;
             }
             else if (entityType.equals(EntityType.HORSE) ||
-                entityType.equals(EntityType.DONKEY) ||
-                entityType.equals(EntityType.MULE) ||
-                entityType.equals(EntityType.CAMEL) ||
-                entityType.equals(EntityType.LLAMA) ||
-                entityType.equals(EntityType.TRADER_LLAMA) ||
-                entityType.equals(EntityType.SKELETON_HORSE) ||
-                entityType.equals(EntityType.ZOMBIE_HORSE))
+                     entityType.equals(EntityType.DONKEY) ||
+                     entityType.equals(EntityType.MULE) ||
+                     entityType.equals(EntityType.CAMEL) ||
+                     entityType.equals(EntityType.SKELETON_HORSE) ||
+                     entityType.equals(EntityType.ZOMBIE_HORSE))
             {
                 return InventoryRenderType.HORSE;
+            }
+            else if (entityType.equals(EntityType.LLAMA) ||
+                     entityType.equals(EntityType.TRADER_LLAMA))
+            {
+                return InventoryRenderType.LLAMA;
+            }
+            else if (entityType.equals(EntityType.WOLF))
+            {
+                return InventoryRenderType.WOLF;
             }
             else if (entityType.equals(EntityType.VILLAGER) ||
                      entityType.equals(EntityType.ALLAY) ||
@@ -582,7 +701,7 @@ public class InventoryOverlay
             INV_PROPS_TEMP.width = 68;
             INV_PROPS_TEMP.height = 68;
         }
-        else if (type == InventoryRenderType.HORSE)
+        else if (type == InventoryRenderType.HORSE || type == InventoryRenderType.LLAMA || type == InventoryRenderType.WOLF)
         {
             INV_PROPS_TEMP.slotsPerRow = Math.max(1, totalSlots / 3);
             INV_PROPS_TEMP.slotOffsetX = 8;
@@ -918,6 +1037,35 @@ public class InventoryOverlay
         }
     }
 
+    public static void renderBackgroundSlotAt(float x, float y, Identifier texture, DrawContext drawContext)
+    {
+        renderBackgroundSlotAt(x, y, 0.9f, texture, drawContext, 0, 0);
+    }
+
+    public static void renderBackgroundSlotAt(float x, float y, float scale, Identifier texture, DrawContext drawContext, double mouseX, double mouseY)
+    {
+        MatrixStack matrixStack = drawContext.getMatrices();
+        int color = -1;
+
+        matrixStack.push();
+        matrixStack.translate(x, y, 0.f);
+        matrixStack.scale(scale, scale, 1);
+
+        RenderUtils.enableDiffuseLightingGui3D();
+        RenderUtils.color(1f, 1f, 1f, 1f);
+
+        drawContext.drawGuiTexture(RenderLayer::getGuiTextured, texture, 0, 0, 18, 18, color);
+        RenderUtils.forceDraw(drawContext);
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
+        matrixStack.pop();
+
+        if (mouseX >= x && mouseX < x + 16 * scale && mouseY >= y && mouseY < y + 16 * scale)
+        {
+            hoveredStack = null;
+        }
+    }
+
     public static void renderStackToolTip(int x, int y, ItemStack stack, MinecraftClient mc, DrawContext drawContext)
     {
         List<Text> list = stack.getTooltip(Item.TooltipContext.DEFAULT, mc.player, mc.options.advancedItemTooltips ? TooltipType.ADVANCED : TooltipType.BASIC);
@@ -956,6 +1104,8 @@ public class InventoryOverlay
         FURNACE,
         HOPPER,
         HORSE,
+        LLAMA,
+        WOLF,
         FIXED_27,
         FIXED_54,
         VILLAGER,
