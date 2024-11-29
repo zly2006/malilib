@@ -4,7 +4,6 @@ import com.llamalad7.mixinextras.sugar.Local;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.util.profiler.Profiler;
@@ -32,7 +31,8 @@ public abstract class MixinWorldRenderer
                      shift = At.Shift.BEFORE))
     private void malilib_onRenderWorldPreWeather(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline,
                                                  Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci,
-                                                 @Local Profiler profiler, @Local Frustum frustum, @Local FrameGraphBuilder frameGraphBuilder, @Local(ordinal = 0) int i, @Local(ordinal = 1) int j, @Local PostEffectProcessor postEffectProcessor)
+                                                 @Local Profiler profiler, @Local Frustum frustum, @Local FrameGraphBuilder frameGraphBuilder)
+                                                 //@Local(ordinal = 0) int i, @Local(ordinal = 1) int j, @Local PostEffectProcessor postEffectProcessor)
     {
         ((RenderEventHandler) RenderEventHandler.getInstance()).runRenderWorldPreWeather(positionMatrix, projectionMatrix, this.client, frameGraphBuilder, this.framebufferSet, frustum, camera, profiler);
 
