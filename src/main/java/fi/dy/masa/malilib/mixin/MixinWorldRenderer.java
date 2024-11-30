@@ -29,9 +29,12 @@ public abstract class MixinWorldRenderer
             at = @At(value = "INVOKE",
                      target = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Vec3d;FLnet/minecraft/client/render/Fog;)V",
                      shift = At.Shift.BEFORE))
-    private void malilib_onRenderWorldPreWeather(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline,
-                                                 Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci,
-                                                 @Local Profiler profiler, @Local Frustum frustum, @Local FrameGraphBuilder frameGraphBuilder)
+    private void malilib_onRenderWorldPreWeather(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean bl,
+                                                 Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager,
+                                                 Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo ci,
+                                                 @Local Profiler profiler,
+                                                 @Local Frustum frustum,
+                                                 @Local FrameGraphBuilder frameGraphBuilder)
                                                  //@Local(ordinal = 0) int i, @Local(ordinal = 1) int j, @Local PostEffectProcessor postEffectProcessor)
     {
         ((RenderEventHandler) RenderEventHandler.getInstance()).runRenderWorldPreWeather(positionMatrix, projectionMatrix, this.client, frameGraphBuilder, this.framebufferSet, frustum, camera, profiler);
