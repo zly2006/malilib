@@ -5,6 +5,11 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import com.terraformersmc.modmenu.api.ModMenuApi;
+import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.gui.widgets.WidgetDropDownList;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.IConfigBase;
@@ -23,6 +28,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, WidgetConfigOption, WidgetListConfigOptions> implements IKeybindConfigGui
 {
+    protected WidgetDropDownList<EntrypointContainer<ModMenuApi>> modSwitchWidget;
     protected final List<Runnable> hotkeyChangeListeners = new ArrayList<>();
     protected final ButtonPressDirtyListenerSimple dirtyListener = new ButtonPressDirtyListenerSimple();
     protected final String modId;
@@ -37,6 +43,19 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
 
         this.modId = modId;
         this.title = StringUtils.translate(titleKey, args);
+
+        if (FabricLoader.getInstance().isModLoaded(MaLiLibReference.MODMENU_ID)) {
+            List<EntrypointContainer<ModMenuApi>> entrypointContainers = FabricLoader.getInstance().getEntrypointContainers(MaLiLibReference.MODMENU_ID, ModMenuApi.class)
+                    .stream().filter(mod -> mod.getEntrypoint().getModConfigScreenFactory().create(null) instanceof GuiConfigsBase)
+                    .toList();
+            modSwitchWidget = new WidgetDropDownList<>(GuiUtils.getScaledWindowWidth() - 155, 13, 130, 18, 200, 10, entrypointContainers) {
+                @Override
+                protected void setSelectedEntry(int index) {
+                    super.setSelectedEntry(index);
+                    client.setScreen(selectedEntry.getEntrypoint().getModConfigScreenFactory().create(null));
+                }
+            };
+        }
     }
 
     @Override
