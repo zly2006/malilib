@@ -43,18 +43,41 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
 
         this.modId = modId;
         this.title = StringUtils.translate(titleKey, args);
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
 
         if (FabricLoader.getInstance().isModLoaded(MaLiLibReference.MODMENU_ID)) {
             List<EntrypointContainer<ModMenuApi>> entrypointContainers = FabricLoader.getInstance().getEntrypointContainers(MaLiLibReference.MODMENU_ID, ModMenuApi.class)
+                    // This will stack overflow if called in <init>()
                     .stream().filter(mod -> mod.getEntrypoint().getModConfigScreenFactory().create(null) instanceof GuiConfigsBase)
                     .toList();
+            EntrypointContainer<ModMenuApi> thisContainer = entrypointContainers.stream().filter(mod -> {
+                GuiConfigsBase gui = (GuiConfigsBase) mod.getEntrypoint().getModConfigScreenFactory().create(null);
+                if (gui == null) return false;
+                return gui.getClass() == this.getClass();
+            }).findFirst().orElse(null);
             modSwitchWidget = new WidgetDropDownList<>(GuiUtils.getScaledWindowWidth() - 155, 13, 130, 18, 200, 10, entrypointContainers) {
+                {
+                    selectedEntry = thisContainer;
+                }
                 @Override
                 protected void setSelectedEntry(int index) {
                     super.setSelectedEntry(index);
-                    client.setScreen(selectedEntry.getEntrypoint().getModConfigScreenFactory().create(null));
+                    if (selectedEntry != null) {
+                        client.setScreen(selectedEntry.getEntrypoint().getModConfigScreenFactory().create(null));
+                    }
+                }
+
+                @Override
+                protected String getDisplayString(EntrypointContainer<ModMenuApi> entry) {
+                    if (entry == null) return "";
+                    return entry.getProvider().getMetadata().getName();
                 }
             };
+            addWidget(modSwitchWidget);
         }
     }
 
