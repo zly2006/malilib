@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.block.*;
@@ -16,6 +18,7 @@ import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -63,7 +66,8 @@ public class InventoryOverlay
     public static final Identifier TEXTURE_PLAYER_INV       = Identifier.ofVanilla("textures/gui/container/inventory.png");
     public static final Identifier TEXTURE_SINGLE_CHEST     = Identifier.ofVanilla("textures/gui/container/shulker_box.png");
 
-    public static final Identifier TEXTURE_EMPTY_SHIELD     = Identifier.ofVanilla("item/empty_armor_slot_shield");
+    //public static final Identifier TEXTURE_EMPTY_SHIELD     = Identifier.ofVanilla("item/empty_armor_slot_shield");
+    public static final Identifier TEXTURE_EMPTY_SHIELD     = Identifier.ofVanilla("container/slot/shield");
     public static final Identifier TEXTURE_LOCKED_SLOT      = Identifier.ofVanilla("container/crafter/disabled_slot");
 
     // Additional Empty Slot Textures
@@ -78,16 +82,16 @@ public class InventoryOverlay
 
     private static final Identifier[] EMPTY_SLOT_TEXTURES = new Identifier[]
     {
+            /*
         Identifier.ofVanilla("item/empty_armor_slot_boots"),
         Identifier.ofVanilla("item/empty_armor_slot_leggings"),
         Identifier.ofVanilla("item/empty_armor_slot_chestplate"),
         Identifier.ofVanilla("item/empty_armor_slot_helmet")
-/*
+             */
         Identifier.ofVanilla("container/slot/boots"),
         Identifier.ofVanilla("container/slot/leggings"),
         Identifier.ofVanilla("container/slot/chestplate"),
         Identifier.ofVanilla("container/slot/helmet")
- */
     };
 
     private static ItemStack hoveredStack = null;
@@ -353,11 +357,12 @@ public class InventoryOverlay
         }
         catch (Exception ignored) { }
 
-        RenderUtils.bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+        //RenderUtils.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
 
         if (entity.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty())
         {
-            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_SHIELD, drawContext);
+            //RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, TEXTURE_EMPTY_SHIELD, drawContext);
+            renderBackgroundSlotAt(x + 28 + 1, y + 3 * 18 + 7 + 1, TEXTURE_EMPTY_SHIELD, drawContext);
         }
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
@@ -367,7 +372,8 @@ public class InventoryOverlay
             if (entity.getEquippedStack(eqSlot).isEmpty())
             {
                 Identifier texture = EMPTY_SLOT_TEXTURES[eqSlot.getEntitySlotId()];
-                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, texture, drawContext);
+                //RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, texture, drawContext);
+                renderBackgroundSlotAt(x + xOff + 1, y + yOff + 1, texture, drawContext);
             }
         }
     }
@@ -449,7 +455,7 @@ public class InventoryOverlay
         {
             Block block = ((BlockItem) item).getBlock();
 
-            if (block instanceof ShulkerBoxBlock || block instanceof ChestBlock)
+            if (block instanceof ShulkerBoxBlock || block instanceof ChestBlock || block instanceof BarrelBlock)
             {
                 return InventoryRenderType.FIXED_27;
             }
@@ -506,6 +512,7 @@ public class InventoryOverlay
         if (blockType != null)
         {
             if (blockType.equals(BlockEntityType.SHULKER_BOX) ||
+                blockType.equals(BlockEntityType.BARREL) ||
                 blockType.equals(BlockEntityType.CHEST) ||
                 blockType.equals(BlockEntityType.TRAPPED_CHEST))
             {
@@ -573,6 +580,7 @@ public class InventoryOverlay
                 entityType.equals(EntityType.JUNGLE_CHEST_BOAT) ||
                 entityType.equals(EntityType.MANGROVE_CHEST_BOAT) ||
                 entityType.equals(EntityType.OAK_CHEST_BOAT) ||
+                entityType.equals(EntityType.PALE_OAK_CHEST_BOAT) ||
                 entityType.equals(EntityType.SPRUCE_CHEST_BOAT))
             {
                 return InventoryRenderType.FIXED_27;
@@ -582,16 +590,16 @@ public class InventoryOverlay
                 return InventoryRenderType.HOPPER;
             }
             else if (entityType.equals(EntityType.HORSE) ||
-                     entityType.equals(EntityType.DONKEY) ||
-                     entityType.equals(EntityType.MULE) ||
-                     entityType.equals(EntityType.CAMEL) ||
-                     entityType.equals(EntityType.SKELETON_HORSE) ||
-                     entityType.equals(EntityType.ZOMBIE_HORSE))
+                entityType.equals(EntityType.DONKEY) ||
+                entityType.equals(EntityType.MULE) ||
+                entityType.equals(EntityType.CAMEL) ||
+                entityType.equals(EntityType.SKELETON_HORSE) ||
+                entityType.equals(EntityType.ZOMBIE_HORSE))
             {
                 return InventoryRenderType.HORSE;
             }
             else if (entityType.equals(EntityType.LLAMA) ||
-                     entityType.equals(EntityType.TRADER_LLAMA))
+                entityType.equals(EntityType.TRADER_LLAMA))
             {
                 return InventoryRenderType.LLAMA;
             }

@@ -297,7 +297,7 @@ public class InventoryUtils
 
         if (isCreative)
         {
-            player.getInventory().addPickBlock(stackReference);
+            player.getInventory().swapStackWithHotbar(stackReference);
             mc.interactionManager.clickCreativeStack(player.getMainHandStack(), 36 + player.getInventory().selectedSlot); // sendSlotPacket
             return true;
         }

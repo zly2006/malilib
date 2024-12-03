@@ -1,19 +1,17 @@
 package fi.dy.masa.malilib.render;
 
+import java.util.*;
+import java.util.function.Function;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Matrix4fStack;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-
-import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.config.HudAlignment;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.mixin.IMixinDrawContext;
-import fi.dy.masa.malilib.util.*;
-import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.ShaderProgramKeys;
@@ -22,6 +20,7 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.BufferAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.ComponentMap;
@@ -36,7 +35,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.*;
 import net.minecraft.item.map.MapState;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
@@ -45,13 +43,12 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.LocalRandom;
-import org.joml.Matrix4f;
-import org.joml.Matrix4fStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
-import java.util.function.Function;
+import fi.dy.masa.malilib.config.HudAlignment;
+import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.mixin.IMixinDrawContext;
+import fi.dy.masa.malilib.util.*;
+import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 
 public class RenderUtils
 {
@@ -105,7 +102,7 @@ public class RenderUtils
     /**
      * Get the VertexConsumer for the texture Layer from DrawContext.
      *
-     * @param textureLyaer
+     * @param textureLayer
      * @param drawContext
      * @return
      */
@@ -1214,11 +1211,11 @@ public class RenderUtils
         switch (side)
         {
             case DOWN:
-                matrix4fStack.rotateY(matrix4fRotateFix(180f - playerFacing.asRotation()));
+                matrix4fStack.rotateY(matrix4fRotateFix(180f - playerFacing.getPositiveHorizontalDegrees()));
                 matrix4fStack.rotateX(matrix4fRotateFix(90f));
                 break;
             case UP:
-                matrix4fStack.rotateY(matrix4fRotateFix(180f - playerFacing.asRotation()));
+                matrix4fStack.rotateY(matrix4fRotateFix(180f - playerFacing.getPositiveHorizontalDegrees()));
                 matrix4fStack.rotateX(matrix4fRotateFix(-90f));
                 break;
             case NORTH:
@@ -1371,13 +1368,11 @@ public class RenderUtils
 
             enableDiffuseLightingGui3D();
 
-            // TODO 1.21.4+
-            /*
             if (type == InventoryOverlay.InventoryRenderType.BREWING_STAND)
             {
                 InventoryOverlay.renderBrewerBackgroundSlots(inv, x, y, drawContext);
             }
-             */
+
             if (type == InventoryOverlay.InventoryRenderType.CRAFTER && !nbt.isEmpty())
             {
                 lockedSlots = BlockUtils.getDisabledSlotsFromNbt(nbt);
@@ -1648,8 +1643,9 @@ public class RenderUtils
 
         Matrix4fStack matrix4fStack = RenderSystem.getModelViewStack();
         matrix4fStack.pushMatrix();
-        bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
-        mc().getTextureManager().getTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
+        // FIXME -- Deprecation (BLOCK_ATLAS_TEXTURE)
+        bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE);
+        mc().getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
 
         RenderSystem.enableBlend();
         setupBlendSimple();
@@ -1685,8 +1681,9 @@ public class RenderUtils
         matrix4fStack.translate((float) -0.5, (float) -0.5, (float) -0.5);
         int color = 0xFFFFFFFF;
 
-        if (model.isBuiltin() == false)
-        {
+        // TODO watch for side effects
+        //if (model.isBuiltin() == false)
+        //{
             RenderSystem.setShader(ShaderProgramKeys.RENDERTYPE_SOLID);
             //RenderSystem.setShader(GameRenderer::getRenderTypeSolidProgram);
             //RenderSystem.applyModelViewMatrix();
@@ -1710,7 +1707,7 @@ public class RenderUtils
                 builtBuffer.close();
             }
             catch (Exception ignored) { }
-        }
+        //}
 
         matrix4fStack.popMatrix();
     }
