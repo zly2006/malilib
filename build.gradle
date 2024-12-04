@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.8-SNAPSHOT'
+	id 'fabric-loom' version '1.9-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -30,12 +30,15 @@ dependencies {
 	//modRuntimeOnly "com.terraformersmc:modmenu:${project.mod_menu_version}"
 }
 
-group = project.group + "." + project.mod_id
-archivesBaseName = project.mod_file_name + '-' + project.minecraft_version_out
-version = project.mod_version
+base {
+	group = project.group + "." + project.mod_id
+	archivesName = project.mod_file_name + '-' + project.minecraft_version_out
+	//archivesBaseName = archivesName
+	version = project.mod_version
 
-if (version.endsWith('-dev')) {
-	version += "." + new Date().format('yyyyMMdd.HHmmss')
+	if (version.endsWith('-dev')) {
+		version += "." + new Date().format('yyyyMMdd.HHmmss')
+	}
 }
 
 processResources {
@@ -78,7 +81,7 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+		rename { "${it}_${project.archivesName}"}
 	}
 }
 
@@ -86,7 +89,8 @@ tasks.publish.dependsOn build
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifactId project.archivesBaseName
+			// How to introduce archivesName here without it breaking?
+			artifactId = project.archivesBaseName
 
 			// add all the jars that should be included when publishing to maven
 			//artifact(jar)             { builtBy remapJar }
