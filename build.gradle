@@ -32,8 +32,7 @@ dependencies {
 
 base {
 	group = project.group + "." + project.mod_id
-	archivesName = project.mod_file_name + '-' + project.minecraft_version_out
-	//archivesBaseName = archivesName
+	base.archivesName = project.mod_file_name + '-' + project.minecraft_version_out
 	version = project.mod_version
 
 	if (version.endsWith('-dev')) {
@@ -90,7 +89,7 @@ publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			// How to introduce archivesName here without it breaking?
-			artifactId = project.archivesBaseName
+			artifactId base.archivesName.get()
 
 			// add all the jars that should be included when publishing to maven
 			//artifact(jar)             { builtBy remapJar }
