@@ -620,6 +620,14 @@ public class InventoryOverlay
             {
                 return InventoryRenderType.PLAYER;
             }
+            else if (entityType.equals(EntityType.ARMOR_STAND))
+            {
+                return InventoryRenderType.ARMOR_STAND;
+            }
+            else if (nbt.contains(NbtKeys.ATTRIB) || nbt.contains(NbtKeys.EFFECTS) || nbt.contains(NbtKeys.ARMOR_ITEMS))
+            {
+                return InventoryRenderType.LIVING_ENTITY;
+            }
         }
 
         return InventoryRenderType.GENERIC;
@@ -1122,6 +1130,8 @@ public class InventoryOverlay
         BOOKSHELF,
         SINGLE_ITEM,
         BUNDLE,
+        ARMOR_STAND,
+        LIVING_ENTITY,
         GENERIC;
     }
 
