@@ -1,5 +1,4 @@
 {
-  "modmenu.descriptionTranslation.malilib": "Бібліотка, необхідна клієнтським модам від masa",
   "malilib.config.comment.keybind_settings.activate_on": "Чи активується прив’язка клавіш після натискання або відпускання комбінації клавіш",
   "malilib.config.comment.keybind_settings.allow_empty_keybind": "Чи дійсна порожня прив'язка клавіш\n(завжди вважатиметься активною)",
   "malilib.config.comment.keybind_settings.allow_extra_keys": "Чи можна утримувати додаткові клавіші для активації прив'язки клавіш",
@@ -28,6 +27,12 @@
   "malilib.config.debug.prettyName.keybindDebuggingIngame": "Налагодження прив'язки клавіш у грі",
   "malilib.config.debug.prettyName.mouseScrollDebug": "Налагодження прокручування",
   "malilib.config.debug.prettyName.printTranslationKeys": "Друкувати ключі перекладу",
+  "malilib.config.experimental.comment.activeConfigProfile": "activeConfigProfile",
+  "malilib.config.experimental.comment.sortConfigsByName": "Sort Configs By Name",
+  "malilib.config.experimental.comment.sortExtensionModOptions": "Sorts the configs shown on the config\nscreens by the config display name.\n\nThis happens after any possible extension mod configs have been added to\nthe end of the list of configs in the base mod.\nNote that this would also cause the base mod's configs to\nbe sorted alphabetically, in case they weren't by default.\n\nThis option only takes effect if there actually are some options\nadded by an extension mod. Also see the §eSort Configs By Name§r\noption which forces sorting the base mod configs in any case.",
+  "malilib.config.experimental.name.activeConfigProfile": "activeConfigProfile",
+  "malilib.config.experimental.name.sortConfigsByName": "sortConfigsByName",
+  "malilib.config.experimental.name.sortExtensionModOptions": "sortExtensionModOptions",
   "malilib.config.generic.comment.enableActionbarMessages": "Відображати чи ні повідомлення на панелі дій\nЦе може бути корисним для\nзапису чи потокового передавання\nНатхненно модом «Streamer Mode» від Sakura",
   "malilib.config.generic.comment.ignoredKeys": "Будь-які встановлені тут ключі будуть повністю проігноровані",
   "malilib.config.generic.comment.openGuiConfigs": "Відкрити меню налаштувань Malilib у грі",
@@ -182,5 +187,6 @@
   "malilib.message.set_layer_to": "Установити шар на %s",
   "malilib.message.toggled": "Перемкнуто %s %s",
   "malilib.message.value.off": "ВИМК.",
-  "malilib.message.value.on": "УВІМК."
+  "malilib.message.value.on": "УВІМК.",
+  "modmenu.descriptionTranslation.malilib": "Бібліотка, необхідна клієнтським модам від masa"
 }
